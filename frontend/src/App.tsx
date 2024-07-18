@@ -5,17 +5,19 @@ import './App.css'
 import { Route, Switch } from 'wouter';
 import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
+import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
 
 function App() {
 
   return (
-    <>
+    <CssVarsProvider>
+      <CssBaseline />
       <Switch>
         <Route path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/home" component={HomePage} />
       </Switch>
-    </>
+    </CssVarsProvider>
 
   )
 }
@@ -25,6 +27,7 @@ const LandingPage = () => {
 
   return (
     <>
+      <Button variant="solid">Hello world</Button>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
