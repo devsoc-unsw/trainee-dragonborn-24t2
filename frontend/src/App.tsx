@@ -2,8 +2,25 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { Route, Switch } from 'wouter';
+import LoginPage from './pages/LoginPage.tsx';
+import HomePage from './pages/HomePage.tsx';
 
 function App() {
+
+  return (
+    <>
+      <Switch>
+        <Route path="/" component={LandingPage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="/home" component={HomePage} />
+      </Switch>
+    </>
+
+  )
+}
+
+const LandingPage = () => {
   const [count, setCount] = useState(0)
 
   return (
