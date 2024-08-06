@@ -1,5 +1,6 @@
 import './HomePage.css';
 import TripCard from '../components/TripCard';
+import TripCountdown from '../components/TripCountdown'
 
 
 const HomePage = () => {
@@ -7,7 +8,7 @@ const HomePage = () => {
     <div className="home-container">
       <div className="left-section">
         <p>Countdown to your next trip:</p>
-        {/* Countdown timer component here */}
+        <TripCountdown tripDate={new Date('2024-12-25')} /> {/*calc date from active trips???*/}
       </div>
       <div className="right-section">
         <p>trip cards tbd</p>
