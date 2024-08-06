@@ -8,6 +8,7 @@ import IconButton from '@mui/joy/IconButton';
 import Notifications from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/Person';
 import Home from '@mui/icons-material/Home';
+import Avatar from '@mui/joy/Avatar';
 
 const Navbar = () => {
   const [notificationOpen, setNotificationOpen] = React.useState(false);
@@ -50,7 +51,7 @@ const Navbar = () => {
               onMouseEnter={() => setProfileOpen(true)}
               onMouseLeave={() => setProfileOpen(false)}
             >
-              <Person className="navbar-icon" />
+              <Avatar className="navbar-icon">BC</Avatar>
             </IconButton>
             <div className='navbar-dropdown-menu'>
               <Menu open={profileOpen}>
