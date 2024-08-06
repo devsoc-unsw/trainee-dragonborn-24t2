@@ -6,20 +6,20 @@ import { Route, Switch } from 'wouter';
 import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
+import Navbar from './components/Navbar.tsx';
 
 function App() {
-
   return (
     <CssVarsProvider>
       <CssBaseline />
+      <Navbar />
       <Switch>
         <Route path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/home" component={HomePage} />
       </Switch>
     </CssVarsProvider>
-
-  )
+  );
 }
 
 const LandingPage = () => {
