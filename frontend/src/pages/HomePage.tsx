@@ -2,6 +2,8 @@ import './HomePage.css';
 import '../styles.css';
 import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown'
+import SearchBar from '../components/SearchBar';
+
 
 
 
@@ -14,6 +16,7 @@ const HomePage = () => {
       </div>
       <div className="right-section">
         <p>trip cards tbd</p>
+        <SearchBar />
         <TripCard
           title="solo travellign japan"
           location="Japan"
