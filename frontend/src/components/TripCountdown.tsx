@@ -1,6 +1,6 @@
+import '../styles.css';
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card } from '@mui/joy';
-
 
 interface CountdownTimerProps {
   tripDate: Date;
@@ -22,34 +22,56 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ tripDate }) => {
         }
       };
 
-      const timer = setInterval(calculateTimeLeft, 1000);
-      calculateTimeLeft(); // Initial calculation
+      const timer = setInterval(calculateTimeLeft, 10000);
+      calculateTimeLeft();
 
-      return () => clearInterval(timer);
+      return () => clearInterval(timer); // when component uncmounts
     }, [tripDate]);
 
     return (
-        <Card sx={{
-            width: 320,
-            padding: 2,
-            textAlign: 'center',
-            backgroundColor: '#ffe1d3'}}>
-          <Typography level="h4">Trip Name</Typography>
-          <Box
-            sx={{
-              border: '2px solid black',
-              borderRadius: '8px',
-              padding: 2,
-              marginTop: 2,
-              backgroundColor: '#ffffff',
-            }}
-          >
-            <Typography level="body-sm">Countdown</Typography>
-            <Typography level="body-lg">{timeLeft.days} days</Typography>
+        <Card sx={styles.card}>
+          <Typography sx={styles.header}>Trip Name</Typography>
+          <Box sx={styles.box}>
+            <Typography sx={styles.counter}>{timeLeft.days}</Typography>
+            <Typography sx={styles.counterText}>days</Typography>
           </Box>
         </Card>
       );
     };
 
-export default CountdownTimer;
+    const styles = {
+      card: {
+        width: 320,
+        padding: 2,
+        textAlign: 'center',
+        borderRadius: '20px',
+        boxShadow: '0 2px 2px rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'var(--secondary-color)',
+      },
+      header: {
+        fontSize: 'var(--font-size-medium)',
+        fontWeight: 'var(--font-weight-bold)',
+        color: 'var(--tertiary-color)',
+      },
+      box: {
+        borderRadius: '20px',
+        padding: 3,
+        marginTop: 0.5,
+        marginBottom: 1,
+        backgroundColor: '#ffffff',
+      },
+      counter: {
+        fontSize: 'var(--font-size-large)',
+        fontWeight: 'var(--font-weight-bold)',
+        color: 'var(--tertiary-color)',
+        marginBottom: 0.1,
+      },
+      counterText: {
+        fontSize: 'var(--font-size-extrasmall)',
+        fontWeight: 'var(--font-weight-normal)',
+        color: 'var(--tertiary-color)',
+        marginTop: 0.1,
+      }
+    };
 
+export default CountdownTimer;

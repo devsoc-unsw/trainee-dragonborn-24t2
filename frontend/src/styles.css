@@ -1,13 +1,20 @@
 :root {
-    --font-family: 'Arial, sans-serif';
-    --primary-color: #F98568;
-    --secondary-color: #FFFFFF;
-    --heading-font-size: 2rem;
-    --body-font-size: 1rem;
-  }
+  --primary-color: #f98568;
+  --secondary-color: #ffe1d3;
+  --tertiary-color: #590000;
+  --text-color: #000000;
+  --background-color: #f7f8f3;
 
-  body {
-    font-family: var(--font-family);
-    background-color: var(--primary-color);
-    color: var(--secondary-color);
-  }
+  --font-primary: 'Montserrat', sans-serif;
+  --font-secondary: 'Arial', sans-serif;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 550;
+  --font-weight-bold: 700;
+
+  --font-size-extrasmall: 1.0rem;
+  --font-size-small: 1.5rem;
+  --font-size-medium: 1.7rem;
+  --font-size-large: 2.0rem;
+  --font-size-extralarge: 2.5rem;
+}

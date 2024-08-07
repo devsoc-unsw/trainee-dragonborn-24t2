@@ -1,6 +1,8 @@
 import './HomePage.css';
+import '../styles.css';
 import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown'
+
 
 
 const HomePage = () => {
