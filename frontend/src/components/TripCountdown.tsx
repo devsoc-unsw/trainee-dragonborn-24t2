@@ -1,77 +1,20 @@
 import '../styles.css';
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card } from '@mui/joy';
+import { Typography, Stack } from '@mui/joy';
 
-interface CountdownTimerProps {
-  tripDate: Date;
-}
 
-const CountdownTimer: React.FC<CountdownTimerProps> = ({ tripDate }) => {
-    const [timeLeft, setTimeLeft] = useState({ days: 0 });
+const TripCountdown = () => {
+  return (
+    <Stack width="60%" gap={0.5}>
+      <Typography justifySelf="flex-start" level="body-sm" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>Your Next Trip</Typography>
+      <Stack bgcolor="#f9e1d6" alignItems="center" borderRadius={15} sx = {{p:3}}>
+        <Typography level="h3" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>TripName</Typography>
+        <Stack width="70%" alignItems="center" sx = {{borderRadius: 10, backgroundColor: 'var(--background-color)', margin:1, pt:4, pb:4, pl:6, pr:6}}>
+        <Typography level="h2" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>100</Typography>
+        <Typography level="body-sm" sx={{color: 'var(--tertiary-color)'}}>days</Typography>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+};
 
-    useEffect(() => {
-      const calculateTimeLeft = () => {
-        const now = new Date();
-        const timeDifference = tripDate.getTime() - now.getTime();
-        if (timeDifference > 0) {
-          setTimeLeft({
-            days: Math.floor(timeDifference / (1000 * 60 * 60 * 24)),
-          });
-        } else {
-          setTimeLeft({ days: 0 });
-        }
-      };
-
-      const timer = setInterval(calculateTimeLeft, 10000);
-      calculateTimeLeft();
-
-      return () => clearInterval(timer); // when component uncmounts
-    }, [tripDate]);
-
-    return (
-        <Card sx={styles.card}>
-          <Typography sx={styles.header}>Trip Name</Typography>
-          <Box sx={styles.box}>
-            <Typography sx={styles.counter}>{timeLeft.days}</Typography>
-            <Typography sx={styles.counterText}>days</Typography>
-          </Box>
-        </Card>
-      );
-    };
-
-    const styles = {
-      card: {
-        width: 320,
-        padding: 2,
-        textAlign: 'center',
-        borderRadius: '20px',
-        boxShadow: '0 2px 2px rgba(0, 0, 0, 0.3)',
-        backgroundColor: 'var(--secondary-color)',
-      },
-      header: {
-        fontSize: 'var(--font-size-medium)',
-        fontWeight: 'var(--font-weight-bold)',
-        color: 'var(--tertiary-color)',
-      },
-      box: {
-        borderRadius: '20px',
-        padding: 3,
-        marginTop: 0.5,
-        marginBottom: 1,
-        backgroundColor: '#ffffff',
-      },
-      counter: {
-        fontSize: 'var(--font-size-large)',
-        fontWeight: 'var(--font-weight-bold)',
-        color: 'var(--tertiary-color)',
-        marginBottom: 0.1,
-      },
-      counterText: {
-        fontSize: 'var(--font-size-extrasmall)',
-        fontWeight: 'var(--font-weight-normal)',
-        color: 'var(--tertiary-color)',
-        marginTop: 0.1,
-      }
-    };
-
-export default CountdownTimer;
+ export default TripCountdown;
