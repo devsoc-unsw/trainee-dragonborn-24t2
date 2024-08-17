@@ -6,7 +6,6 @@ import { Route, Switch } from 'wouter';
 import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
-import NewTripPage from './pages/NewTripPage.tsx';
 import RegisterPage from './pages/RegisterPage.tsx';
 
 
@@ -19,7 +18,6 @@ function App() {
         <Route path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/home" component={HomePage} />
-        <Route path="/newtrip" component={NewTripPage} />
         <Route path="/register" component={RegisterPage} />
       </Switch>
     </CssVarsProvider>
