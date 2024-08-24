@@ -1,69 +1,76 @@
-import './Navbar.css';
 import { Link } from 'wouter';
-
-import * as React from 'react';
 import Menu from '@mui/joy/Menu';
 import MenuItem from '@mui/joy/MenuItem';
+import MenuButton from '@mui/joy/MenuButton';
+import Dropdown from '@mui/joy/Dropdown';
 import IconButton from '@mui/joy/IconButton';
 import Notifications from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/Person';
 import Home from '@mui/icons-material/Home';
 import Avatar from '@mui/joy/Avatar';
+import Stack from '@mui/joy/Stack';
+import Card from '@mui/joy/Card';
+import Typography from '@mui/joy/Typography';
 
 const Navbar = () => {
-  const [notificationOpen, setNotificationOpen] = React.useState(false);
-  const [profileOpen, setProfileOpen] = React.useState(false);
 
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <Link href="/" className="navbar-item">TravelSite(logo)</Link>
-        <ul className="navbar-menu">
-          <li className="navbar-item">
-            <Link href="/home">
-              <IconButton>
-                <Home className="navbar-icon" />
-              </IconButton>
-            </Link>
-          </li>
-          <li className="navbar-item">
-            <Link href="/friends">
-              <IconButton>
-                <Person className="navbar-icon" />
-              </IconButton>
-            </Link>
-          </li>
-          <li className="navbar-item">
-            <IconButton
-              onMouseEnter={() => setNotificationOpen(true)}
-              onMouseLeave={() => setNotificationOpen(false)}
-            >
-              <Notifications className="navbar-icon" />
+    <Card // or stack for non rounded
+      sx={{
+        backgroundColor: '#F98568',
+        padding: '10px 20px',
+        color: 'white',
+        position: 'fixed',
+        width: '100%',
+      }}
+    >
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Link href="/" style={{textDecoration: 'none' }}>
+          <Typography level="body-lg">(insert logo :P)</Typography>
+        </Link>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Link href="/home">
+            <IconButton>
+              <Home style={{ color: 'white'}} />
             </IconButton>
-            <div className='navbar-dropdown-menu'>
-              <Menu open={notificationOpen}>
-                <MenuItem>No notifications yet</MenuItem>
-              </Menu>
-            </div>
-          </li>
-          <li className="navbar-item">
-            <IconButton
-              onMouseEnter={() => setProfileOpen(true)}
-              onMouseLeave={() => setProfileOpen(false)}
-            >
-              <Avatar className="navbar-icon">BC</Avatar>
+          </Link>
+
+          <Link href="/friends">
+            <IconButton>
+              <Person style={{ color: 'white'}} />
             </IconButton>
-            <div className='navbar-dropdown-menu'>
-              <Menu open={profileOpen}>
+          </Link>
+
+          <Dropdown>
+          <MenuButton variant="plain" sx={{ p: 0}}>
+              <IconButton>
+                <Notifications style={{ color: 'white' }} />
+              </IconButton>
+            </MenuButton>
+            <Menu>
+              <MenuItem>No notifications yet</MenuItem>
+            </Menu>
+          </Dropdown>
+
+          <Dropdown>
+            <MenuButton variant="plain" sx={{ p: 0 }}>
+              <IconButton>
+                <Avatar>BC</Avatar>
+              </IconButton>
+            </MenuButton>
+            <Menu>
+              <Link href="/profile">
                 <MenuItem>Edit Profile</MenuItem>
-                <MenuItem>Settings</MenuItem>
-                <MenuItem>Logout</MenuItem>
-              </Menu>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
+              </Link>
+              <MenuItem>Settings</MenuItem>
+              <MenuItem>Logout</MenuItem>
+            </Menu>
+          </Dropdown>
+
+        </Stack>
+      </Stack>
+    </Card>
   );
 };
 
