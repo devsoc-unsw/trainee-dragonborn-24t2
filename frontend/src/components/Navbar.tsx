@@ -32,20 +32,20 @@ const Navbar = () => {
         <Stack direction="row" spacing={2} alignItems="center">
           <Link href="/home">
             <IconButton>
-              <Home style={{ color: 'white'}} />
+              <Home style={{ color: 'var(--tertiary-color)'}} />
             </IconButton>
           </Link>
 
           <Link href="/friends">
             <IconButton>
-              <Person style={{ color: 'white'}} />
+              <Person style={{ color:'var(--tertiary-color)'}} />
             </IconButton>
           </Link>
 
           <Dropdown>
           <MenuButton variant="plain" sx={{ p: 0}}>
               <IconButton>
-                <Notifications style={{ color: 'white' }} />
+                <Notifications style={{ color: 'var(--tertiary-color)'}} />
               </IconButton>
             </MenuButton>
             <Menu>
@@ -56,7 +56,7 @@ const Navbar = () => {
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
               <IconButton>
-                <Avatar>BC</Avatar>
+                <Avatar sx={{color: 'var(--tertiary-color)'}}>BC</Avatar>
               </IconButton>
             </MenuButton>
             <Menu>
