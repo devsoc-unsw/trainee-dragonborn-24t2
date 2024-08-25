@@ -1,3 +1,4 @@
+import '../styles.css'
 import { Button, Input, Stack, Typography } from "@mui/joy"
 import photo from "../assets/images/login.png"
 import { Link } from "wouter"
@@ -8,7 +9,7 @@ const LoginPage = () => {
       height="100%"
       justifyContent="center"
       alignItems="center"
-      bgcolor="#F7F8F3"
+      bgcolor='var(--background-color)'
     >
       <Stack
         direction="row" 
@@ -18,7 +19,7 @@ const LoginPage = () => {
       >
 
         <Stack
-          bgcolor="#f9E1D6"
+          bgcolor='var(--secondary-color)'
           width={350}
           height={550}
           justifyContent="center"
@@ -28,7 +29,7 @@ const LoginPage = () => {
           sx={{ boxShadow: "md" }}
         >
           <Stack alignItems="left" justifyContent="center" width="70%">
-            <Typography level="h3" fontWeight="bold" sx={{ color: "#590000" }}>
+            <Typography level="h3" fontWeight="bold" sx={{ color: 'var(--tertiary-color)' }}>
               Login
             </Typography>
           </Stack>
@@ -50,7 +51,7 @@ const LoginPage = () => {
           </Stack>
 
           <Stack width="70%" gap={1}>
-            <Button sx={{ width: "100%", backgroundColor: "#F98568" }}>
+            <Button sx={{ width: "100%", backgroundColor: 'var(--primary-color)' }}>
               Login
             </Button>
             <Stack alignItems="flex-end">
@@ -62,7 +63,7 @@ const LoginPage = () => {
                   component={Link}
                   href="/register"
                   sx={{ 
-                    color: "#F98568", 
+                    color: 'var(--primary-color)', 
                     textDecoration: "none",
                     ":hover": { textDecoration: "underline"}
                   }}
