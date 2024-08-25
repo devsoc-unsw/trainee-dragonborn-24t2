@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import { Route, Switch } from 'wouter';
+import { Route, Switch, useLocation } from 'wouter';
 import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
@@ -8,18 +8,21 @@ import RegisterPage from './pages/RegisterPage.tsx';
 
 import Navbar from './components/Navbar.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
+import NewTripPage from './pages/NewTripPage.tsx';
 
 function App() {
+  const [location] = useLocation();
   return (
     <CssVarsProvider>
       <CssBaseline />
-      <Navbar />
+      {location !== '/login' && location !== '/register' && location !== '/newtrip' && <Navbar />}
       <Switch>
         <Route path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/home" component={HomePage} />
         <Route path="/register" component={RegisterPage} />
         <Route path="/profile" component={ProfilePage} />
+        <Route path="/newtrip" component={NewTripPage} />
       </Switch>
     </CssVarsProvider>
   );
