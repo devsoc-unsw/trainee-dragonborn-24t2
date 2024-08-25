@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Route, Switch } from 'wouter';
 import LoginPage from './pages/LoginPage.tsx';
@@ -8,21 +6,23 @@ import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
 import RegisterPage from './pages/RegisterPage.tsx';
 
+import Navbar from './components/Navbar.tsx';
+import ProfilePage from './pages/ProfilePage.tsx';
 
 function App() {
-
   return (
     <CssVarsProvider>
       <CssBaseline />
+      <Navbar />
       <Switch>
         <Route path="/" component={LandingPage} />
         <Route path="/login" component={LoginPage} />
         <Route path="/home" component={HomePage} />
         <Route path="/register" component={RegisterPage} />
+        <Route path="/profile" component={ProfilePage} />
       </Switch>
     </CssVarsProvider>
-
-  )
+  );
 }
 
 const LandingPage = () => {
@@ -30,15 +30,7 @@ const LandingPage = () => {
 
   return (
     <>
-      <Button variant="solid">Hello world</Button>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
+      <Button variant="solid">Click for travel site :O</Button>
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
