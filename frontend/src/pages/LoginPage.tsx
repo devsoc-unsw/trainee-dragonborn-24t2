@@ -1,7 +1,7 @@
-import '../styles.css'
-import { Button, Input, Stack, Typography } from "@mui/joy"
-import photo from "../assets/images/login.png"
-import { Link } from "wouter"
+import '../styles.css';
+import { Button, Input, Stack, Typography } from "@mui/joy";
+import photo from "../assets/images/login.png";
+import { Link } from "wouter";
 
 const LoginPage = () => {
   return (
@@ -9,27 +9,30 @@ const LoginPage = () => {
       height="100%"
       justifyContent="center"
       alignItems="center"
-      bgcolor='var(--background-color)'
+      bgcolor="var(--background-color)"
     >
       <Stack
-        direction="row" 
+        direction="row"
         justifyContent="space-between"
         alignItems="center"
-        gap={15} 
+        gap={15}
       >
-
         <Stack
-          bgcolor='var(--secondary-color)'
+          bgcolor="var(--secondary-color)"
           width={350}
           height={550}
           justifyContent="center"
           alignItems="center"
           gap={3}
           borderRadius={15}
-          sx={{ boxShadow: "md" }}
+          sx={{ boxShadow: "lg" }}
         >
           <Stack alignItems="left" justifyContent="center" width="70%">
-            <Typography level="h3" fontWeight="bold" sx={{ color: 'var(--tertiary-color)' }}>
+            <Typography
+              level="h3"
+              fontWeight="bold"
+              sx={{ color: "var(--tertiary-color)" }}
+            >
               Login
             </Typography>
           </Stack>
@@ -51,9 +54,18 @@ const LoginPage = () => {
           </Stack>
 
           <Stack width="70%" gap={1}>
-            <Button sx={{ width: "100%", backgroundColor: 'var(--primary-color)' }}>
-              Login
-            </Button>
+            <a href="/home">
+              <Button
+                sx={{
+                  width: "100%",
+                  backgroundColor: "var(--primary-color)",
+                  ":hover": { backgroundColor: "#f5623d" },
+                }}
+              >
+                Login
+              </Button>
+            </a>
+
             <Stack alignItems="flex-end">
               <Stack direction="row" gap={0.5}>
                 <Typography sx={{ color: "black" }} level="body-xs">
@@ -62,10 +74,10 @@ const LoginPage = () => {
                 <Typography
                   component={Link}
                   href="/register"
-                  sx={{ 
-                    color: 'var(--primary-color)', 
+                  sx={{
+                    color: "var(--primary-color)",
                     textDecoration: "none",
-                    ":hover": { textDecoration: "underline"}
+                    ":hover": { textDecoration: "underline" },
                   }}
                   level="body-xs"
                   fontWeight="bold"
