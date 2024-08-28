@@ -8,6 +8,8 @@ import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
 import TripOverviewPage from './pages/TripOverviewPage.tsx';
 import Navbar from './components/Navbar.tsx';
+import PackingListPage from './pages/PackingListPage.tsx';
+import ItineraryPage from './pages/Itinerarypage.tsx';
 function App() {
 
   return (
@@ -19,6 +21,10 @@ function App() {
         <Route path="/login" component={LoginPage} />
         <Route path="/home" component={HomePage} />
         <Route path="/tripoverview" component={TripOverviewPage} />
+        
+        <Route path="/packinglist" component={PackingListPage} />
+        
+        <Route path="/itinerary" component={ItineraryPage} />
       </Switch>
     </CssVarsProvider>
 

@@ -79,7 +79,7 @@ const TripOverviewPage = () => {
           
 				>
 					<ListItem>
-							<ListItemButton onClick={() => alert('You clicked')}>
+							<ListItemButton component="a" href="/itinerary">
 								<ListItemDecorator>
 									<CalendarTodayIcon sx={{fontSize: '24px', color:'var(--tertiary-color)'}}/>
 								</ListItemDecorator>
@@ -87,7 +87,7 @@ const TripOverviewPage = () => {
 							</ListItemButton>
 						</ListItem>
 						<ListItem>
-							<ListItemButton component="a" href="#actionable">
+							<ListItemButton component="a" href="/packinglist">
 								<ListItemDecorator>
                   <LuggageRoundedIcon sx={{fontSize: '28px', color:'var(--tertiary-color)'}}/>
 								</ListItemDecorator>
