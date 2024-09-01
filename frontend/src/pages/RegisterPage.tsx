@@ -11,7 +11,7 @@ const RegisterPage = () => {
     >
       <Stack
         bgcolor="var(--secondary-color)"
-        width={600}
+        width={550}
         height={450}
         justifyContent="center"
         alignItems="center"
