@@ -26,7 +26,7 @@ const Navbar = () => {
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Link href="/" style={{textDecoration: 'none' }}>
-          <Typography level="body-lg">(insert logo :P)</Typography>
+          <Typography level="body-lg" >(insert logo :P)</Typography>
         </Link>
 
         <Stack direction="row" spacing={2} alignItems="center">

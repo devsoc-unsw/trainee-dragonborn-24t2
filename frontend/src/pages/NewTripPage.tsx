@@ -1,16 +1,29 @@
 import { Button, Input, Stack, Typography } from '@mui/joy';
 import React, { useState } from 'react';
-
+import { useLocation } from 'wouter';
+// import { useNavigate } from 'react-router-dom';
 
 const NewTripPage = () => {
   const [location, setLocation] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [, setLocationPath] = useLocation();
+  // const navigate = useNavigate();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(event.target.value)
+  }
+  const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFromDate(event.target.value)
+  }
+  const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setToDate(event.target.value)
   }
 
   const handleClick = () => {
-    console.log("we are travelling to " + location);
+    setLocationPath('/tripoverview', { state: { location, fromDate, toDate } });
+    // navigate('/tripoverview', { state: { location, fromDate, toDate } });
+    // console.log("we are travelling to " + location + "from" + fromDate + "to" + toDate);
   }
 
   return (
@@ -36,16 +49,16 @@ const NewTripPage = () => {
           }} 
           placeholder="add location"
           variant="outlined"
-          onChange={handleInputChange}/>
+          onChange={handleLocationChange}/>
         </Stack>
         <Stack direction="row" justifyContent="space-between" width="50%">
           <Stack gap={1}>
             <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">From</Typography>
-            <Input type="date" sx={{color: "#B9A49A"}}/>
+            <Input type="date" sx={{color: "#B9A49A"}} onChange={handleFromDateChange}/>
           </Stack>
           <Stack gap={1}>
             <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">To</Typography>
-            <Input type="date" sx={{color: "#B9A49A"}}/>
+            <Input type="date" sx={{color: "#B9A49A"}} onChange={handleToDateChange}/>
           </Stack>
         </Stack>
         <Stack direction="row" gap={2} alignItems="center" width="50%">
@@ -56,6 +69,7 @@ const NewTripPage = () => {
           />
         </Stack>
         <Button 
+        // component="a" href="/tripoverview"
         sx={{ width: "25%", backgroundColor: "var(--primary-color)", borderRadius: "15px", ":hover": { backgroundColor: "#f5623d"}, marginTop: "20px"}} 
         variant="solid"
         size='lg'

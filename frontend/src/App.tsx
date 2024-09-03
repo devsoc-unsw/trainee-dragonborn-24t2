@@ -5,10 +5,12 @@ import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
 import RegisterPage from './pages/RegisterPage.tsx';
-
 import Navbar from './components/Navbar.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import NewTripPage from './pages/NewTripPage.tsx';
+import TripOverviewPage from './pages/TripOverviewPage.tsx';
+import PackingListPage from './pages/PackingListPage.tsx';
+import ItineraryPage from './pages/Itinerarypage.tsx';
 
 function App() {
   const [location] = useLocation();
@@ -23,6 +25,9 @@ function App() {
         <Route path="/register" component={RegisterPage} />
         <Route path="/profile" component={ProfilePage} />
         <Route path="/newtrip" component={NewTripPage} />
+        <Route path="/tripoverview" component={TripOverviewPage} />
+        <Route path="/packinglist" component={PackingListPage} />
+        <Route path="/itinerary" component={ItineraryPage} />
       </Switch>
     </CssVarsProvider>
   );
