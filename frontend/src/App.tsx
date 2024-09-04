@@ -12,6 +12,7 @@ import TripOverviewPage from './pages/TripOverviewPage.tsx';
 import PackingListPage from './pages/PackingListPage.tsx';
 import ItineraryPage from './pages/Itinerarypage.tsx';
 
+
 function App() {
   const [location] = useLocation();
   return (
