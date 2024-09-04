@@ -14,7 +14,7 @@ import {
 	Button,
 	Input,
 	IconButton,
-
+	Checkbox, 
 
 } from '@mui/joy'; 
 // import OpenInNew from '@mui/icons-material/OpenInNew';
@@ -136,7 +136,7 @@ const TripOverviewPage = () => {
 				<Stack>
 					<Typography level="h2" fontSize="30px">Friends</Typography>
 					<Stack direction="row" flexWrap="wrap" gap="24px" > 
-						{friends.map((friend, idx) => 
+						{friends.map((friend) => 
 						
 						<Avatar size="lg" sx={
 							(theme) => ({
@@ -160,7 +160,7 @@ const TripOverviewPage = () => {
 
 				<Stack >
 					<Typography level="body-lg" fontSize="30px" fontWeight="bold">To Do</Typography>
-					<List marker='disc' 
+					<List
 						sx={
 							(theme) => ({
 								boxShadow: theme.shadow.md,
@@ -168,7 +168,7 @@ const TripOverviewPage = () => {
 								'--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
 							borderRadius: "lg", bgcolor:'white'})}>
 								{todos.map((todo, idx) => 
-									<ListItem key={idx}>
+									<ListItem key={idx}><Checkbox/>
 										<Input variant='plain' placeholder='Type here' onChange={(e) => {
 											onChangeTodo(idx, e.target.value);
 										}} value={todo}/>
