@@ -2,8 +2,24 @@ import '../styles.css';
 import { Button, Input, Stack, Typography } from "@mui/joy";
 import photo from "../assets/images/login.png";
 import { Link } from "wouter";
+import React, { useState } from 'react';
 
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value)
+  }
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value)
+  }
+
+  const handleClick = () => {
+    console.log(`Email is ${email}, Password is ${password}`)
+  }
+
   return (
     <Stack
       height="100%"
@@ -42,6 +58,7 @@ const LoginPage = () => {
               sx={{ backgroundColor: "white", color: "#737373" }}
               placeholder="Email"
               variant="soft"
+              onChange={handleEmailChange}
             />
           </Stack>
 
@@ -50,21 +67,23 @@ const LoginPage = () => {
               sx={{ backgroundColor: "white", color: "#737373" }}
               placeholder="Password"
               variant="soft"
+              onChange={handlePasswordChange}
             />
           </Stack>
 
           <Stack width="70%" gap={1}>
-            <a href="/home">
+            <Link href="/home">
               <Button
                 sx={{
                   width: "100%",
                   backgroundColor: "var(--primary-color)",
                   ":hover": { backgroundColor: "#f5623d" },
                 }}
+                onClick={handleClick}
               >
                 Login
               </Button>
-            </a>
+            </Link>
 
             <Stack alignItems="flex-end">
               <Stack direction="row" gap={0.5}>

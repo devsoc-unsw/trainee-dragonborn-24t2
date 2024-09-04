@@ -2,6 +2,7 @@ import { Stack, Typography, Input, Button } from '@mui/joy';
 import '../styles.css';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'wouter';  
+import ListCard from '../components/List';
 
 const PackingListPage = () => {
   return (
@@ -33,8 +34,6 @@ const PackingListPage = () => {
             </Typography>
         </Button>
         </Link>
-        
-        
       </Stack>
       
       <Stack
@@ -45,7 +44,6 @@ const PackingListPage = () => {
         alignItems="flex-left" 
         // bgcolor="pink"
       >
-      
         <Typography 
           level="h2" 
           fontWeight="bold" 
@@ -58,8 +56,9 @@ const PackingListPage = () => {
           width="100%"
           bgcolor="white"
           borderRadius={15}
-
         >
+          <ListCard title="Clothes"/>
+
 
         </Stack>
       </Stack>

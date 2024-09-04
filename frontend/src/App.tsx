@@ -11,31 +11,36 @@ import NewTripPage from './pages/NewTripPage.tsx';
 import TripOverviewPage from './pages/TripOverviewPage.tsx';
 import PackingListPage from './pages/PackingListPage.tsx';
 import ItineraryPage from './pages/Itinerarypage.tsx';
+import { getFirestore } from 'firebase/firestore';
+import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 
 
 function App() {
   const [location] = useLocation();
+  const firestoreInstance = getFirestore(useFirebaseApp());
   return (
     <CssVarsProvider>
-      <CssBaseline />
-      {location !== '/login' && location !== '/register' && location !== '/newtrip' && <Navbar />}
-      <Switch>
-        <Route path="/" component={LandingPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/home" component={HomePage} />
-        <Route path="/register" component={RegisterPage} />
-        <Route path="/profile" component={ProfilePage} />
-        <Route path="/newtrip" component={NewTripPage} />
-        <Route path="/tripoverview" component={TripOverviewPage} />
-        <Route path="/packinglist" component={PackingListPage} />
-        <Route path="/itinerary" component={ItineraryPage} />
-      </Switch>
+      <CssBaseline/>
+      <FirestoreProvider sdk={firestoreInstance}>
+        {location !== '/login' && location !== '/register' && location !== '/newtrip' && <Navbar />}
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/home" component={HomePage} />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/profile" component={ProfilePage} />
+          <Route path="/newtrip" component={NewTripPage} />
+          <Route path="/tripoverview" component={TripOverviewPage} />
+          <Route path="/packinglist" component={PackingListPage} />
+          <Route path="/itinerary" component={ItineraryPage} />
+        </Switch>
+      </FirestoreProvider>
     </CssVarsProvider>
   );
 }
 
 const LandingPage = () => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -53,7 +58,7 @@ const LandingPage = () => {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
