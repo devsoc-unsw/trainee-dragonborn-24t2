@@ -1,4 +1,4 @@
-import { Stack, Typography, Input, Button } from '@mui/joy';
+import { Stack, Typography, Button } from '@mui/joy';
 import '../styles.css';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { Link } from 'wouter';  
@@ -50,7 +50,6 @@ const PackingListPage = () => {
         >
           Packing List
         </Typography>
-
         <Stack
           height="85%" 
           width="100%"
@@ -58,8 +57,7 @@ const PackingListPage = () => {
           borderRadius={15}
         >
           <ListCard title="Clothes"/>
-
-
+          <ListCard title="Electronics"/>
         </Stack>
       </Stack>
     </Stack>

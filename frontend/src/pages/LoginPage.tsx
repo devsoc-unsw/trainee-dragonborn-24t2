@@ -1,12 +1,17 @@
 import '../styles.css';
 import { Button, Input, Stack, Typography } from "@mui/joy";
 import photo from "../assets/images/login.png";
-import { Link } from "wouter";
+import { Link, Redirect } from "wouter";
 import React, { useState } from 'react';
+import { useLocalStorage } from 'usehooks-ts';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
+  if (authUser) {
+    return <Redirect to='/home'/>
+  }
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
@@ -17,7 +22,7 @@ const LoginPage = () => {
   }
 
   const handleClick = () => {
-    console.log(`Email is ${email}, Password is ${password}`)
+    setAuthUser(email);
   }
 
   return (

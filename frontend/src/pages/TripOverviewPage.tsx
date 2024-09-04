@@ -1,3 +1,4 @@
+
 import '../styles.css';
 import {
 	Avatar, 
@@ -11,13 +12,19 @@ import {
 	Stack,
 	Typography,
 	Button,
+	Input,
+	IconButton,
+	Checkbox, 
+
 } from '@mui/joy'; 
 // import OpenInNew from '@mui/icons-material/OpenInNew';
 // import Info from '@mui/icons-material/Info';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AddIcon from '@mui/icons-material/Add';
+import React, { useState } from 'react';
+
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
-import { useLocation } from 'wouter';
-// import { useLocation } from 'react-router-dom';
+import Add from '@mui/icons-material/Add';
 
 // SHADOW
 // sx={
@@ -25,17 +32,38 @@ import { useLocation } from 'wouter';
 //     boxShadow: theme.shadow.md,
 //     '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
 //     '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}
-// interface TripLocationState {
-//   location?: string;
-//   fromDate?: string;
-//   toDate?: string;
-// }
 
 const TripOverviewPage = () => {
-  const location = useLocation();
-  const { state } = location;
-  const { location: tripLocation, fromDate, toDate } = state || {};
+	const [ setToDo] = useState("");
+
+	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	  setToDo(event.target.value)
+	}
+
+	const [todos, setTodos] = React.useState<string[]>(["todo1", "2", "3"]);
+
+	const onChangeTodo = (idx: number, newTodo: string) => {
+		const newTodos = [...todos];
+		newTodos[idx] = newTodo;
+		setTodos(newTodos);
+
+	}
+	const addNewTodo = () => {
+		const newTodos = [...todos];
+		newTodos.push("");
+		setTodos(newTodos);
+	}
+
+	const [friends, setFriends] = React.useState<string[]>(["AB", "BC", "CD"]);
+
+	const addNewFriends = () => {
+		const newFriends = [...friends];
+		newFriends.push("");
+		setFriends(newFriends);
+	}
+
 	return (
+
 	<Stack 
 	direction="column"
 	// justifyContent={"center"}
@@ -62,10 +90,8 @@ const TripOverviewPage = () => {
 			direction="column"
 			>
 				<Stack direction="row" justifyContent="space-between" alignItems="flex-end" pb="10px">
-					<Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{color: 'var(--tertiary-color)'}}>
-            {tripLocation || 'Trip Location'}
-          </Typography>
-					<Typography level="body-lg" fontSize="24px" fontWeight="bold">{fromDate} - {toDate}</Typography>
+					<Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{color: 'var(--tertiary-color)'}}>Japan</Typography>
+					<Typography level="body-lg" fontSize="24px" fontWeight="bold">8 Aug 24 - 17 Aug 24</Typography>
 				</Stack>
 				<AspectRatio 
         ratio="16/9"  
@@ -109,162 +135,51 @@ const TripOverviewPage = () => {
 			<Stack  width='30%' gap="40px" paddingTop={'32px'}>
 				<Stack>
 					<Typography level="h2" fontSize="30px">Friends</Typography>
-					<Stack direction="row" flexWrap="wrap" gap="24px" >
+					<Stack direction="row" flexWrap="wrap" gap="24px" > 
+						{friends.map((friend) => 
+						
 						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>AB</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>CD</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>EF</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>AB</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>AB</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>CD</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>EF</Avatar>
-						<Avatar size="lg" sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>AB</Avatar>
+							(theme) => ({
+								boxShadow: theme.shadow.md,
+								'--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
+								'--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}>{friend}</Avatar>
+						)}
+						<IconButton
+						size="lg"
+        color="neutral"
+        onClick={addNewFriends}
+        sx={{
+          borderRadius: '50%',
+          marginInlineStart: 'var(--Avatar-marginInlineStart)',
+          boxShadow: 'var(--Avatar-ring)',
+					
+        }}
+      ><AddIcon/></IconButton>
 					</Stack>
 				</Stack>
 
 				<Stack >
 					<Typography level="body-lg" fontSize="30px" fontWeight="bold">To Do</Typography>
-					<List marker='disc' 
-          sx={
-            (theme) => ({
-              boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
-            borderRadius: "lg", bgcolor:'white', paddingLeft:'32px'})}>
-						<ListItem>book flights</ListItem>
-						<ListItem nested>
-						<ListItem>book sightseeing</ListItem>
-						<List marker="circle">
-							<ListItem>disney sea</ListItem>
-							<ListItem>tokyo tower</ListItem>
-							<ListItem>osaka bullet train</ListItem>
-						</List>
-						</ListItem>
-						<ListItem>book hotels</ListItem>
+					<List
+						sx={
+							(theme) => ({
+								boxShadow: theme.shadow.md,
+								'--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
+								'--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
+							borderRadius: "lg", bgcolor:'white'})}>
+								{todos.map((todo, idx) => 
+									<ListItem key={idx}><Checkbox/>
+										<Input variant='plain' placeholder='Type here' onChange={(e) => {
+											onChangeTodo(idx, e.target.value);
+										}} value={todo}/>
+									</ListItem>
+								)}
+								<ListItemButton onClick={addNewTodo} sx={{justifyContent:'center'}}><AddIcon/>Add new to do</ListItemButton>
+								
           </List>
 				</Stack>
 			</Stack>
 		</Stack>
-	{/* <Box>Navbar goes up here</Box>
-		<Box 
-			my={4}
-			// display="flex"
-			alignItems="center"
-			gap={4}
-			p={2}
-			sx={{ border: '2px solid grey' }}
-		>
-			<h1>Trip Name</h1>
-			<AspectRatio ratio="4/3">
-				<img src="./assets/trip.JPG"></img>
-			</AspectRatio>
-			<h2>dates</h2>
-
-			<List
-				sx={{
-					maxWidth: 320,
-				}}
-			>
-				<ListItem>
-					<ListItemButton onClick={() => alert('You clicked')}>
-						<ListItemDecorator>
-							<p>icon</p>
-						</ListItemDecorator>
-						Clickable item
-					</ListItemButton>
-				</ListItem>
-				<ListItem>
-					<ListItemButton component="a" href="#actionable">
-						<ListItemDecorator>
-							<p>icon</p>
-						</ListItemDecorator>
-						Open a new tab
-					</ListItemButton>
-				</ListItem>
-			</List>
-		</Box >
-
-		<Box
-			my={10}
-			p={2}
-			sx={{ border: '2px solid grey' }}
-		 display="block"
-		 alignItems="left"
-		>
-			<h2>Friends</h2>
-			<Box
-				my={4}
-				display="flex"
-				alignItems="center"
-				gap={2}
-				sx={{ border: '2px solid grey' }}
-			
-			>
-				<Avatar>AB</Avatar>
-				<Avatar>CD</Avatar>
-				<Avatar>EF</Avatar>
-				<Avatar>AB</Avatar>
-				<Avatar>CD</Avatar>
-				<Avatar>EF</Avatar>
-			</Box>
-
-		</Box>
-
-		<Box
-			my={4}
-			// display="flex"
-			alignItems="center"
-			gap={4}
-			p={2}
-			sx={{ border: '2px solid grey' }}
-		
-		>
-			<h1>To do list</h1>
-			<List marker={"disc"}>
-					<ListItem>The Shawshank Redemption</ListItem>
-					<ListItem nested>
-						<ListItem>Star Wars</ListItem>
-						<List marker="circle">
-							<ListItem>Episode I – The Phantom Menace</ListItem>
-							<ListItem>Episode II – Attack of the Clones</ListItem>
-							<ListItem>Episode III – Revenge of the Sith</ListItem>
-						</List>
-					</ListItem>
-					<ListItem>The Lord of the Rings: The Two Towers</ListItem>
-				</List>
-		</Box> */}
-		
 	</Stack>
   )
 } 

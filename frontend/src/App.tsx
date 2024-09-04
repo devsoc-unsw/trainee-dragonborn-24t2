@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import { Route, Switch, useLocation } from 'wouter';
+import { Link, Route, Switch, useLocation } from 'wouter';
 import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
@@ -44,7 +44,9 @@ const LandingPage = () => {
 
   return (
     <>
+    <Link href='/login'>
       <Button variant="solid">Click for travel site :O</Button>
+    </Link>
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
@@ -54,9 +56,6 @@ const LandingPage = () => {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 };

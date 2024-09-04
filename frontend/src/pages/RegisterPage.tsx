@@ -3,11 +3,15 @@ import '../styles.css';
 import { Link } from 'wouter';  
 import React, { useState } from 'react';
 import photo from "../assets/images/login.png";
+import { createUser } from '../firebase';
+import { useFirestore } from 'reactfire';
+import { useLocalStorage } from 'usehooks-ts';
 
 const RegisterPage = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
@@ -21,8 +25,15 @@ const RegisterPage = () => {
     setName(event.target.value)
   }
 
+  const firestore = useFirestore();
   const handleClick = () => {
-    console.log(`Name is ${name}, Email is ${email}, Password is ${password}`)
+    createUser(firestore, {
+      name,
+      email,
+      password,
+      username: email,
+    })
+    setAuthUser(email)
   }
 
   return (
@@ -106,7 +117,7 @@ const RegisterPage = () => {
                 </Typography>
                 <Typography
                   component={Link}
-                  href="/register"
+                  href="/login"
                   sx={{
                     color: "var(--primary-color)",
                     textDecoration: "none",

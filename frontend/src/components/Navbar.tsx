@@ -6,13 +6,24 @@ import Dropdown from '@mui/joy/Dropdown';
 import IconButton from '@mui/joy/IconButton';
 import Notifications from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/Person';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Home from '@mui/icons-material/Home';
 import Avatar from '@mui/joy/Avatar';
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
 import Typography from '@mui/joy/Typography';
+import { useLocalStorage } from 'usehooks-ts';
+import { useUser } from '../firebase';
 
 const Navbar = () => {
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "")
+  const [user] = useUser(authUser);
+
+  const handleLogout = () => {
+    setAuthUser("")
+  }
+
+  const avatarInitial = user?.name?.charAt(0) || "?";
 
   return (
     <Card // or stack for non rounded
@@ -42,6 +53,10 @@ const Navbar = () => {
             </IconButton>
           </Link>
 
+          <IconButton>
+            <CalendarMonthIcon style={{ color:'var(--tertiary-color)'}} />
+          </IconButton>
+        
           <Dropdown>
           <MenuButton variant="plain" sx={{ p: 0}}>
               <IconButton>
@@ -56,18 +71,19 @@ const Navbar = () => {
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
               <IconButton>
-                <Avatar sx={{color: 'var(--tertiary-color)'}}>BC</Avatar>
+                <Avatar sx={{color: 'var(--tertiary-color)'}}>{avatarInitial}</Avatar>
               </IconButton>
             </MenuButton>
             <Menu>
-              <Link href="/profile">
+              <Link href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <MenuItem>Edit Profile</MenuItem>
-              </Link>
+              </Link >
               <MenuItem>Settings</MenuItem>
-              <MenuItem>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>
+                <Link href="/login" style={{ textDecoration: 'none', color: 'inherit' }}>Logout</Link>
+              </MenuItem>
             </Menu>
           </Dropdown>
-
         </Stack>
       </Stack>
     </Card>

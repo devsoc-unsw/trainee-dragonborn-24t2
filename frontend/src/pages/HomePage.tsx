@@ -3,13 +3,18 @@ import { Stack, Typography } from '@mui/joy';
 import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown';
 import SearchBar from '../components/SearchBar';
+import { useUser } from '../firebase';
+import { useLocalStorage } from 'usehooks-ts';
 
 const HomePage = () => {
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
+  const [user] = useUser(authUser);
+
   return (
     <Stack height="100%" direction="row" justifyContent="space-evenly" alignItems="center">
       <Stack width="30%" justifyContent="flex-start" gap={5}>
         <Stack width="50%">
-          <Typography level="body-md" sx={{color: 'var(--tertiary-color)'}}>Hello Bea,</Typography>
+          <Typography level="body-md" sx={{color: 'var(--tertiary-color)'}}>Hello {user?.name},</Typography>
           <Typography level="h2" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>Where to next?</Typography>
         </Stack>
         <TripCountdown/>
