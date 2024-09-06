@@ -1,17 +1,25 @@
 import { Button, Input, Stack, Typography } from '@mui/joy';
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
-// import { useNavigate } from 'react-router-dom';
+import { createTrip } from '../firebase';
+import { useFirestore } from 'reactfire';
+import { Timestamp } from 'firebase/firestore';
+import { useLocalStorage } from 'usehooks-ts';
 
 const NewTripPage = () => {
   const [location, setLocation] = useState("");
+  const [name, setName] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [tripId, setTripId] = useState("")
+  const [authUser] = useLocalStorage("auth-user", "")
   const [, setLocationPath] = useLocation();
-  // const navigate = useNavigate();
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(event.target.value)
+  }
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
   }
   const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFromDate(event.target.value)
@@ -20,10 +28,16 @@ const NewTripPage = () => {
     setToDate(event.target.value)
   }
 
-  const handleClick = () => {
-    setLocationPath('/tripoverview', { state: { location, fromDate, toDate } });
-    // navigate('/tripoverview', { state: { location, fromDate, toDate } });
-    // console.log("we are travelling to " + location + "from" + fromDate + "to" + toDate);
+  const firestore = useFirestore();
+  const handleClick = async () => {
+    const tripId = await createTrip(firestore, authUser, {
+      name: name,
+      destination: location,
+      from: Timestamp.fromDate(new Date(fromDate)),
+      to: Timestamp.fromDate(new Date(toDate))
+    })
+    setTripId(tripId)
+    setLocationPath(`/tripoverview/${tripId}`)
   }
 
   return (
@@ -51,6 +65,16 @@ const NewTripPage = () => {
           variant="outlined"
           onChange={handleLocationChange}/>
         </Stack>
+        <Stack direction="row" gap={2} alignItems="center" width="50%">
+          <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">Name</Typography>
+          <Input sx={{
+            width: "100%", 
+            color: "#B9A49A"
+          }} 
+          placeholder="add trip name"
+          variant="outlined"
+          onChange={handleNameChange}/>
+        </Stack>
         <Stack direction="row" justifyContent="space-between" width="50%">
           <Stack gap={1}>
             <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">From</Typography>
@@ -68,13 +92,14 @@ const NewTripPage = () => {
             sx={{ width: "100%", alignItems: "center", color: "#B9A49A"}}
           />
         </Stack>
+        
         <Button 
-        // component="a" href="/tripoverview"
-        sx={{ width: "25%", backgroundColor: "var(--primary-color)", borderRadius: "15px", ":hover": { backgroundColor: "#f5623d"}, marginTop: "20px"}} 
-        variant="solid"
-        size='lg'
-        onClick={handleClick}
-        >PLAN TRIP!</Button>
+          sx={{ width: "25%", backgroundColor: "var(--primary-color)", borderRadius: "15px", ":hover": { backgroundColor: "#f5623d"}, marginTop: "20px"}} 
+          variant="solid"
+          size='lg'
+          onClick={handleClick}
+          >PLAN TRIP!
+        </Button>
       </Stack>
     </Stack>
   );

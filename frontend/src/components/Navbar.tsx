@@ -17,7 +17,7 @@ import { useUser } from '../firebase';
 
 const Navbar = () => {
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "")
-  const [user] = useUser(authUser);
+  const [user, setUser] = useUser(authUser);
 
   const handleLogout = () => {
     setAuthUser("")

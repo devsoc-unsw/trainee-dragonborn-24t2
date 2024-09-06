@@ -25,6 +25,8 @@ import React, { useState } from 'react';
 
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import Add from '@mui/icons-material/Add';
+import { useTrip, useUsers } from "../firebase.ts"; 
+import { useRoute } from "wouter";
 
 // SHADOW
 // sx={
@@ -33,12 +35,27 @@ import Add from '@mui/icons-material/Add';
 //     '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
 //     '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}
 
+const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = { 
+        day: 'numeric', 
+        month: 'short', 
+        year: '2-digit' 
+    };
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
+};
+
+
 const TripOverviewPage = () => {
 	const [ setToDo] = useState("");
 
-	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	  setToDo(event.target.value)
-	}
+	const [match, params] = useRoute("/tripoverview/:tripId");
+  	const tripId = params?.tripId; // Get the tripId from the URL
+	const [trip, setTrip] = useTrip(tripId ?? "")
+	const tripMembers = useUsers(trip?.members ?? []);
+
+	// const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	//   setToDo(event.target.value)
+	// }
 
 	const [todos, setTodos] = React.useState<string[]>(["todo1", "2", "3"]);
 
@@ -90,8 +107,10 @@ const TripOverviewPage = () => {
 			direction="column"
 			>
 				<Stack direction="row" justifyContent="space-between" alignItems="flex-end" pb="10px">
-					<Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{color: 'var(--tertiary-color)'}}>Japan</Typography>
-					<Typography level="body-lg" fontSize="24px" fontWeight="bold">8 Aug 24 - 17 Aug 24</Typography>
+					<Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{color: 'var(--tertiary-color)'}}>{trip?.destination}</Typography>
+					<Typography level="body-lg" fontSize="24px" fontWeight="bold">
+					{trip?.from && trip?.to ? `${formatDate(trip.from.toDate())} - ${formatDate(trip.to.toDate())}` : ''}
+					</Typography>
 				</Stack>
 				<AspectRatio 
         ratio="16/9"  

@@ -30,7 +30,7 @@ function App() {
           <Route path="/register" component={RegisterPage} />
           <Route path="/profile" component={ProfilePage} />
           <Route path="/newtrip" component={NewTripPage} />
-          <Route path="/tripoverview" component={TripOverviewPage} />
+          <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
           <Route path="/packinglist" component={PackingListPage} />
           <Route path="/itinerary" component={ItineraryPage} />
         </Switch>
