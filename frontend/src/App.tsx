@@ -1,47 +1,45 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 import { Route, Switch } from 'wouter';
+import { Box } from '@mui/joy';
 import LoginPage from './pages/LoginPage.tsx';
 import HomePage from './pages/HomePage.tsx';
-import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
+import { CssBaseline, CssVarsProvider } from '@mui/joy';
 import Navbar from './components/Navbar.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
+import TripOverviewPage from './pages/TripOverviewPage.tsx';
 
 function App() {
   return (
     <CssVarsProvider>
       <CssBaseline />
       <Navbar />
-      <Switch>
-        <Route path="/" component={LandingPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/home" component={HomePage} />
-        <Route path="/profile" component={ProfilePage} />
-      </Switch>
+      <Box sx={{ pt: '60px', minHeight: '100vh', overflowY: 'auto'}}>
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/home" component={HomePage} />
+          <Route path="/profile" component={ProfilePage} />
+          <Route path="/overview" component={TripOverviewPage} />
+        </Switch>
+      </Box>
     </CssVarsProvider>
   );
 }
 
 const LandingPage = () => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
-      <Button variant="solid">Click for travel site :O</Button>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+      <button onClick={() => setCount(count + 1)}>
+        count is {count}
+      </button>
+      <p>
+        Edit <code>src/App.tsx</code> and save to test HMR.
       </p>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;

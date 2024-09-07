@@ -5,8 +5,8 @@ import MenuButton from '@mui/joy/MenuButton';
 import Dropdown from '@mui/joy/Dropdown';
 import IconButton from '@mui/joy/IconButton';
 import Notifications from '@mui/icons-material/Notifications';
-import Person from '@mui/icons-material/Person';
 import Home from '@mui/icons-material/Home';
+import CalendarMonth from '@mui/icons-material/CalendarMonth';
 import Avatar from '@mui/joy/Avatar';
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
@@ -15,13 +15,15 @@ import Typography from '@mui/joy/Typography';
 const Navbar = () => {
 
   return (
-    <Card // or stack for non rounded
+    <Card
       sx={{
         backgroundColor: '#F98568',
         padding: '10px 20px',
         color: 'white',
         position: 'fixed',
         width: '100%',
+        height: '60px',
+        zIndex: 1000,
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -36,11 +38,9 @@ const Navbar = () => {
             </IconButton>
           </Link>
 
-          <Link href="/friends">
-            <IconButton>
-              <Person style={{ color:'var(--tertiary-color)'}} />
-            </IconButton>
-          </Link>
+          <IconButton>
+            <CalendarMonth style={{ color:'var(--tertiary-color)'}} />
+          </IconButton>
 
           <Dropdown>
           <MenuButton variant="plain" sx={{ p: 0}}>

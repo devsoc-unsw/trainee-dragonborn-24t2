@@ -1,27 +1,31 @@
 import '../styles.css';
 import { Typography, Stack } from '@mui/joy';
 
-
 const TripCountdown = () => {
   return (
-    <Stack width="60%" gap={0.5}>
+    <Stack width="32vw" gap={0.5}>
       <Typography justifySelf="flex-start" level="body-lg" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>Your Next Trip</Typography>
-
-      <Stack bgcolor='var(--secondary-color)' alignItems="center" borderRadius={15}
-      sx={{
-        p: 3,
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}>
-
+      <Stack
+        bgcolor='var(--secondary-color)'
+        alignItems="center"
+        borderRadius={15}
+        sx={{
+          p: 3,
+          width: 340,
+          height: 240,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
+        }}
+      >
         <Typography level="h3" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>TripName</Typography>
-        <Stack width="70%" alignItems="center"
+        <Stack
+          width="90%"
+          alignItems="center"
           sx={{
             borderRadius: 10,
-            backgroundColor: 'var(--background-color)',
+            backgroundColor: '#ffffff',
             margin: 1,
             pt: 4,
             pb: 4,
@@ -37,4 +41,4 @@ const TripCountdown = () => {
   );
 };
 
- export default TripCountdown;
+export default TripCountdown;
