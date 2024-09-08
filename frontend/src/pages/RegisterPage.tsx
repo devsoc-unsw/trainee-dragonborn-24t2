@@ -1,17 +1,17 @@
+import { Stack, Typography, Input, Button } from '@mui/joy';
 import '../styles.css';
-import { Button, Input, Stack, Typography } from "@mui/joy";
-import photo from "../assets/images/login.png";
-import { Link, Redirect } from "wouter";
+import { Link } from 'wouter';
 import React, { useState } from 'react';
+import photo from "../assets/images/login.png";
+import { createUser } from '../firebase';
+import { useFirestore } from 'reactfire';
 import { useLocalStorage } from 'usehooks-ts';
 
-const LoginPage = () => {
+const RegisterPage = () => {
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
-  if (authUser) {
-    return <Redirect to='/home'/>
-  }
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
@@ -21,8 +21,19 @@ const LoginPage = () => {
     setPassword(event.target.value)
   }
 
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
+
+  const firestore = useFirestore();
   const handleClick = () => {
-    setAuthUser(email);
+    createUser(firestore, {
+      name,
+      email,
+      password,
+      username: email,
+    })
+    setAuthUser(email)
   }
 
   return (
@@ -54,8 +65,17 @@ const LoginPage = () => {
               fontWeight="bold"
               sx={{ color: "var(--tertiary-color)" }}
             >
-              Login
+              Sign Up
             </Typography>
+          </Stack>
+
+          <Stack width="70%">
+            <Input
+              sx={{ backgroundColor: "white", color: "#737373" }}
+              placeholder="Name"
+              variant="soft"
+              onChange={handleNameChange}
+            />
           </Stack>
 
           <Stack width="70%">
@@ -86,18 +106,18 @@ const LoginPage = () => {
                 }}
                 onClick={handleClick}
               >
-                Login
+                Sign up
               </Button>
             </Link>
 
             <Stack alignItems="flex-end">
               <Stack direction="row" gap={0.5}>
                 <Typography sx={{ color: "black" }} level="body-xs">
-                  Noob?
+                  Already have an account?
                 </Typography>
                 <Typography
                   component={Link}
-                  href="/register"
+                  href="/login"
                   sx={{
                     color: "var(--primary-color)",
                     textDecoration: "none",
@@ -106,7 +126,7 @@ const LoginPage = () => {
                   level="body-xs"
                   fontWeight="bold"
                 >
-                  Register here
+                  Login here
                 </Typography>
               </Stack>
             </Stack>
@@ -116,6 +136,6 @@ const LoginPage = () => {
       </Stack>
     </Stack>
   );
-};
+}
 
-export default LoginPage;
+export default RegisterPage;

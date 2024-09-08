@@ -4,6 +4,8 @@ import { Stack, Typography, Button } from '@mui/joy';
 import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown';
 import SearchBar from '../components/SearchBar';
+import { useUser } from '../firebase';
+import { useLocalStorage } from 'usehooks-ts';
 
 
 const trips = [
@@ -22,6 +24,8 @@ const trips = [
 
 const HomePage = () => {
   const [searchText, setSearchText] = useState('');
+  const [authUser] = useLocalStorage("auth-user", "");
+  const [user] = useUser(authUser);
 
   const filteredTrips = trips.filter((trip) =>
     trip.title.toLowerCase().includes(searchText.toLowerCase())
@@ -32,6 +36,7 @@ const HomePage = () => {
       direction="column"
       alignItems="center"
       justifyContent="center"
+      sx={{pt: '60px'}}
     >
       <Stack
         direction="row"
@@ -43,7 +48,7 @@ const HomePage = () => {
         {/* left */}
         <Stack width="40%" direction="column" alignItems="flex-start">
           <Stack sx={{ pt: 5, pb: 5 }}>
-            <Typography level="h4" sx={{ color: 'var(--tertiary-color)' }}>Hello Bea,</Typography>
+            <Typography level="h4" sx={{ color: 'var(--tertiary-color)' }}>Hello {user?.name},</Typography>
             <Typography level="h1" sx={{ color: 'var(--tertiary-color)' }}>Where to next?</Typography>
           </Stack>
           <TripCountdown />

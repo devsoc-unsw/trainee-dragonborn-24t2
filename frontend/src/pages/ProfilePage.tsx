@@ -5,19 +5,19 @@ import { Stack, Typography, Card, Avatar, Button, IconButton } from '@mui/joy';
 
 const ProfilePage = () => {
 	return (
-
-	<Stack
-    direction="column"
-    alignItems="center"
-    justifyContent="center"
-    sx={{pt: '60px'}}>
-
     <Stack
-      direction="row"
-      justifyContent="center"
+      direction="column"
       alignItems="center"
-      width="80%"
-      gap={5}
+      justifyContent="center"
+      sx={{pt: '60px'}}
+    >
+
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        width="80%"
+        gap={5}
       >
 
     {/* left */}
