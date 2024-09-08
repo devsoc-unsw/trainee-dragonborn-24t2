@@ -1,4 +1,4 @@
-import { Link } from 'wouter';
+import { Link, Redirect } from 'wouter';
 import Menu from '@mui/joy/Menu';
 import MenuItem from '@mui/joy/MenuItem';
 import MenuButton from '@mui/joy/MenuButton';
@@ -11,8 +11,18 @@ import Avatar from '@mui/joy/Avatar';
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
 import Typography from '@mui/joy/Typography';
+import { useUser } from '../firebase';
+import { useLocalStorage } from 'usehooks-ts';
 
 const Navbar = () => {
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
+  const [user] = useUser(authUser);
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : '?';
+
+  const handleLogout = () => {
+    setAuthUser("");
+    <Redirect to='/login'/>
+  };
 
   return (
     <Card
@@ -55,16 +65,21 @@ const Navbar = () => {
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
-              <IconButton>
-                <Avatar sx={{color: 'var(--tertiary-color)'}}>BC</Avatar>
+              <IconButton
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                }
+              }}>
+                <Avatar sx={{color: 'var(--tertiary-color)'}}>{userInitial}</Avatar>
               </IconButton>
             </MenuButton>
             <Menu>
               <Link href="/profile">
-                <MenuItem>Edit Profile</MenuItem>
+                <MenuItem>View Profile</MenuItem>
               </Link>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Dropdown>
 

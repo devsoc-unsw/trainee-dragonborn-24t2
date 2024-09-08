@@ -1,11 +1,22 @@
 import '../styles.css';
-import { Stack, Typography, Card, Avatar, IconButton } from '@mui/joy';
+import { Link, Redirect } from 'wouter';
+import { Stack, Typography, Card, Avatar, Button } from '@mui/joy';
+import EditIcon from '@mui/icons-material/Edit';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useUser } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
 
 const ProfilePage = () => {
-  const [authUser] = useLocalStorage("auth-user", "");
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
   const [user] = useUser(authUser);
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : '?';
+
+  const handleLogout = () => {
+    setAuthUser("");
+    <Redirect to='/login'/>
+  };
+
 
   return (
     <Stack
@@ -32,13 +43,46 @@ const ProfilePage = () => {
               p: 5,
             }}
           >
-            <Avatar sx={{ "--Avatar-size": "100px" }}>BS</Avatar>
+            <Avatar sx={{ "--Avatar-size": "100px" }}>{userInitial}</Avatar>
             <Typography level="h3">{user?.name}</Typography>
             <Typography>{user?.email}</Typography>
-            <Stack>
-              <IconButton></IconButton>
-              <Typography>Hello</Typography>
+
+            {/* buttons */}
+            <Stack sx={{ m: 2 }} spacing={2}>
+              <Link href="/editprofile">
+                <Button
+                  variant="plain"
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%', color: 'black'}}
+                  startDecorator={<EditIcon sx={{ fontSize: 20 }} />}
+                >
+                  Edit Profile
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button
+                  variant="plain"
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%', color: 'black'}}
+                  startDecorator={<LogoutIcon sx={{ fontSize: 20 }} />}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </Link>
             </Stack>
+
+            <Button
+              startDecorator={<PersonAddIcon sx={{ fontSize: 20 }} />}
+              sx={{
+                mt: 2,
+                bgcolor: 'var(--primary-color)',
+                '&:hover': {
+                  bgcolor: 'var(--tertiary-color)',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                },
+              }}
+            >
+              Add Friend
+            </Button>
           </Card>
         </Stack>
 
@@ -54,7 +98,7 @@ const ProfilePage = () => {
           >
             <Avatar>BS</Avatar>
             <Typography level="h3">Bea Dela Cruz</Typography>
-            <Typography>*email*</Typography>
+            <Typography>{user?.email}</Typography>
           </Card>
         </Stack>
       </Stack>

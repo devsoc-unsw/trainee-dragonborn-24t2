@@ -9,6 +9,7 @@ import Navbar from './components/Navbar.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import NewTripPage from './pages/NewTripPage.tsx';
 import TripOverviewPage from './pages/TripOverviewPage.tsx';
+import EditProfilePage from './pages/EditProfilePage.tsx';
 import { getFirestore } from 'firebase/firestore';
 import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 
@@ -16,6 +17,7 @@ import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 function App() {
   const [location] = useLocation();
   const firestoreInstance = getFirestore(useFirebaseApp());
+
   return (
     <CssVarsProvider>
       <CssBaseline/>
@@ -27,6 +29,7 @@ function App() {
             <Route path="/home" component={HomePage} />
             <Route path="/register" component={RegisterPage} />
             <Route path="/profile" component={ProfilePage} />
+            <Route path="/editprofile" component={EditProfilePage} />
             <Route path="/newtrip" component={NewTripPage} />
             <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
           </Switch>
