@@ -36,7 +36,7 @@ const HomePage = () => {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      sx={{pt: '60px'}}
+      sx={{ pt: '60px' }}
     >
       <Stack
         direction="row"
