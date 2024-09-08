@@ -6,12 +6,24 @@ import { Stack, Typography, Card, Avatar, Button, IconButton } from '@mui/joy';
 const ProfilePage = () => {
 	return (
 
-	<Stack alignItems={"center"} height="100%">
-		<Stack width="80%" height="100%" direction="row" gap={5} justifyContent="space-around" py="100px">
+	<Stack
+    direction="column"
+    alignItems="center"
+    justifyContent="center"
+    sx={{pt: '60px'}}>
 
-    <Stack width='50%' direction="column" justifyContent="center">
+    <Stack
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      width="80%"
+      gap={5}
+      >
+
+    {/* left */}
+    <Stack width='30%' direction="column" justifyContent="center">
       <Card sx={{justifyContent: 'center', alignItems: 'center', p: 5}}>
-          <Avatar sx={{"--Avatar-size": "150px"}}>BS</Avatar>
+          <Avatar sx={{"--Avatar-size": "100px"}}>BS</Avatar>
           <Typography level="h3">Bea Dela Cruz</Typography>
           <Typography>*email*</Typography>
           <Stack>
@@ -21,7 +33,7 @@ const ProfilePage = () => {
         </Card>
 			</Stack>
 
-      <Stack width='50%' direction="column" justifyContent="center">
+      <Stack width='60%' direction="column" justifyContent="center">
       <Card sx={{justifyContent: 'center', alignItems: 'center'}}>
           <Avatar>BS</Avatar>
           <Typography level="h3">Bea Dela Cruz</Typography>

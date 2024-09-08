@@ -5,6 +5,7 @@ import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown';
 import SearchBar from '../components/SearchBar';
 
+
 const trips = [
   { id: 1, title: 'Trip to Bali', location: 'Bali', imageUrl: 'https://example.com/image1.jpg' },
 
@@ -96,7 +97,7 @@ const HomePage = () => {
                 <TripCard
                   key={trip.id}
                   title={trip.title}
-                  location={trip.location}
+                  destination={trip.location}
                   imageUrl={trip.imageUrl}
                   linkTo='/'
                 />

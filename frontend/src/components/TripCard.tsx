@@ -6,12 +6,12 @@ import { Link } from "wouter";
 
 interface TripCardProps {
   title: string;
-  location: string;
+  destination: string;
   imageUrl: string;
   linkTo: string;
 }
 
-export default function TripCard({ title, location, imageUrl, linkTo }: TripCardProps) {
+export default function TripCard({ title, destination, imageUrl, linkTo }: TripCardProps) {
   return (
     <Link href={linkTo} style={{textDecoration: 'none' }}>
       <Card variant="plain"
@@ -36,7 +36,7 @@ export default function TripCard({ title, location, imageUrl, linkTo }: TripCard
           <Typography textAlign="left" level="body-md" fontWeight="bold">{title}</Typography>
           <Stack direction="row" alignItems="center" spacing={1}>
             <Place fontSize="small" sx={{color: 'var(--primary-color)'}} />
-            <Typography textAlign="left" level="body-sm">{location}</Typography>
+            <Typography textAlign="left" level="body-sm">{destination}</Typography>
           </Stack>
         </Stack>
       </Card>
