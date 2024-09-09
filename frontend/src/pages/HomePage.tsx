@@ -104,7 +104,7 @@ const HomePage = () => {
               </Typography>
             ) : (
               <>
-                {/* searchy */}
+                {/* searchy if statement */}
                 {filteredTrips.length > 0 ? (
                   filteredTrips.map((trip) => (
                     <TripCard

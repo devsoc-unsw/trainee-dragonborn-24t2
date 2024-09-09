@@ -14,8 +14,12 @@ const ProfilePage = () => {
 
   const handleLogout = () => {
     setAuthUser("");
-    <Redirect to='/login'/>
   };
+
+  // triggered when logout
+  if (!authUser) {
+    return <Redirect to='/login'/>
+  }
 
 
   return (

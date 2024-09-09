@@ -28,7 +28,7 @@ export const useUser = (username: string): [
 ] => {
   const firestore = useFirestore();
   const userRef = doc(firestore, "Users", username);
-  const { status, data } = useFirestoreDocData(userRef, { idField: "username" });
+  const { status, data } = useFirestoreDocData(userRef, { idField: "email" });
 
   const updateTrip = async (updated: User) => setDoc(userRef, updated);
 

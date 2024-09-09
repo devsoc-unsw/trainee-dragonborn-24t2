@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Redirect } from 'wouter';
+import { Redirect, useLocation } from 'wouter';
 import { Stack, Typography, Card, Avatar, Button, Input } from '@mui/joy';
 import { useUser } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
@@ -7,22 +7,24 @@ import { useLocalStorage } from 'usehooks-ts';
 const EditProfilePage = () => {
   const [authUser] = useLocalStorage("auth-user", "");
   const [user, setUser] = useUser(authUser);
-  const [username, setUsername] = useState(user?.name || '');
+  const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [, setLocation] = useLocation();
 
   const handleSave = async () => {
     if (user) {
+      // only updated modified fields
       const updates = {
-        ...(username !== user.name && { name: username }), // only if diff
+        ...(name !== user.name && { name: name }), // only if diff
         ...(email !== user.email && { email: email }),
         ...(currentPassword === user.password && newPassword && { password: newPassword }) // checkign curr
       };
 
       // update in datastore
       await setUser({ ...user, ...updates});
-      <Redirect to='/profile'/>;
+      setLocation('/profile') // redirect
     }
   };
 
@@ -58,8 +60,8 @@ const EditProfilePage = () => {
             <Stack spacing={2} sx={{ width: '100%', mb: 2 }}>
               <Typography>Username</Typography>
               <Input
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="New Username"
                 fullWidth
               />
