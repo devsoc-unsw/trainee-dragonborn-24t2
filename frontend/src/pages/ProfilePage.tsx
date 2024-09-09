@@ -6,6 +6,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useUser } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
+import AddFriendModal from '../components/modal/AddFriendModal.tsx'
 
 const ProfilePage = () => {
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
@@ -103,6 +104,7 @@ const ProfilePage = () => {
             <Avatar>BS</Avatar>
             <Typography level="h3">Bea Dela Cruz</Typography>
             <Typography>{user?.email}</Typography>
+            <AddFriendModal/>
           </Card>
         </Stack>
       </Stack>
