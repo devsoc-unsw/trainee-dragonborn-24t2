@@ -3,12 +3,13 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/joy/Typography';
 import { useState } from 'react';
 
-interface ListProps {
-  title: string;
+interface ListCardProps {
+  initialTitle?: string;
 }
 
-export default function ListCard({ title }: ListProps) {
+export default function ListCard({ initialTitle = '' }: ListCardProps) {
   const [todos, setTodos] = useState<string[]>(["New item"]);
+  const [title, setTitle] = useState<string>(initialTitle);
 
   const onChangeTodo = (idx: number, newTodo: string) => {
     const newTodos = [...todos];
@@ -26,22 +27,26 @@ export default function ListCard({ title }: ListProps) {
       sx={{ 
         p: 3, 
         borderRadius: '10px', 
-        width: 275, 
+        width: 250, 
         backgroundColor: 'var(--secondary-color)', 
         boxShadow: "md" 
       }}
     >
-      <Typography
+      <Input
+        variant='plain'
+        onChange={(e) => setTitle(e.target.value)}
+        value={title}
+        placeholder='Enter category ...'
         id="filter-status"
         sx={{
+          marginTop: '-9px',
+          pb: 0,
           color: "var(--tertiary-color)",
-          font: "var(--font-primary)",
           fontWeight: "bold",
-          mb: 1,
+          backgroundColor: 'transparent',
         }}
-      >
-        {title}
-      </Typography>
+      />
+        
       <div role="group" aria-labelledby="filter-status">
         <List>
           {todos.map((todo, idx) => (
@@ -78,7 +83,7 @@ export default function ListCard({ title }: ListProps) {
               justifyContent: 'center',
             }}
           >
-            <AddIcon />
+            <AddIcon/>
             Add new item
           </ListItemButton>
         </List>

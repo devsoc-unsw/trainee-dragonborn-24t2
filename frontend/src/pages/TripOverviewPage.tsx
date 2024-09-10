@@ -22,7 +22,7 @@ import {
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useState } from 'react';
-
+import { useLocation } from 'wouter';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import Add from '@mui/icons-material/Add';
 import { useTrip, useUsers } from "../firebase.ts"; 
@@ -44,7 +44,6 @@ const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-GB', options).format(date);
 };
 
-
 const TripOverviewPage = () => {
 	const [ setToDo] = useState("");
 
@@ -52,6 +51,7 @@ const TripOverviewPage = () => {
   	const tripId = params?.tripId; // Get the tripId from the URL
 	const [trip, setTrip] = useTrip(tripId ?? "")
 	const tripMembers = useUsers(trip?.members ?? []);
+	const [, setLocationPath] = useLocation();
 
 	// const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 	//   setToDo(event.target.value)
@@ -78,6 +78,11 @@ const TripOverviewPage = () => {
 		newFriends.push("");
 		setFriends(newFriends);
 	}
+
+	const handlePackingClick = () => {
+		setLocationPath(`/packinglist/${tripId}`)
+	}
+	
 
 	return (
 
@@ -141,7 +146,7 @@ const TripOverviewPage = () => {
 							</ListItemButton>
 						</ListItem>
 						<ListItem>
-							<ListItemButton component="a" href="/packinglist">
+							<ListItemButton onClick={handlePackingClick}>
 								<ListItemDecorator>
                   <LuggageRoundedIcon sx={{fontSize: '28px', color:'var(--tertiary-color)'}}/>
 								</ListItemDecorator>
