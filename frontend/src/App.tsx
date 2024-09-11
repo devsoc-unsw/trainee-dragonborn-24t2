@@ -9,7 +9,6 @@ import Navbar from './components/Navbar.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import NewTripPage from './pages/NewTripPage.tsx';
 import TripOverviewPage from './pages/TripOverviewPage.tsx';
-import EditProfilePage from './pages/EditProfilePage.tsx';
 import { getFirestore } from 'firebase/firestore';
 import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 
@@ -17,23 +16,21 @@ import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 function App() {
   const [location] = useLocation();
   const firestoreInstance = getFirestore(useFirebaseApp());
-
   return (
     <CssVarsProvider>
       <CssBaseline/>
-        <FirestoreProvider sdk={firestoreInstance}>
-          {location !== '/login' && location !== '/register' && <Navbar />}
-          <Switch>
-            <Route path="/" component={LandingPage} />
-            <Route path="/login" component={LoginPage} />
-            <Route path="/home" component={HomePage} />
-            <Route path="/register" component={RegisterPage} />
-            <Route path="/profile" component={ProfilePage} />
-            <Route path="/editprofile" component={EditProfilePage} />
-            <Route path="/newtrip" component={NewTripPage} />
-            <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
-          </Switch>
-        </FirestoreProvider>
+      <FirestoreProvider sdk={firestoreInstance}>
+        {location !== '/login' && location !== '/register' && location !== '/newtrip' && <Navbar />}
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/home" component={HomePage} />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/profile" component={ProfilePage} />
+          <Route path="/newtrip" component={NewTripPage} />
+          <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
+        </Switch>
+      </FirestoreProvider>
     </CssVarsProvider>
   );
 }

@@ -54,7 +54,7 @@ const [user, setUser] = useUser(authUser);
 
       // closing modal and redirect to the created page
       setOpen(false);
-      setLocation(`/trip/${tripId}`);
+      setLocation(`/tripoverview/${tripId}`);
     } catch (error) {
       console.error("Error creating trip: ", error);
     }
@@ -93,7 +93,7 @@ const [user, setUser] = useUser(authUser);
             minWidth: 800,
             height: 500,
             bgcolor: "#fbf2ee", // lighter than teriaty
-            border: "solid 5px var(--primary-color)",
+            border: "solid 5px var(--tertiary-color)",
             borderRadius: 15,
             p: 4,
             position: 'relative',

@@ -9,7 +9,6 @@ const EditProfilePage = () => {
   const [user, setUser] = useUser(authUser);
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [, setLocation] = useLocation();
 
@@ -19,7 +18,7 @@ const EditProfilePage = () => {
       const updates = {
         ...(name !== user.name && { name: name }), // only if diff
         ...(email !== user.email && { email: email }),
-        ...(currentPassword === user.password && newPassword && { password: newPassword }) // checkign curr
+        ...(newPassword && { password: newPassword }) // checkign curr
       };
 
       // update in datastore
@@ -78,14 +77,6 @@ const EditProfilePage = () => {
             </Stack>
 
             <Stack spacing={2} sx={{ width: '100%', mb: 2 }}>
-              <Typography>Current Password</Typography>
-              <Input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Current Password"
-                fullWidth
-              />
               <Typography>New Password</Typography>
               <Input
                 type="password"
