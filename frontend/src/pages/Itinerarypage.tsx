@@ -8,8 +8,13 @@ import  WbSunnyIcon from '@mui/icons-material/WbSunny';
 
 const ItineraryPage = () => {
 
-  const startTime = 9;
-  const endTime = 13.5;
+  const startTime: number = 9;
+  const endTime: number = 13.5;
+  const dayLength: number = 24-7;
+
+  const timeblockHeight = (startTime, endTime) => {
+    return (endTime - startTime) / dayLength;
+  }
   
     return (
       <Stack justifyContent='center' alignItems='center' width='100%' height='100%'>
