@@ -10,70 +10,106 @@ import DialogContent from '@mui/joy/DialogContent';
 import Stack from '@mui/joy/Stack';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useAllUsers } from '../../firebase';
 
-// Type for props
-interface AddFriendModalProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-// Dummy data for demonstration
-const dummyFriends = [
-  'Alice Smith',
-  'Bob Johnson',
-  'Charlie Brown',
-  'David Wilson',
-  'Emily Davis'
-];
-
-const AddFriendModal: React.FC<AddFriendModalProps> = ({ open, onClose }) => {
+const AddFriendModal: React.FC = () => {
+  const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [hoveredUser, setHoveredUser] = React.useState<string | null>(null);
 
-  // Filtered list based on search term
-  const filteredFriends = dummyFriends.filter(friend =>
-    friend.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get all users from Firestore
+  const allUsers = useAllUsers();
+
+  // Filter users based on the search term
+  const filteredUsers = allUsers?.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
+  const handleSendRequest = (user: string) => {
+    // Placeholder for send friend request logic
+    alert(`Friend request sent to: ${user}`);
+  };
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <ModalDialog>
-        <DialogTitle>Add Friend</DialogTitle>
-        <DialogContent>
-          Search for a username to add a friend.
-        </DialogContent>
-        <form
-          onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            // Dummy submit handler; you'd add the real logic here later
-            alert(`Friend added: ${searchTerm}`);
-            setSearchTerm('');
-            onClose();
-          }}
-        >
-          <Stack spacing={2}>
-            <FormControl>
-              <FormLabel>Search</FormLabel>
-              <Input
-                placeholder="Search for a username"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                autoFocus
-                required
-              />
-            </FormControl>
+    <React.Fragment>
+      <Button
+        startDecorator={<PersonAddIcon sx={{ fontSize: 20 }} />}
+        sx={{
+          mt: 1,
+          bgcolor: 'var(--primary-color)',
+          '&:hover': {
+            bgcolor: 'var(--tertiary-color)',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+          },
+        }}
+        onClick={() => setOpen(true)}
+      >
+        Add Friend
+      </Button>
 
-            {/* List of filtered friends */}
-            <List>
-              {filteredFriends.map((friend, index) => (
-                <ListItem key={index}>{friend}</ListItem>
-              ))}
-            </List>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog>
+          <DialogTitle>Add Friend</DialogTitle>
+          <DialogContent>
+            Search for a username to add a friend.
+          </DialogContent>
+          <form
+            onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+              event.preventDefault();
+              // Dummy submit handler; you'd add the real logic here later
+              setSearchTerm('');
+              setOpen(false); // Close the modal after submit
+            }}
+          >
+            <Stack spacing={2}>
+              <FormControl>
+                <FormLabel>Search</FormLabel>
+                <Input
+                  placeholder="Search for a username"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  autoFocus
+                  required
+                />
+              </FormControl>
 
-            <Button type="submit">Add Friend</Button>
-          </Stack>
-        </form>
-      </ModalDialog>
-    </Modal>
+              {/* List of filtered users, with overflow handling */}
+              <List
+                sx={{
+                  maxHeight: 150, // Limit to show 4 users (adjust depending on user name length)
+                  overflowY: 'auto', // Enable vertical scrolling if more than 4 users
+                }}
+              >
+                {filteredUsers.map((user, index) => (
+                  <ListItem
+                    key={index}
+                    onMouseEnter={() => setHoveredUser(user.name)}
+                    onMouseLeave={() => setHoveredUser(null)}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {user.name}
+                    {hoveredUser === user.name && (
+                      <Button
+                        variant="plain"
+                        sx={{ color: 'var(--primary-color)', fontSize: '10px'}}
+                        onClick={() => handleSendRequest(user.name)}
+                      >
+                        + Send Request
+                      </Button>
+                    )}
+                  </ListItem>
+                ))}
+              </List>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
+    </React.Fragment>
   );
 };
 

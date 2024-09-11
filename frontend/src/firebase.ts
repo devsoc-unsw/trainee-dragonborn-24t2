@@ -35,6 +35,14 @@ export const useUser = (username: string): [
   return [status === "success" ? data as User : undefined, updateTrip];
 };
 
+// get list of users, returns undefined when loadig
+export const useAllUsers = (): User[] | undefined => {
+  const firestore = useFirestore();
+  const usersRef = collection(firestore, "Users"); // user collection
+  const { status, data } = useFirestoreCollectionData(usersRef, { idField: "email" });
+  return status === "success" ? (data as User[]) : undefined;
+};
+
 // Get a list of trips (e.g. a user's friends), returns undefined while loading
 export const useUsers = (usernames: string[]): User[] | undefined => {
   const firestore = useFirestore();
@@ -43,7 +51,7 @@ export const useUsers = (usernames: string[]): User[] | undefined => {
     collection(firestore, "Users"),
     where(documentId(), "in", usernames.length ? usernames : ["DUMMY"]),
   );
-  const { status, data } = useFirestoreCollectionData(usersRef, { idField: "username" });
+  const { status, data } = useFirestoreCollectionData(usersRef, { idField: "email" });
 
   return status === "success" ? data as User[] : undefined;
 };

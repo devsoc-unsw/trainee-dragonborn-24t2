@@ -2,8 +2,8 @@ import '../styles.css';
 import { Link, Redirect } from 'wouter';
 import { Stack, Typography, Card, Avatar, Button } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
+import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useUser } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
 import AddFriendModal from '../components/modal/AddFriendModal.tsx'
@@ -21,7 +21,6 @@ const ProfilePage = () => {
   if (!authUser) {
     return <Redirect to='/login'/>
   }
-
 
   return (
     <Stack
@@ -45,7 +44,7 @@ const ProfilePage = () => {
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              p: 5,
+              p: 3,
             }}
           >
             <Avatar sx={{ "--Avatar-size": "100px" }}>{userInitial}</Avatar>
@@ -54,6 +53,15 @@ const ProfilePage = () => {
 
             {/* buttons */}
             <Stack sx={{ m: 2 }} spacing={2}>
+              <Link href="/viewfriends">
+                <Button
+                  variant="plain"
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', width: '100%', color: 'black'}}
+                  startDecorator={<GroupIcon sx={{ fontSize: 20 }} />}
+                >
+                  View Friends
+                </Button>
+              </Link>
               <Link href="/editprofile">
                 <Button
                   variant="plain"
@@ -74,20 +82,7 @@ const ProfilePage = () => {
                 </Button>
               </Link>
             </Stack>
-
-            <Button
-              startDecorator={<PersonAddIcon sx={{ fontSize: 20 }} />}
-              sx={{
-                mt: 2,
-                bgcolor: 'var(--primary-color)',
-                '&:hover': {
-                  bgcolor: 'var(--tertiary-color)',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-                },
-              }}
-            >
-              Add Friend
-            </Button>
+            <AddFriendModal/>
           </Card>
         </Stack>
 
@@ -99,12 +94,31 @@ const ProfilePage = () => {
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
+              p: 3,
+              gap: 4,
             }}
           >
-            <Avatar>BS</Avatar>
-            <Typography level="h3">Bea Dela Cruz</Typography>
-            <Typography>{user?.email}</Typography>
-            <AddFriendModal/>
+            {/* Friends Section */}
+            <Stack
+              direction="column"
+              alignItems="center"
+              width="100%"
+            >
+              <Typography level="h4">Friends</Typography>
+              {/* Add a list of friends here */}
+              <Typography>No friends yet.</Typography>
+            </Stack>
+
+            {/* Friend Requests Section */}
+            <Stack
+              direction="column"
+              alignItems="center"
+              width="100%"
+            >
+              <Typography level="h4">Friend Requests</Typography>
+              {/* Add a list of friend requests here */}
+              <Typography>No friend requests.</Typography>
+            </Stack>
           </Card>
         </Stack>
       </Stack>
