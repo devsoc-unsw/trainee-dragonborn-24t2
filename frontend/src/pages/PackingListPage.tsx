@@ -48,7 +48,7 @@ const PackingListPage = () => {
             <Button
               variant='plain'
               sx={{
-                marginLeft: "-20px",
+                marginLeft: "-50px",
                 '&:hover': {
                   backgroundColor: 'transparent'
                 }
@@ -86,7 +86,7 @@ const PackingListPage = () => {
               fontSize: '25px',
               justifyContent: 'center',
               ":hover": { backgroundColor: "var(--secondary-color)" },
-              boxShadow: 'lg'
+              boxShadow: 'md'
             }}
             onClick={handleAddCategory}
           >
@@ -99,49 +99,34 @@ const PackingListPage = () => {
           width="95%"
           bgcolor="white"
           borderRadius={15}
-          justifyContent="center"
-          alignItems="center"
+          alignItems="flex-start"
+          maxHeight="90%"
+          padding="2rem"
           sx={{
-            maxHeight: 'calc(100vh - 200px)', // Adjust this value based on your design needs
-            overflowY: 'auto'
+            overflow: 'hidden', 
           }}
-        >
+          >
           <Stack
             height="100%"
-            width="100%"
-            padding="2rem"
+            maxWidth="100%"
+            direction="column"
+            flexWrap="wrap"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+            gap={3}
             // bgcolor="pink"
-            // borderRadius={15}
+            sx={{
+              overflow: "hidden"
+            }}
           >
-            <Grid
-              container
-              spacing={2}
-              // rowSpacing={1}
-              // columnSpacing={3}
-              direction="row"
-              sx={{
-                justifyContent: "flex-start",
-                alignItems: "baseline",
-                flexGrow: 1
-              }}
-            >
-              {categories.map((category, index) => (
-                <Grid key={index} 
-                  // rowSpacing={5}
-                  // columnSpacing={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2.4 }}
-                  xs={12}    // Full width on extra small screens (mobile)
-                  sm={6}     // 2 columns on small screens
-                  md={4}     // 3 columns on medium screens (tablet)
-                  lg={3}     // 4 columns on large screens (laptop)
-                  xl={2.4} 
-                >
-                  
-                  <ListCard initialTitle={index === 0 ? "Clothes" : ""}/>
-                </Grid>
-              ))}
-            </Grid>
+            {categories.map((category, index) => (
+              <Stack 
+                key={index} 
+              >
+                <ListCard initialTitle={index === 0 ? "Clothes" : ""}/>
+              </Stack>
+            ))}
           </Stack>
-          
         </Stack>
       </Stack>
     </Stack>
