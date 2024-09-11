@@ -40,7 +40,7 @@ const TripOverviewPage = () => {
 	  setToDo(event.target.value)
 	}
 
-	const [todos, setTodos] = React.useState<string[]>(["todo1", "2", "3"]);
+	const [todos, setTodos] = React.useState<string[]>(["book hotel", "book flights", "get money"]);
 
 	const onChangeTodo = (idx: number, newTodo: string) => {
 		const newTodos = [...todos];
@@ -136,6 +136,7 @@ const TripOverviewPage = () => {
 				<Stack>
 					<Typography level="h2" fontSize="30px">Friends</Typography>
 					<Stack direction="row" flexWrap="wrap" gap="24px" > 
+
 						{friends.map((friend) => 
 						
 						<Avatar size="lg" sx={
@@ -168,7 +169,8 @@ const TripOverviewPage = () => {
 								'--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
 							borderRadius: "lg", bgcolor:'white'})}>
 								{todos.map((todo, idx) => 
-									<ListItem key={idx}><Checkbox/>
+									<ListItem key={idx}>
+										<Checkbox color="var(--primary-color)" variant="solid"/>
 										<Input variant='plain' placeholder='Type here' onChange={(e) => {
 											onChangeTodo(idx, e.target.value);
 										}} value={todo}/>

@@ -10,39 +10,44 @@ import TripOverviewPage from './pages/TripOverviewPage.tsx';
 import Navbar from './components/Navbar.tsx';
 import PackingListPage from './pages/PackingListPage.tsx';
 import ItineraryPage from './pages/Itinerarypage.tsx';
-function App() {
 
+import { getFirestore } from "firebase/firestore";
+import { FirestoreProvider, useFirebaseApp, } from "reactfire";
+function App() {
+  const firestoreInstance = getFirestore(useFirebaseApp());
   return (
     <CssVarsProvider>
       <CssBaseline />
       <Navbar/>
-      <Switch>
-        <Route path="/" component={LandingPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/home" component={HomePage} />
-        <Route path="/tripoverview" component={TripOverviewPage} />
-        
-        <Route path="/packinglist" component={PackingListPage} />
-        
-        <Route path="/itinerary" component={ItineraryPage} />
-      </Switch>
-    </CssVarsProvider>
+      <FirestoreProvider sdk={firestoreInstance}>
 
-  )
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="/login" component={LoginPage} />
+          <Route path="/home" component={HomePage} />
+          <Route path="/tripoverview" component={TripOverviewPage} />
+          
+          <Route path="/packinglist" component={PackingListPage} />
+          
+          <Route path="/itinerary" component={ItineraryPage} />
+        </Switch>
+      </FirestoreProvider>
+    </CssVarsProvider>
+  );
 }
 
 const LandingPage = () => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <>
       <Button variant="solid">Hello world</Button>
       <div>
         <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+          <img src={viteLogo} className="logo" alt="Vite logo"/>
         </a>
         <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+          <img src={reactLogo} className="logo react" alt="React logo"/>
         </a>
       </div>
       <h1>Vite + React</h1>
@@ -58,7 +63,7 @@ const LandingPage = () => {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
