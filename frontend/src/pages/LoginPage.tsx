@@ -9,7 +9,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
-  
+
   if (authUser) {
     return <Redirect to='/home'/>
   }

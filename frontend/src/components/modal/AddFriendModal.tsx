@@ -6,28 +6,23 @@ import Input from '@mui/joy/Input';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import DialogTitle from '@mui/joy/DialogTitle';
-import DialogContent from '@mui/joy/DialogContent';
 import Stack from '@mui/joy/Stack';
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useAllUsers } from '../../firebase';
 
-const AddFriendModal: React.FC = () => {
+export default function AddFriendModal() {
   const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [hoveredUser, setHoveredUser] = React.useState<string | null>(null);
-
-  // Get all users from Firestore
   const allUsers = useAllUsers();
-
-  // Filter users based on the search term
   const filteredUsers = allUsers?.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  );
 
   const handleSendRequest = (user: string) => {
-    // Placeholder for send friend request logic
+    // TODO: change to make actuerly send request
     alert(`Friend request sent to: ${user}`);
   };
 
@@ -50,67 +45,53 @@ const AddFriendModal: React.FC = () => {
 
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog>
-          <DialogTitle>Add Friend</DialogTitle>
-          <DialogContent>
-            Search for a username to add a friend.
-          </DialogContent>
-          <form
-            onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              // Dummy submit handler; you'd add the real logic here later
-              setSearchTerm('');
-              setOpen(false); // Close the modal after submit
-            }}
-          >
-            <Stack spacing={2}>
-              <FormControl>
-                <FormLabel>Search</FormLabel>
+          <DialogTitle>Add Friend !!</DialogTitle>
+          <Stack spacing={2}>
+            <FormControl>
+              <FormLabel>Search for a friend :)</FormLabel>
                 <Input
-                  placeholder="Search for a username"
+                  placeholder="Search username"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   autoFocus
                   required
                 />
-              </FormControl>
+            </FormControl>
 
-              {/* List of filtered users, with overflow handling */}
-              <List
-                sx={{
-                  maxHeight: 150, // Limit to show 4 users (adjust depending on user name length)
-                  overflowY: 'auto', // Enable vertical scrolling if more than 4 users
-                }}
-              >
-                {filteredUsers.map((user, index) => (
-                  <ListItem
-                    key={index}
-                    onMouseEnter={() => setHoveredUser(user.name)}
-                    onMouseLeave={() => setHoveredUser(null)}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {user.name}
-                    {hoveredUser === user.name && (
-                      <Button
-                        variant="plain"
-                        sx={{ color: 'var(--primary-color)', fontSize: '10px'}}
-                        onClick={() => handleSendRequest(user.name)}
-                      >
-                        + Send Request
-                      </Button>
-                    )}
-                  </ListItem>
-                ))}
-              </List>
-            </Stack>
-          </form>
+            {/* userlist */}
+            <List
+              sx={{
+                maxHeight: 150,
+                overflowY: 'auto',
+              }}
+            >
+              {filteredUsers?.map((user, index) => (
+                <ListItem
+                  key={index}
+                  onMouseEnter={() => setHoveredUser(user.name)}
+                  onMouseLeave={() => setHoveredUser(null)}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  {user.name}
+                  {hoveredUser === user.name && (
+                    <Button
+                      variant="plain"
+                      sx={{ color: 'var(--primary-color)', fontSize: '10px'}}
+                      onClick={() => handleSendRequest(user.name)}
+                    >
+                      + Send Request
+                    </Button>
+                  )}
+                </ListItem>
+              ))}
+            </List>
+          </Stack>
         </ModalDialog>
       </Modal>
     </React.Fragment>
   );
-};
-
-export default AddFriendModal;
+}

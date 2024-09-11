@@ -37,7 +37,7 @@ const NewTripPage = () => {
       to: Timestamp.fromDate(new Date(toDate))
     })
     setTripId(tripId)
-    setLocationPath(`/tripoverview/${tripId}`)
+    setLocationPath(`/tripoverview/${tripId}`) // TODO: ???
   }
 
   return (

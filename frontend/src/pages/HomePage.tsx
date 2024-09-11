@@ -1,12 +1,12 @@
 import '../styles.css';
 import { useState } from 'react';
-import { Link } from 'wouter';
-import { Stack, Typography, Button } from '@mui/joy';
+import { Stack, Typography } from '@mui/joy';
 import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown';
 import SearchBar from '../components/SearchBar';
 import { useUser, useTrips } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
+import CreateNewTripModal from '../components/modal/CreateNewTripModal.tsx'
 
 const HomePage = () => {
   const [searchText, setSearchText] = useState('');
@@ -48,7 +48,7 @@ const HomePage = () => {
               Where to next?
             </Typography>
           </Stack>
-          <TripCountdown />
+          <TripCountdown/>
         </Stack>
 
         {/* righty */}
@@ -68,20 +68,7 @@ const HomePage = () => {
               value={searchText}
               onChange={(event) => setSearchText(event.target.value)}
             />
-            <Link href="/newtrip">
-              <Button
-                sx={{
-                  width: '120px',
-                  bgcolor: 'var(--primary-color)',
-                  '&:hover': {
-                    bgcolor: 'var(--tertiary-color)',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-                  },
-                }}
-              >
-                + Trip
-              </Button>
-            </Link>
+            <CreateNewTripModal/>
           </Stack>
 
           {/* scrolly*/}

@@ -22,7 +22,7 @@ function App() {
     <CssVarsProvider>
       <CssBaseline/>
         <FirestoreProvider sdk={firestoreInstance}>
-          {location !== '/login' && location !== '/register' && location !== '/newtrip' && <Navbar />}
+          {location !== '/login' && location !== '/register' && <Navbar />}
           <Switch>
             <Route path="/" component={LandingPage} />
             <Route path="/login" component={LoginPage} />

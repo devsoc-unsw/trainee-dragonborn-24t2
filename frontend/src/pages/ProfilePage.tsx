@@ -98,25 +98,23 @@ const ProfilePage = () => {
               gap: 4,
             }}
           >
-            {/* Friends Section */}
+            {/* freidsn*/}
             <Stack
               direction="column"
               alignItems="center"
               width="100%"
             >
               <Typography level="h4">Friends</Typography>
-              {/* Add a list of friends here */}
               <Typography>No friends yet.</Typography>
             </Stack>
 
-            {/* Friend Requests Section */}
+            {/* requests */}
             <Stack
               direction="column"
               alignItems="center"
               width="100%"
             >
               <Typography level="h4">Friend Requests</Typography>
-              {/* Add a list of friend requests here */}
               <Typography>No friend requests.</Typography>
             </Stack>
           </Card>

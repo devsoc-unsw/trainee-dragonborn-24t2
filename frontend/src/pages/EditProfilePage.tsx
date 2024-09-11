@@ -56,7 +56,7 @@ const EditProfilePage = () => {
             <Avatar sx={{ "--Avatar-size": "100px" }}>{user?.name?.charAt(0).toUpperCase()}</Avatar>
             <Typography level="h3">Edit Profile</Typography>
 
-            {/* Input fields to edit profile details */}
+            {/* datat fiedls */}
             <Stack spacing={2} sx={{ width: '100%', mb: 2 }}>
               <Typography>Username</Typography>
               <Input
