@@ -1,24 +1,42 @@
 import { Sheet, ListItem, Checkbox, List, ListItemButton, Input } from '@mui/joy';
 import AddIcon from '@mui/icons-material/Add';
-import Typography from '@mui/joy/Typography';
 import { useState } from 'react';
 
 interface ListCardProps {
   initialTitle?: string;
+  title: string;
+  items: string[];
+  onTitleChange: (newTitle: string) => void;
+  onItemsChange: (newItems: string[]) => void;
 }
 
-export default function ListCard({ initialTitle = '' }: ListCardProps) {
-  const [todos, setTodos] = useState<string[]>(["New item"]);
-  const [title, setTitle] = useState<string>(initialTitle);
-
+export default function ListCard({ 
+  initialTitle = '', 
+  title = '',
+  items = [],
+  onTitleChange,
+  onItemsChange
+}: ListCardProps) {
   const onChangeTodo = (idx: number, newTodo: string) => {
-    const newTodos = [...todos];
+    const newTodos = [...items];
     newTodos[idx] = newTodo;
-    setTodos(newTodos);
+    onItemsChange(newTodos); // Call the callback with the updated items
   };
+  // const [todos, setTodos] = useState<string[]>(["New item"]);
+  // const [title, setTitle] = useState<string>(initialTitle);
+
+  // const onChangeTodo = (idx: number, newTodo: string) => {
+  //   const newTodos = [...todos];
+  //   newTodos[idx] = newTodo;
+  //   setTodos(newTodos);
+  // };
+
+  // const addNewTodo = () => {
+  //   setTodos([...todos, ""]);
+  // };
 
   const addNewTodo = () => {
-    setTodos([...todos, ""]);
+    onItemsChange([...items, ""]); // Add a new item to the list
   };
 
   return (
@@ -34,7 +52,7 @@ export default function ListCard({ initialTitle = '' }: ListCardProps) {
     >
       <Input
         variant='plain'
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => onTitleChange(e.target.value)}
         value={title}
         placeholder='Enter category ...'
         id="filter-status"
@@ -49,7 +67,7 @@ export default function ListCard({ initialTitle = '' }: ListCardProps) {
         
       <div role="group" aria-labelledby="filter-status">
         <List>
-          {todos.map((todo, idx) => (
+          {items.map((item, idx) => (
             <ListItem key={idx} variant="plain">
               <Checkbox 
                 variant="soft"
@@ -67,7 +85,7 @@ export default function ListCard({ initialTitle = '' }: ListCardProps) {
               <Input
                 variant="plain"
                 placeholder="New item"
-                value={todo}
+                value={item}
                 onChange={(event) => onChangeTodo(idx, event.target.value)}
                 sx={{ 
                   color: "black", 

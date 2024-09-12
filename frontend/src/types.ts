@@ -16,4 +16,8 @@ export type Trip = {
   to: Timestamp;
   members: string[]; // list of usernames
   todos: string[];
+  packing: { 
+    title: string;
+    items: string[];
+  }[]
 }

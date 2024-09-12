@@ -7,19 +7,61 @@ import { useRoute } from "wouter";
 import { useTrip } from "../firebase.ts"; 
 import { Grid } from '@mui/joy';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const PackingListPage = () => {
   const [match, params] = useRoute("/packinglist/:tripId");
   const tripId = params?.tripId; // Get the tripId from the URL
   const [trip, setTrip] = useTrip(tripId ?? "");
-  const initialCategories = [
-    { }
-  ];
- 
+  const initialCategories = trip?.packing || [{ title: '', items: [] }]
   const [categories, setCategories] = useState(initialCategories);
   
+  useEffect(() => {
+    if (trip?.packing) {
+      setCategories(trip.packing); // Update categories if trip.packing changes
+    }
+  }, [trip]);
+
   const handleAddCategory = () => {
-    setCategories([...categories, { title: ''}]);
+    const newCategory = { title: '', items: [] };
+    const updatedCategories = [...categories, newCategory];
+    setCategories(updatedCategories);
+    
+    if (tripId && trip) {
+      setTrip({
+        ...trip,
+        packing: updatedCategories, // Update the packing field
+      });
+    }
+  };
+
+  const handleTitleChange = (index: number, newTitle: string) => {
+    const updatedCategories = categories.map((category, i) => 
+      i === index ? { ...category, title: newTitle } : category
+    );
+    setCategories(updatedCategories);
+
+    if (tripId && trip) {
+      setTrip({
+        ...trip,
+        packing: updatedCategories, 
+      });
+    }
+  }
+
+  const handleItemsChange = (index: number, newItems: string[]) => {
+    const updatedCategories = categories.map((category, i) => 
+      i === index ? { ...category, items: newItems } : category
+    );
+    setCategories(updatedCategories);
+
+    if (tripId && trip) {
+      setTrip({
+        ...trip,
+        packing: updatedCategories, // Update packing field
+        tripId: tripId
+      });
+    }
   };
   
 
@@ -116,14 +158,22 @@ const PackingListPage = () => {
             gap={3}
             // bgcolor="pink"
             sx={{
-              overflow: "hidden"
+              overflowY: "auto",
+              overflowX: "hidden"
             }}
           >
             {categories.map((category, index) => (
               <Stack 
                 key={index} 
               >
-                <ListCard initialTitle={index === 0 ? "Clothes" : ""}/>
+                <ListCard 
+                initialTitle={index === 0 ? "Clothes" : ""}
+                title={category.title}
+                items={category.items}
+                onTitleChange={(newTitle) => handleTitleChange(index, newTitle)}
+                onItemsChange={(newItems) => handleItemsChange(index, newItems)}
+                />
+                
               </Stack>
             ))}
           </Stack>
