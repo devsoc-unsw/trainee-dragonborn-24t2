@@ -25,6 +25,11 @@ import React, { useState } from 'react';
 
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import Add from '@mui/icons-material/Add';
+<<<<<<< HEAD
+=======
+import { useTrip, useUsers } from "../firebase.ts"; 
+import { useRoute } from "wouter";
+>>>>>>> 92947d9974c16762296ae10be11b6b586e6e9724
 
 // SHADOW
 // sx={
@@ -33,14 +38,37 @@ import Add from '@mui/icons-material/Add';
 //     '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
 //     '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)'})}
 
+const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = { 
+        day: 'numeric', 
+        month: 'short', 
+        year: '2-digit' 
+    };
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
+};
+
+
 const TripOverviewPage = () => {
 	const [ setToDo] = useState("");
 
+<<<<<<< HEAD
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 	  setToDo(event.target.value)
 	}
 
 	const [todos, setTodos] = React.useState<string[]>(["book hotel", "book flights", "get money"]);
+=======
+	const [match, params] = useRoute("/tripoverview/:tripId");
+  	const tripId = params?.tripId; // Get the tripId from the URL
+	const [trip, setTrip] = useTrip(tripId ?? "")
+	const tripMembers = useUsers(trip?.members ?? []);
+
+	// const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	//   setToDo(event.target.value)
+	// }
+
+	const [todos, setTodos] = React.useState<string[]>(["todo1", "2", "3"]);
+>>>>>>> 92947d9974c16762296ae10be11b6b586e6e9724
 
 	const onChangeTodo = (idx: number, newTodo: string) => {
 		const newTodos = [...todos];
@@ -90,8 +118,10 @@ const TripOverviewPage = () => {
 			direction="column"
 			>
 				<Stack direction="row" justifyContent="space-between" alignItems="flex-end" pb="10px">
-					<Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{color: 'var(--tertiary-color)'}}>Japan</Typography>
-					<Typography level="body-lg" fontSize="24px" fontWeight="bold">8 Aug 24 - 17 Aug 24</Typography>
+					<Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{color: 'var(--tertiary-color)'}}>{trip?.destination}</Typography>
+					<Typography level="body-lg" fontSize="24px" fontWeight="bold">
+					{trip?.from && trip?.to ? `${formatDate(trip.from.toDate())} - ${formatDate(trip.to.toDate())}` : ''}
+					</Typography>
 				</Stack>
 				<AspectRatio 
         ratio="16/9"  
@@ -136,7 +166,10 @@ const TripOverviewPage = () => {
 				<Stack>
 					<Typography level="h2" fontSize="30px">Friends</Typography>
 					<Stack direction="row" flexWrap="wrap" gap="24px" > 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 92947d9974c16762296ae10be11b6b586e6e9724
 						{friends.map((friend) => 
 						
 						<Avatar size="lg" sx={
@@ -169,8 +202,12 @@ const TripOverviewPage = () => {
 								'--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
 							borderRadius: "lg", bgcolor:'white'})}>
 								{todos.map((todo, idx) => 
+<<<<<<< HEAD
 									<ListItem key={idx}>
 										<Checkbox color="var(--primary-color)" variant="solid"/>
+=======
+									<ListItem key={idx}><Checkbox/>
+>>>>>>> 92947d9974c16762296ae10be11b6b586e6e9724
 										<Input variant='plain' placeholder='Type here' onChange={(e) => {
 											onChangeTodo(idx, e.target.value);
 										}} value={todo}/>

@@ -2,6 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { FirebaseAppProvider } from "reactfire";
 import App from "./App.tsx";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 92947d9974c16762296ae10be11b6b586e6e9724
 const firebaseConfig = {
   apiKey: "AIzaSyA6DP8RSD3SeJs2YqPpoQ1MNnnvO6HHZXw",
   authDomain: "trainee-dragonborn-24t2.firebaseapp.com",
