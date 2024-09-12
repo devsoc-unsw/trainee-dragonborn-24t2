@@ -16,11 +16,10 @@ import { IconButton } from '@mui/joy';
 import AddIcon from '@mui/icons-material/Add';
 
 interface AddMemberModalProps {
-  tripId: string | undefined;
   handleAddMember: (user: User) => Promise<void>; // Use the prop passed from the parent
 }
 
-export default function AddMemberModal({ tripId, handleAddMember }: AddMemberModalProps) {
+export default function AddMemberModal({ handleAddMember }: AddMemberModalProps) {
   const [open, setOpen] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState('');
   const allUsers = useAllUsers();

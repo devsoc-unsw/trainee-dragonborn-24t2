@@ -53,18 +53,18 @@ const TripOverviewPage = () => {
     if (trip) {
       const updatedMembers = [...trip.members, user.name];
       const updatedTrip = { ...trip, members: updatedMembers };
-    //   setTrip(updatedTrip); // for icons
-      await setTrip(updatedTrip); // for data
+      await setTrip(updatedTrip)
 
-	  // add this trip to the members
-    //   const [userData, setUser] = useUser(user.name);
-    //   if (userData) {
-    //     const updatedUser = {
-    //         ...userData,
-    //         trips: [...(user.trips || []), tripId]
-    //     };
-    //     await setUser(updatedUser);
-    //   }
+      // add this trip to the members
+      const [userData, setUser] = useUser(user.uid);
+      if (userData) {
+        alert(`${userData.uid}`)
+        const updatedUser = {
+            ...userData,
+            trips: [...(user.trips || []), trip.tripId]
+        };
+        await setUser(updatedUser);
+      }
 
     }
   };
@@ -172,7 +172,6 @@ const TripOverviewPage = () => {
               ))}
               {trip && (
           <AddMemberModal
-            tripId={tripId}
             handleAddMember={handleAddMember} // Pass the function to handle adding members
           />
         )}

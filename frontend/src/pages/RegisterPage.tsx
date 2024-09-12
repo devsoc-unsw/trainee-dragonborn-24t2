@@ -40,6 +40,7 @@ const RegisterPage = () => {
     // create User docu
     if (user.email && user.uid) { // ensures actual created
       await createUser(firestore, {
+        uid: user.uid,
         email: user.email,
         name,
       }, user.uid);
