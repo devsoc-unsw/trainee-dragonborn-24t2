@@ -33,7 +33,7 @@ function App() {
           <Route path="/profile" component={ProfilePage} />
           <Route path="/newtrip" component={NewTripPage} />
           <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
-          <Route path="/packinglist" component={PackingListPage} />
+          <Route path="/packinglist/:tripId" component={PackingListPage} />
           <Route path="/itinerary" component={ItineraryPage} />
         </Switch>
       </FirestoreProvider>
