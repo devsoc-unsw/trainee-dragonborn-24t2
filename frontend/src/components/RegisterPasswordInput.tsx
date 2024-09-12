@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import Stack from '@mui/joy/Stack';
 import Input from '@mui/joy/Input';
 import LinearProgress from '@mui/joy/LinearProgress';
@@ -7,8 +7,17 @@ import IconButton from '@mui/joy/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-export default function RegisterPasswordInput() {
-  const [value, setValue] = useState('');
+interface RegisterPasswordInputProps {
+  placeholder: string;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function RegisterPasswordInput({
+  placeholder,
+  value,
+  onChange,
+}: RegisterPasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const minLength = 12;
@@ -27,9 +36,9 @@ export default function RegisterPasswordInput() {
     <Stack spacing={0.5} sx={{ '--hue': Math.min(value.length * 10, 120) }}>
       <Input
         type={showPassword ? 'text' : 'password'}
-        placeholder="Type in here…"
+        placeholder={placeholder}
         value={value}
-        onChange={(event) => setValue(event.target.value)}
+        onChange={onChange}
         endDecorator={
           <IconButton onClick={handleClickShowPassword}>
             {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
