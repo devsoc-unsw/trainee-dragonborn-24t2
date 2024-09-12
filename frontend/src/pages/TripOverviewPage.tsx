@@ -21,6 +21,9 @@ import { useTrip, useAllUsers, useUser } from "../firebase.ts";
 import { useRoute } from "wouter";
 import AddMemberModal from '../components/modal/AddMemberModal';
 import { User } from '../types.ts';
+import { collection, doc, documentId, Firestore, getDoc, query, setDoc, where } from "firebase/firestore";
+import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "reactfire";
+
 
 const formatDate = (date: Date) => {
   const options: Intl.DateTimeFormatOptions = {
@@ -49,23 +52,50 @@ const TripOverviewPage = () => {
     }
   }, [allUsers, trip?.members]); // updating the icons as we add
 
+  // const handleAddMember = async (user: User) => {
+  //   if (trip) {
+  //     const updatedMembers = [...trip.members, user.name];
+  //     const updatedTrip = { ...trip, members: updatedMembers };
+  //     await setTrip(updatedTrip)
+
+  //     // add this trip to the members
+  //     const [userData, setUser] = useUser(user.uid);
+  //     if (userData) {
+  //       alert(`${userData.uid}`)
+  //       const updatedUser = {
+  //           ...userData,
+  //           trips: [...(user.trips || []), trip.tripId]
+  //       };
+  //       await setUser(updatedUser);
+  //     }
+
+  //   }
+  // };
+  const firestore = useFirestore();
   const handleAddMember = async (user: User) => {
     if (trip) {
+      // Update trip members
       const updatedMembers = [...trip.members, user.name];
       const updatedTrip = { ...trip, members: updatedMembers };
-      await setTrip(updatedTrip)
+      await setDoc(doc(firestore, "Trips", trip.tripId), updatedTrip);
 
-      // add this trip to the members
-      const [userData, setUser] = useUser(user.uid);
-      if (userData) {
-        alert(`${userData.uid}`)
+      // Fetch user data
+      const userRef = doc(firestore, "Users", user.uid);
+      const userDoc = await getDoc(userRef);
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data() as User;
+
+        // Update user's trips
         const updatedUser = {
-            ...userData,
-            trips: [...(user.trips || []), trip.tripId]
+          ...userData,
+          trips: [...(userData.trips || []), trip.tripId],
         };
-        await setUser(updatedUser);
+        await setDoc(userRef, updatedUser);
+        alert(`Updated user trips for UID: ${userData.uid}`);
+      } else {
+        console.error("User does not exist");
       }
-
     }
   };
 
