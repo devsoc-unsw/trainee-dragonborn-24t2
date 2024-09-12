@@ -10,36 +10,35 @@ import { Trip, User } from "./types.ts";
 export const createUser = async (
   firestore: Firestore,
   user: Omit<User, "trips">,
+  uid: string,
 ): Promise<void> => {
-  const { username, ...userFields } = user;
-
-  const tripRef = doc(firestore, "Users", username);
-  await setDoc(tripRef, {
-    ...userFields,
+  const userRef = doc(firestore, "Users", uid); // reference with uid
+  await setDoc(userRef, {
+    ...user,
     trips: [],
   });
 };
 
 // Get a single user, returns undefined while loading
 // Also returns a setUser function to update the user (e.g. add a friend)
-export const useUser = (username: string): [
+export const useUser = (uid: string): [
     User | undefined,
   (updated: User) => Promise<void>
 ] => {
   const firestore = useFirestore();
-  const userRef = doc(firestore, "Users", username);
-  const { status, data } = useFirestoreDocData(userRef, { idField: "email" });
+  const userRef = doc(firestore, "Users", uid);
+  const { status, data } = useFirestoreDocData(userRef);
 
-  const updateTrip = async (updated: User) => setDoc(userRef, updated);
+  const updateUser = async (updated: User) => setDoc(userRef, updated);
 
-  return [status === "success" ? data as User : undefined, updateTrip];
+  return [status === "success" ? data as User : undefined, updateUser];
 };
 
 // get list of users, returns undefined when loadig
 export const useAllUsers = (): User[] | undefined => {
   const firestore = useFirestore();
   const usersRef = collection(firestore, "Users"); // user collection
-  const { status, data } = useFirestoreCollectionData(usersRef, { idField: "email" });
+  const { status, data } = useFirestoreCollectionData(usersRef, { idField: "uid" });
   return status === "success" ? (data as User[]) : undefined;
 };
 

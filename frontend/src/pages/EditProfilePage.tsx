@@ -3,6 +3,8 @@ import { Redirect, useLocation } from 'wouter';
 import { Stack, Typography, Card, Avatar, Button, Input } from '@mui/joy';
 import { useUser } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
+import { getAuth, updateEmail, updatePassword } from 'firebase/auth';
+
 
 const EditProfilePage = () => {
   const [authUser] = useLocalStorage("auth-user", "");
@@ -12,17 +14,23 @@ const EditProfilePage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [, setLocation] = useLocation();
 
+  const auth = getAuth();
   const handleSave = async () => {
     if (user) {
-      // only updated modified fields
-      const updates = {
-        ...(name !== user.name && { name: name }), // only if diff
-        ...(email !== user.email && { email: email }),
-        ...(newPassword && { password: newPassword }) // checkign curr
-      };
+
+      // update in the auth place
+      const userCredential = auth.currentUser;
+      if (userCredential) {
+        if (email && email !== user.email) {
+          await updateEmail(userCredential, email);
+        }
+        if (newPassword) {
+          await updatePassword(userCredential, newPassword);
+        }
+      }
 
       // update in datastore
-      await setUser({ ...user, ...updates});
+      await setUser({ ...user, name, email});
       setLocation('/profile') // redirect
     }
   };

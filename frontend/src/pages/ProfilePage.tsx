@@ -1,20 +1,25 @@
 import '../styles.css';
-import { Link, Redirect } from 'wouter';
+import { Link, Redirect, useLocation } from 'wouter';
 import { Stack, Typography, Card, Avatar, Button } from '@mui/joy';
 import EditIcon from '@mui/icons-material/Edit';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useUser } from '../firebase';
+import { getAuth, signOut } from "firebase/auth";
 import { useLocalStorage } from 'usehooks-ts';
 import AddFriendModal from '../components/modal/AddFriendModal.tsx'
 
 const ProfilePage = () => {
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
   const [user] = useUser(authUser);
+  const [, setLocation] = useLocation();
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : '?';
 
-  const handleLogout = () => {
-    setAuthUser("");
+  const handleLogout = async () => {
+    const auth = getAuth();
+    await signOut(auth);
+    localStorage.removeItem("auth-user");
+    setLocation('/login');
   };
 
   // triggered when logout

@@ -30,7 +30,7 @@ const [user, setUser] = useUser(authUser);
     setToDate(event.target.value);
   };
 
-  const handleClick = async () => {
+  const handleCreateTrip = async () => {
     // create trip
     try {
       const tripId = await createTrip(firestore, authUser, {
@@ -190,7 +190,7 @@ const [user, setUser] = useUser(authUser);
               </Stack>
             </Stack>
             <Button
-              onClick={handleClick}
+              onClick={handleCreateTrip}
               sx={{
                 width: "50%",
                 backgroundColor: 'var(--primary-color)',

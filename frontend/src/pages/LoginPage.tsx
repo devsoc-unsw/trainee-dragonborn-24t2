@@ -1,18 +1,17 @@
 import '../styles.css';
 import { Button, Input, Stack, Typography } from "@mui/joy";
 import photo from "../assets/images/login.png";
-import { Link, Redirect } from "wouter";
+import { Link, useLocation } from "wouter";
 import React, { useState } from 'react';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useLocalStorage } from 'usehooks-ts';
+import LoginPasswordInput from '../components/LoginPasswordInput';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
-
-  if (authUser) {
-    return <Redirect to='/home'/>
-  }
+  const [, setLocation] = useLocation();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
@@ -22,9 +21,16 @@ const LoginPage = () => {
     setPassword(event.target.value)
   }
 
-  const handleClick = () => {
-    setAuthUser(email);
-  }
+  const handleLogin = async () => {
+    const auth = getAuth();
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    if (user.uid) {
+      setAuthUser(user.uid);
+      setLocation('/home');
+    }
+  };
 
   return (
     <Stack
@@ -69,10 +75,9 @@ const LoginPage = () => {
           </Stack>
 
           <Stack width="70%">
-            <Input
-              sx={{ backgroundColor: "white", color: "#737373" }}
+            <LoginPasswordInput
               placeholder="Password"
-              variant="soft"
+              value={password}
               onChange={handlePasswordChange}
             />
           </Stack>
@@ -85,7 +90,7 @@ const LoginPage = () => {
                   backgroundColor: "var(--primary-color)",
                   ":hover": { backgroundColor: "#f5623d" },
                 }}
-                onClick={handleClick}
+                onClick={handleLogin}
               >
                 Login
               </Button>

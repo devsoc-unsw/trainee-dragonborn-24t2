@@ -1,17 +1,22 @@
 import { Stack, Typography, Input, Button } from '@mui/joy';
 import '../styles.css';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import React, { useState } from 'react';
 import photo from "../assets/images/login.png";
 import { createUser } from '../firebase';
 import { useFirestore } from 'reactfire';
 import { useLocalStorage } from 'usehooks-ts';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import RegisterPasswordInput from '../components/RegisterPasswordInput';
+
+
 
 const RegisterPage = () => {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
+  const [, setLocation] = useLocation();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
@@ -26,14 +31,21 @@ const RegisterPage = () => {
   }
 
   const firestore = useFirestore();
-  const handleClick = () => {
-    createUser(firestore, {
-      name,
-      email,
-      password,
-      username: email,
-    })
-    setAuthUser(email)
+  const auth = getAuth();
+  const handleRegister = async () => {
+    // create firebase auth
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // create User docu
+    if (user.email && user.uid) { // ensures actual created
+      await createUser(firestore, {
+        email: user.email,
+        name,
+      }, user.uid);
+    }
+    setAuthUser(user.uid);
+    setLocation('/home');
   }
 
   return (
@@ -88,10 +100,9 @@ const RegisterPage = () => {
           </Stack>
 
           <Stack width="70%">
-            <Input
-              sx={{ backgroundColor: "white", color: "#737373" }}
+            <RegisterPasswordInput
               placeholder="Password"
-              variant="soft"
+              value={password}
               onChange={handlePasswordChange}
             />
           </Stack>
@@ -104,7 +115,7 @@ const RegisterPage = () => {
                   backgroundColor: "var(--primary-color)",
                   ":hover": { backgroundColor: "#f5623d" },
                 }}
-                onClick={handleClick}
+                onClick={handleRegister}
               >
                 Sign up
               </Button>

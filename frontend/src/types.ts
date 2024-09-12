@@ -1,10 +1,9 @@
 import { Timestamp } from "firebase/firestore";
 
 export type User = {
-  username: string;
-  name: string;
   email: string;
-  password: string;
+  name: string;
+  // password: string;
   trips: string[]; // list of trip ids
 }
 

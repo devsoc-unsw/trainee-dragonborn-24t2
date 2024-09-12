@@ -1,34 +1,62 @@
-import { useState } from 'react'
 import './App.css'
-import { Link, Route, Switch, useLocation } from 'wouter';
-import LoginPage from './pages/LoginPage.tsx';
-import HomePage from './pages/HomePage.tsx';
+import React, { useState, useEffect } from 'react';
+import { Link, Route, Switch, Redirect, useLocation } from 'wouter';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
-import RegisterPage from './pages/RegisterPage.tsx';
-import Navbar from './components/Navbar.tsx';
-import ProfilePage from './pages/ProfilePage.tsx';
-import NewTripPage from './pages/NewTripPage.tsx';
-import TripOverviewPage from './pages/TripOverviewPage.tsx';
 import { getFirestore } from 'firebase/firestore';
 import { FirestoreProvider, useFirebaseApp } from 'reactfire';
-
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
+import RegisterPage from './pages/RegisterPage';
+import Navbar from './components/Navbar';
+import ProfilePage from './pages/ProfilePage';
+import EditProfilePage from './pages/EditProfilePage';
+import NewTripPage from './pages/NewTripPage';
+import TripOverviewPage from './pages/TripOverviewPage';
 
 function App() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [location] = useLocation();
   const firestoreInstance = getFirestore(useFirebaseApp());
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      setUser(authUser);
+      setLoading(false);
+    }) // subscribe to auth statge changed
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div>Page coming right up :P</div>;
+  }
+
   return (
     <CssVarsProvider>
-      <CssBaseline/>
+      <CssBaseline />
       <FirestoreProvider sdk={firestoreInstance}>
         {location !== '/login' && location !== '/register' && location !== '/newtrip' && <Navbar />}
         <Switch>
           <Route path="/" component={LandingPage} />
           <Route path="/login" component={LoginPage} />
-          <Route path="/home" component={HomePage} />
           <Route path="/register" component={RegisterPage} />
-          <Route path="/profile" component={ProfilePage} />
-          <Route path="/newtrip" component={NewTripPage} />
-          <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
+          <Route path="/home">
+            {user ? <HomePage /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/profile">
+            {user ? <ProfilePage /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/editprofile">
+            {user ? <EditProfilePage /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/newtrip">
+            {user ? <NewTripPage /> : <Redirect to="/login" />}
+          </Route>
+          <Route path="/tripoverview/:tripId">
+            {user ? <TripOverviewPage /> : <Redirect to="/login" />}
+          </Route>
         </Switch>
       </FirestoreProvider>
     </CssVarsProvider>
@@ -40,9 +68,9 @@ const LandingPage = () => {
 
   return (
     <>
-    <Link href='/login'>
-      <Button variant="solid">Click for travel site :O</Button>
-    </Link>
+      <Link href='/login'>
+        <Button variant="solid">Click for travel site :O</Button>
+      </Link>
       <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
