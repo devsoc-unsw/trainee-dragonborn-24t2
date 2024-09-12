@@ -1,6 +1,6 @@
 import { Button, Input, Stack, Typography } from '@mui/joy';
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { createTrip } from '../firebase';
 import { useFirestore } from 'reactfire';
 import { Timestamp } from 'firebase/firestore';
@@ -37,7 +37,7 @@ const NewTripPage = () => {
       to: Timestamp.fromDate(new Date(toDate))
     })
     setTripId(tripId)
-    setLocationPath(`/tripoverview/${tripId}`)
+    setLocationPath(`/tripoverview/${tripId}`) // TODO: ???
   }
 
   return (
@@ -58,9 +58,9 @@ const NewTripPage = () => {
         <Stack direction="row" gap={2} alignItems="center" width="50%">
           <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">Location</Typography>
           <Input sx={{
-            width: "100%", 
+            width: "100%",
             color: "#B9A49A"
-          }} 
+          }}
           placeholder="add location"
           variant="outlined"
           onChange={handleLocationChange}/>
@@ -68,9 +68,9 @@ const NewTripPage = () => {
         <Stack direction="row" gap={2} alignItems="center" width="50%">
           <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">Name</Typography>
           <Input sx={{
-            width: "100%", 
+            width: "100%",
             color: "#B9A49A"
-          }} 
+          }}
           placeholder="add trip name"
           variant="outlined"
           onChange={handleNameChange}/>
@@ -92,15 +92,25 @@ const NewTripPage = () => {
             sx={{ width: "100%", alignItems: "center", color: "#B9A49A"}}
           />
         </Stack>
-        
-        <Button 
-          sx={{ width: "25%", backgroundColor: "var(--primary-color)", borderRadius: "15px", ":hover": { backgroundColor: "#f5623d"}, marginTop: "20px"}} 
+
+        <Button
+          sx={{ width: "25%",
+            backgroundColor: "var(--primary-color)",
+            '&:hover': {
+                    bgcolor: 'var(--tertiary-color)',
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                  },
+            marginTop: "20px"
+          }}
           variant="solid"
           size='lg'
           onClick={handleClick}
           >PLAN TRIP!
         </Button>
       </Stack>
+      <Link href='/home'>
+        <Button variant="plain" sx={{fontSize: '7px', color: "var(--tertiary-color)"}}>I wanna go back pls</Button>
+      </Link>
     </Stack>
   );
 }

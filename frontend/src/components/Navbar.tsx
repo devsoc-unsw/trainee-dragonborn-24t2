@@ -1,4 +1,4 @@
-import { Link } from 'wouter';
+import { Link, Redirect } from 'wouter';
 import Menu from '@mui/joy/Menu';
 import MenuItem from '@mui/joy/MenuItem';
 import MenuButton from '@mui/joy/MenuButton';
@@ -8,31 +8,34 @@ import Notifications from '@mui/icons-material/Notifications';
 import Person from '@mui/icons-material/Person';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Home from '@mui/icons-material/Home';
+import CalendarMonth from '@mui/icons-material/CalendarMonth';
 import Avatar from '@mui/joy/Avatar';
 import Stack from '@mui/joy/Stack';
 import Card from '@mui/joy/Card';
 import Typography from '@mui/joy/Typography';
-import { useLocalStorage } from 'usehooks-ts';
 import { useUser } from '../firebase';
+import { useLocalStorage } from 'usehooks-ts';
 
 const Navbar = () => {
-  const [authUser, setAuthUser] = useLocalStorage("auth-user", "")
-  const [user, setUser] = useUser(authUser);
+  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
+  const [user] = useUser(authUser);
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : '?';
 
   const handleLogout = () => {
-    setAuthUser("")
-  }
-
-  const avatarInitial = user?.name?.charAt(0) || "?";
+    setAuthUser("");
+    <Redirect to='/login'/>
+  };
 
   return (
-    <Card // or stack for non rounded
+    <Card
       sx={{
         backgroundColor: '#F98568',
         padding: '10px 20px',
         color: 'white',
         position: 'fixed',
         width: '100%',
+        height: '60px',
+        zIndex: 1000,
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -47,11 +50,9 @@ const Navbar = () => {
             </IconButton>
           </Link>
 
-          <Link href="/friends">
-            <IconButton>
-              <Person style={{ color:'var(--tertiary-color)'}} />
-            </IconButton>
-          </Link>
+          <IconButton>
+            <CalendarMonth style={{ color:'var(--tertiary-color)'}} />
+          </IconButton>
 
           <IconButton>
             <CalendarMonthIcon style={{ color:'var(--tertiary-color)'}} />
@@ -70,18 +71,21 @@ const Navbar = () => {
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
-              <IconButton>
-                <Avatar sx={{color: 'var(--tertiary-color)'}}>{avatarInitial}</Avatar>
+              <IconButton
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none',
+                }
+              }}>
+                <Avatar sx={{color: 'var(--tertiary-color)'}}>{userInitial}</Avatar>
               </IconButton>
             </MenuButton>
             <Menu>
-              <Link href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <MenuItem>Edit Profile</MenuItem>
-              </Link >
-              <MenuItem>Settings</MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Link href="/login" style={{ textDecoration: 'none', color: 'inherit' }}>Logout</Link>
-              </MenuItem>
+              <Link href="/profile">
+                <MenuItem>View Profile</MenuItem>
+              </Link>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Dropdown>
         </Stack>

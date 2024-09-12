@@ -11,6 +11,7 @@ import NewTripPage from './pages/NewTripPage.tsx';
 import TripOverviewPage from './pages/TripOverviewPage.tsx';
 import PackingListPage from './pages/PackingListPage.tsx';
 import ItineraryPage from './pages/Itinerarypage.tsx';
+import EditProfilePage from './pages/EditProfilePage.tsx';
 import { getFirestore } from 'firebase/firestore';
 import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 
@@ -18,6 +19,7 @@ import { FirestoreProvider, useFirebaseApp } from 'reactfire';
 function App() {
   const [location] = useLocation();
   const firestoreInstance = getFirestore(useFirebaseApp());
+
   return (
     <CssVarsProvider>
       <CssBaseline/>

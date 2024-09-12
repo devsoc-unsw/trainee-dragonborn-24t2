@@ -1,55 +1,117 @@
 import '../styles.css';
+import { useState } from 'react';
 import { Stack, Typography } from '@mui/joy';
 import TripCard from '../components/TripCard';
 import TripCountdown from '../components/TripCountdown';
 import SearchBar from '../components/SearchBar';
-import { useUser } from '../firebase';
+import { useUser, useTrips } from '../firebase';
 import { useLocalStorage } from 'usehooks-ts';
+import CreateNewTripModal from '../components/modal/CreateNewTripModal.tsx'
 
 const HomePage = () => {
-  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
+  const [searchText, setSearchText] = useState('');
+  const [authUser] = useLocalStorage("auth-user", "");
   const [user] = useUser(authUser);
+  const userName = user?.name ? user.name : '?';
+
+  const userTripIds = user?.trips || []; // gets the trip ids
+  const trips = useTrips(userTripIds);  // get the trips associated with the ids
+
+  const filteredTrips = trips?.filter((trip) =>
+    trip.name.toLowerCase().includes(searchText.toLowerCase())
+  ) || []; // seatch trip filter
 
   return (
-    <Stack height="100%" direction="row" justifyContent="space-evenly" alignItems="center">
-      <Stack width="30%" justifyContent="flex-start" gap={5}>
-        <Stack width="50%">
-          <Typography level="body-md" sx={{color: 'var(--tertiary-color)'}}>Hello {user?.name},</Typography>
-          <Typography level="h2" fontWeight="bold" sx={{color: 'var(--tertiary-color)'}}>Where to next?</Typography>
-        </Stack>
-        <TripCountdown/>
-      </Stack>
-
-      <Stack width="30%" justifyContent="center" alignItems="center">
-        <SearchBar/>
-        <Stack> {/** overall cards cube */}
-          <Stack direction="row" justifyContent="space-between" gap={3} sx={{margin: 1}}>
-            <TripCard
-            title="solo travellign japan"
-            location="Japan"
-            imageUrl="https://media.cnn.com/api/v1/images/stellar/prod/230210161917-01-japan-never-traveler-culture-tokyo.jpg?c=16x9&q=h_833,w_1480,c_fill"
-            linkTo='/'/>
-            <TripCard
-            title="grad trip"
-            location="New Zealand"
-            imageUrl="https://media.gq.com/photos/5ba1680236b2d004cdd843cd/16:9/w_2560%2Cc_limit/new-zealand-queenstown-travel-guide-gq.jpg"
-            linkTo='/'/>
+    <Stack
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      sx={{ pt: '60px' }}
+    >
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        width="80%"
+        gap={5}
+      >
+        {/* lefty */}
+        <Stack width="40%" direction="column" alignItems="flex-start">
+          <Stack sx={{ pt: 5, pb: 5 }}>
+            <Typography level="h4" sx={{ color: 'var(--tertiary-color)' }}>
+              Hello {userName},
+            </Typography>
+            <Typography
+              level="h1"
+              sx={{ color: 'var(--tertiary-color)', letterSpacing: '0.5px' }}
+            >
+              Where to next?
+            </Typography>
           </Stack>
-          <Stack direction="row" justifyContent="space-between" gap={3} sx={{margin: 1}}>
-          <TripCard
-            title="road drip"
-            location="melbourne"
-            imageUrl="https://thumbs.dreamstime.com/b/purple-melbourn-angle-view-melbourne-downtown-reflection-yarra-river-171547301.jpg"
-            linkTo='/'/>
-            <TripCard
-            title="summer 2023"
-            location="ny"
-            imageUrl="https://cdn.britannica.com/61/93061-050-99147DCE/Statue-of-Liberty-Island-New-York-Bay.jpg"
-            linkTo='/'/>
+          <TripCountdown/>
+        </Stack>
+
+        {/* righty */}
+        <Stack
+          width="60%"
+          direction="column"
+          alignItems="center"
+          sx={{ maxHeight: '80vh', padding: '16px' }}
+        >
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            sx={{ width: '100%', p: 2 }}
+          >
+            <SearchBar
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+            />
+            <CreateNewTripModal/>
+          </Stack>
+
+          {/* scrolly*/}
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '16px',
+              width: '100%',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+            }}
+          >
+            {/* trips cards if statement */}
+            {trips?.length === 0 ? (
+              <Typography level="h3" sx={{ color: 'var(--tertiary-color)' }}>
+                Plan your first trip!
+              </Typography>
+            ) : (
+              <>
+                {/* searchy if statement */}
+                {filteredTrips.length > 0 ? (
+                  filteredTrips.map((trip) => (
+                    <TripCard
+                      key={trip.tripId}
+                      title={trip.name}
+                      destination={trip.destination}
+                      imageUrl='https://cdn.naturettl.com/wp-content/uploads/2020/04/25152036/how-to-find-great-locations-for-landscape-photography-11.jpg'
+                      linkTo={`/trip/${trip.tripId}`}
+                    />
+                  ))
+                ) : (
+                  <Typography level="h3" sx={{ color: 'var(--tertiary-color)' }}>
+                    No trips found for “{searchText}” :(
+                  </Typography>
+                )}
+              </>
+            )}
           </Stack>
         </Stack>
       </Stack>
-
     </Stack>
   );
 };
