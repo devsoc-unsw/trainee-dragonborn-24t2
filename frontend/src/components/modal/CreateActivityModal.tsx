@@ -1,80 +1,76 @@
 import React, { useState } from 'react';
 import { Button, Input, Stack, Typography, Modal, ModalClose, Sheet } from '@mui/joy';
-import { useUser, createTrip } from '../../firebase';
+import { useUser, createActivity } from '../../firebase';
 import { useFirestore } from 'reactfire';
 import { Timestamp } from 'firebase/firestore';
 import { useLocalStorage } from 'usehooks-ts';
 
-export default function CreateNewTripModal() {
-const [authUser] = useLocalStorage("auth-user", "");
-const [user, setUser] = useUser(authUser);
-  const [location, setLocation] = useState("");
+export default function CreateActivityModal({ tripId }: { tripId: string }) { // prop shorthand
+  const [authUser] = useLocalStorage("auth-user", "");
+  const [user,] = useUser(authUser);
   const [name, setName] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [date, setDate] = useState("");
+  const [fromTime, setFromTime] = useState("");
+  const [toTime, setToTime] = useState("");
   const [open, setOpen] = useState(false);
   const firestore = useFirestore();
 
-  // real time updating hte bvalues
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
-  };
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
-  const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFromDate(event.target.value);
-  };
-  const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setToDate(event.target.value);
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDate(event.target.value);
   };
 
-  const handleCreateTrip = async () => {
-    // create trip
+  const handleFromTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFromTime(event.target.value);
+  };
+
+  const handleToTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setToTime(event.target.value);
+  };
+
+  const handleCreateActivity = async (tripId: string) => {
     if (user) {
-      const tripId = await createTrip(firestore, user.name, {
-        name: name,
-        destination: location,
-        from: Timestamp.fromDate(new Date(fromDate)),
-        to: Timestamp.fromDate(new Date(toDate)),
+      const fromDateTime = new Date(`${date}T${fromTime}`);
+      const toDateTime = new Date(`${date}T${toTime}`);
+      await createActivity(firestore, tripId, {
+        name,
+        date: Timestamp.fromDate(new Date(date)),
+        starttime: Timestamp.fromDate(fromDateTime),
+        endtime: Timestamp.fromDate(toDateTime),
       });
-
-      // add it to the users array
-      const updatedUser = {
-          ...user,
-          trips: [...(user.trips || []), tripId]
-      };
-      // put into the firestore data
-      await setUser(updatedUser);
-
-      // closing modal and redirect to the created page
       setOpen(false);
-      setLocation(`/tripoverview/${tripId}`);
     }
   };
 
   return (
     <div>
-      {/* opening */}
+      {/* openign */}
       <Button
-        onClick={() => setOpen(true)}
-        sx={{
-            width: '120px',
-            bgcolor: 'var(--primary-color)',
-            '&:hover': {
-              bgcolor: 'var(--tertiary-color)',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-            },
-          }}>
-        + Trip
-      </Button>
+      variant="outlined"
+      onClick={() => setOpen(true)}
+      sx={{
+        width: '120px',
+        color: "var(--tertiary-color)",
+        borderColor: "var(--tertiary-color)",
+        borderWidth: '3px',
+        '&:hover': {
+          borderColor: "var(--primary-color)",
+          bgcolor: "var(--primary-colour)"
+        },
+      }}
+    >
+      + Activity
+    </Button>
 
-      {/* the sheet */}
+      {/* modal */}
       <Modal
-        aria-labelledby="close-modal-title"
+        aria-labelledby="create-activity-modal-title"
         open={open}
         onClose={(_event: React.MouseEvent<HTMLButtonElement>, reason: string) => {
-          if (reason === 'closeClick') { // only for 'x' click
+          if (reason === 'closeClick') {
             setOpen(false);
           }
         }}
@@ -83,9 +79,9 @@ const [user, setUser] = useUser(authUser);
         <Sheet
           variant="outlined"
           sx={{
-            minWidth: 800,
-            height: 500,
-            bgcolor: "#fbf2ee", // lighter than teriaty
+            minWidth: 600,
+            height: 400,
+            bgcolor: "#fbf2ee",
             border: "solid 5px var(--tertiary-color)",
             borderRadius: 15,
             p: 4,
@@ -102,33 +98,33 @@ const [user, setUser] = useUser(authUser);
             onClick={() => setOpen(false)}
           />
 
-          {/* content */}
+          {/* Content */}
           <Stack
             spacing={3}
             sx={{
-              width: '60%',
-              maxWidth: 600,
+              width: '70%',
+              maxWidth: 500,
               alignItems: 'center'
             }}
           >
             <Typography
               component="h2"
-              id="close-modal-title"
+              id="create-activity-modal-title"
               level="h1"
               textColor="var(--tertiary-color)"
               sx={{ fontWeight: 'bold', textAlign: 'center' }}
             >
-              Create New Trip
+              Create New Activity
             </Typography>
             <Stack spacing={3} width="100%">
               <Stack direction="row" gap={2} alignItems="center" width="100%">
                 <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">
-                  Location
+                  Name
                 </Typography>
                 <Input
-                  value={location}
-                  onChange={handleLocationChange}
-                  placeholder="Add location"
+                  value={name}
+                  onChange={handleNameChange}
+                  placeholder="Add activity name"
                   variant="outlined"
                   sx={{
                     width: "100%",
@@ -138,17 +134,13 @@ const [user, setUser] = useUser(authUser);
               </Stack>
               <Stack direction="row" gap={2} alignItems="center" width="100%">
                 <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">
-                  Name
+                  Date
                 </Typography>
                 <Input
-                  value={name}
-                  onChange={handleNameChange}
-                  placeholder="Add trip name"
-                  variant="outlined"
-                  sx={{
-                    width: "100%",
-                    color: "#B9A49A"
-                  }}
+                  type="date"
+                  value={date}
+                  onChange={handleDateChange}
+                  sx={{ width: "100%", color: "#b9a49a" }}
                 />
               </Stack>
               <Stack direction="row" gap={2} justifyContent="space-between" width="100%">
@@ -157,10 +149,10 @@ const [user, setUser] = useUser(authUser);
                     From
                   </Typography>
                   <Input
-                    type="date"
-                    value={fromDate}
-                    onChange={handleFromDateChange}
-                    sx={{ width: "100%", color: "#B9A49A" }}
+                    type="time"
+                    value={fromTime}
+                    onChange={handleFromTimeChange}
+                    sx={{ width: "100%", color: "#b9a49a" }}
                   />
                 </Stack>
                 <Stack gap={1}>
@@ -168,22 +160,16 @@ const [user, setUser] = useUser(authUser);
                     To
                   </Typography>
                   <Input
-                    type="date"
-                    value={toDate}
-                    onChange={handleToDateChange}
+                    type="time"
+                    value={toTime}
+                    onChange={handleToTimeChange}
                     sx={{ width: "100%", color: "#b9a49a" }}
                   />
                 </Stack>
               </Stack>
-              <Stack direction="row" gap={2} alignItems="center" width="100%">
-                <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">
-                  Picture
-                </Typography>
-                <Input type="file" sx={{ width: "100%", color: "#b9a49a" }} />
-              </Stack>
             </Stack>
             <Button
-              onClick={handleCreateTrip}
+              onClick={() => handleCreateActivity(tripId)}
               sx={{
                 width: "50%",
                 backgroundColor: 'var(--primary-color)',
@@ -196,11 +182,11 @@ const [user, setUser] = useUser(authUser);
               variant="solid"
               size="lg"
             >
-              PLAN TRIP!
+              CREATE ACTIVITY
             </Button>
           </Stack>
         </Sheet>
       </Modal>
     </div>
   );
-};
+}

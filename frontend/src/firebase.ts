@@ -1,6 +1,6 @@
 import { collection, doc, documentId, Firestore, query, setDoc, where } from "firebase/firestore";
 import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "reactfire";
-import { Trip, User } from "./types.ts";
+import { Activity, Trip, User } from "./types.ts";
 
 /**
  * User helper functions
@@ -102,4 +102,50 @@ export const useTrips = (tripIds: string[]): Trip[] | undefined => {
   const { status, data } = useFirestoreCollectionData(tripsRef, { idField: "tripId" });
 
   return status === "success" ? data as Trip[] : undefined;
+};
+
+
+/** create activity */
+export const createActivity = async (
+  firestore: Firestore,
+  tripId: string,
+  activity: Omit<Activity, "activityId" | "tripId">
+): Promise<string> => {
+  // Generate a new activity ID
+  const activityId = crypto.randomUUID();
+
+  // Create a reference to the activity document
+  const activityRef = doc(firestore, "Activities", activityId);
+
+  // Set the activity data in Firestore
+  await setDoc(activityRef, {
+    tripId,
+    activityId,
+    ...activity
+  });
+
+  return activityId;
+};
+
+
+// get and activiyt, and edit it
+export const useActivity = (activityId: string): [
+  Activity | undefined,
+  (updated: Omit<Activity, "activityId">) => Promise<void>
+] => {
+  const firestore = useFirestore();
+  const activityRef = doc(firestore, "Activities", activityId);
+
+  // Fetch activity data
+  const { status, data } = useFirestoreDocData(activityRef);
+
+  // Function to update activity
+  const updateActivity = async (updated: Omit<Activity, "activityId">) => {
+    await setDoc(activityRef, {
+      activityId,  // Ensure activityId is included in the update
+      ...updated
+    });
+  };
+
+  return [status === "success" ? data as Activity : undefined, updateActivity];
 };

@@ -1,34 +1,21 @@
 import '../styles.css';
 import {
-  Avatar,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemDecorator,
-  AspectRatio,
-  Stack,
-  Typography,
-  Button,
-  Input,
-  Checkbox,
-  Dropdown,
-  MenuButton,
-  Menu,
-  MenuItem,
-  ListDivider,
-} from '@mui/joy';
+  Avatar, List, ListItem, ListItemButton, ListItemDecorator,
+  AspectRatio, Stack, Typography, Input, Checkbox, Dropdown,
+  MenuButton, Menu, MenuItem, ListDivider } from '@mui/joy';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
-import { useTrip, useAllUsers, useUser } from "../firebase.ts";
+import { useTrip, useAllUsers } from "../firebase.ts";
 import { useRoute } from "wouter";
 import AddMemberModal from '../components/modal/AddMemberModal';
 import { User } from '../types.ts';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useFirestore } from "reactfire";
 import { DeleteForever, Person } from '@mui/icons-material';
+import CreateActivityModal from '../components/modal/CreateActivityModal.tsx';
 
 
 const formatDate = (date: Date) => {
@@ -41,13 +28,17 @@ const formatDate = (date: Date) => {
 };
 
 const TripOverviewPage = () => {
-  const [match, params] = useRoute("/tripoverview/:tripId");
+  const [, params] = useRoute("/tripoverview/:tripId");
   const tripId = params?.tripId;
   const [trip, setTrip] = useTrip(tripId ?? "");
   const [, setLocationPath] = useLocation();
 
   const allUsers = useAllUsers();
   const [tripMembers, setTripMembers] = useState<User[]>([]);
+
+  if (!trip) {
+    return <div>Loading...</div>;
+  }
 
   useEffect(() => {
     if (allUsers && trip?.members) {
@@ -208,13 +199,14 @@ const TripOverviewPage = () => {
                     </Avatar>
                   </MenuButton>
                 <Menu placement="bottom-end">
-                  {/* Display member's full name without any actions */}
+                  {/* display name */}
                   <MenuItem>
                   <ListItemDecorator>
                       <Person />
                     </ListItemDecorator>{member.name}
                   </MenuItem>
                   <ListDivider />
+                  {/* delete action */}
                   <MenuItem variant="soft" color="danger" onClick={() => handleDeleteMember(member.name)}>
                     <ListItemDecorator>
                       <DeleteForever />
@@ -258,6 +250,7 @@ const TripOverviewPage = () => {
               </ListItemButton>
             </List>
           </Stack>
+          <CreateActivityModal tripId={trip.tripId}/>
         </Stack>
       </Stack>
     </Stack>
