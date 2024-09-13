@@ -1,6 +1,8 @@
-import { Sheet, ListItem, Checkbox, List, ListItemButton, Input } from '@mui/joy';
+import { Sheet, ListItem, Checkbox, List, Input } from '@mui/joy';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import Clear from '@mui/icons-material/Clear';
+import { Button } from '@mui/joy';
+import { Stack } from '@mui/joy';
 
 interface ListCardProps {
   initialTitle?: string;
@@ -8,35 +10,25 @@ interface ListCardProps {
   items: string[];
   onTitleChange: (newTitle: string) => void;
   onItemsChange: (newItems: string[]) => void;
+  onDelete: () => void;
 }
 
 export default function ListCard({ 
-  initialTitle = '', 
   title = '',
   items = [],
   onTitleChange,
-  onItemsChange
+  onItemsChange,
+  onDelete,
 }: ListCardProps) {
   const onChangeTodo = (idx: number, newTodo: string) => {
     const newTodos = [...items];
     newTodos[idx] = newTodo;
-    onItemsChange(newTodos); // Call the callback with the updated items
+    onItemsChange(newTodos); 
   };
-  // const [todos, setTodos] = useState<string[]>(["New item"]);
-  // const [title, setTitle] = useState<string>(initialTitle);
-
-  // const onChangeTodo = (idx: number, newTodo: string) => {
-  //   const newTodos = [...todos];
-  //   newTodos[idx] = newTodo;
-  //   setTodos(newTodos);
-  // };
-
-  // const addNewTodo = () => {
-  //   setTodos([...todos, ""]);
-  // };
+  
 
   const addNewTodo = () => {
-    onItemsChange([...items, ""]); // Add a new item to the list
+    onItemsChange([...items, ""]);
   };
 
   return (
@@ -47,9 +39,30 @@ export default function ListCard({
         borderRadius: '10px', 
         width: 250, 
         backgroundColor: 'var(--secondary-color)', 
-        boxShadow: "md" 
+        boxShadow: "sm" 
       }}
     >
+      <Stack
+        marginTop="-23px"
+        marginRight="-29px"
+        marginBottom="-15px"
+        // bgcolor="pink"
+        alignItems="flex-end"
+      >
+        <Button
+          onClick={onDelete}
+          color='danger'
+          variant='plain'
+          sx={{
+            '&:hover': {
+              backgroundColor: 'transparent'
+            }
+          }}
+        >
+          <Clear sx={{color: "black"}}/>
+        </Button>
+      </Stack>
+      
       <Input
         variant='plain'
         onChange={(e) => onTitleChange(e.target.value)}
@@ -65,7 +78,14 @@ export default function ListCard({
         }}
       />
         
-      <div role="group" aria-labelledby="filter-status">
+      <Stack 
+        role="group" 
+        aria-labelledby="filter-status" 
+        sx={{ 
+            maxHeight: "calc(100vh - 380px)", 
+            overflowY: "auto",
+        }}
+      >
         <List>
           {items.map((item, idx) => (
             <ListItem key={idx} variant="plain">
@@ -80,6 +100,9 @@ export default function ListCard({
                   '& .MuiSvgIcon-root': {
                     color: 'black', 
                   },
+                  '&:hover': {
+                  backgroundColor: 'transparent'
+                }
                 }}
               />
               <Input
@@ -94,18 +117,23 @@ export default function ListCard({
               />
             </ListItem>
           ))}
-          <ListItemButton 
+          <Button 
+            variant='plain'
             onClick={addNewTodo} 
             sx={{ 
+              marginBottom: "-10px",
               color: "black", 
               justifyContent: 'center',
+              '&:hover': {
+                  backgroundColor: '#f5f5f7',
+                }
             }}
           >
             <AddIcon/>
             Add new item
-          </ListItemButton>
+          </Button>
         </List>
-      </div>
+      </Stack>
     </Sheet>
   );
 }

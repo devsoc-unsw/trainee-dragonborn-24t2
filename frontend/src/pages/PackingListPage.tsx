@@ -5,7 +5,6 @@ import { Link } from 'wouter';
 import ListCard from '../components/List';
 import { useRoute } from "wouter";
 import { useTrip } from "../firebase.ts"; 
-import { Grid } from '@mui/joy';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -13,7 +12,7 @@ const PackingListPage = () => {
   const [match, params] = useRoute("/packinglist/:tripId");
   const tripId = params?.tripId; // Get the tripId from the URL
   const [trip, setTrip] = useTrip(tripId ?? "");
-  const initialCategories = trip?.packing || [{ title: '', items: [] }]
+  const initialCategories = trip?.packing || [{ title: 'Clothes', items: [''] }]
   const [categories, setCategories] = useState(initialCategories);
   
   useEffect(() => {
@@ -23,14 +22,14 @@ const PackingListPage = () => {
   }, [trip]);
 
   const handleAddCategory = () => {
-    const newCategory = { title: '', items: [] };
+    const newCategory = { title: '', items: [''] };
     const updatedCategories = [...categories, newCategory];
     setCategories(updatedCategories);
     
     if (tripId && trip) {
       setTrip({
         ...trip,
-        packing: updatedCategories, // Update the packing field
+        packing: updatedCategories, 
       });
     }
   };
@@ -58,12 +57,22 @@ const PackingListPage = () => {
     if (tripId && trip) {
       setTrip({
         ...trip,
-        packing: updatedCategories, // Update packing field
+        packing: updatedCategories, 
         tripId: tripId
       });
     }
   };
   
+  const handleOnDelete = (index: number) => {
+    const updatedCategories = categories.filter((_, i) => i !== index);
+    setCategories(updatedCategories)
+    if (tripId && trip) {
+      setTrip({
+        ...trip,
+        packing: updatedCategories,
+      });
+    }
+  }
 
   return (
     <Stack 
@@ -150,16 +159,15 @@ const PackingListPage = () => {
           >
           <Stack
             height="100%"
+            // width="100%"
             maxWidth="100%"
             direction="column"
             flexWrap="wrap"
-            justifyContent="flex-start"
-            alignItems="flex-start"
             gap={3}
             // bgcolor="pink"
             sx={{
-              overflowY: "auto",
-              overflowX: "hidden"
+              overflowY: "hidden",
+              overflowX: "visible"
             }}
           >
             {categories.map((category, index) => (
@@ -167,13 +175,13 @@ const PackingListPage = () => {
                 key={index} 
               >
                 <ListCard 
-                initialTitle={index === 0 ? "Clothes" : ""}
-                title={category.title}
-                items={category.items}
-                onTitleChange={(newTitle) => handleTitleChange(index, newTitle)}
-                onItemsChange={(newItems) => handleItemsChange(index, newItems)}
+                  initialTitle={index === 0 ? "Clothes" : ""}
+                  title={category.title}
+                  items={category.items}
+                  onTitleChange={(newTitle) => handleTitleChange(index, newTitle)}
+                  onItemsChange={(newItems) => handleItemsChange(index, newItems)}
+                  onDelete={() => handleOnDelete(index)}
                 />
-                
               </Stack>
             ))}
           </Stack>
