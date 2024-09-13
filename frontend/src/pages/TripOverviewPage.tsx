@@ -11,6 +11,11 @@ import {
   Button,
   Input,
   Checkbox,
+  Dropdown,
+  MenuButton,
+  Menu,
+  MenuItem,
+  ListDivider,
 } from '@mui/joy';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddIcon from '@mui/icons-material/Add';
@@ -23,6 +28,7 @@ import AddMemberModal from '../components/modal/AddMemberModal';
 import { User } from '../types.ts';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useFirestore } from "reactfire";
+import { DeleteForever, Person } from '@mui/icons-material';
 
 
 const formatDate = (date: Date) => {
@@ -68,12 +74,36 @@ const TripOverviewPage = () => {
           trips: [...(userData.trips || []), trip.tripId],
         };
         await setDoc(userRef, updatedUser);
-        alert(`Updated user trips for UID: ${userData.uid}`);
-      } else {
-        console.error("User does not exist");
       }
     }
   };
+
+  const handleDeleteMember = async (name: string) => {
+    if (trip) {
+      const updatedMembers = trip.members.filter(memberName => memberName !== name);
+      const updatedTrip = { ...trip, members: updatedMembers };
+      await setDoc(doc(firestore, "Trips", trip.tripId), updatedTrip);
+
+      // remove from users trips
+      const userToDelete = tripMembers.find(member => member.name === name);
+      if (userToDelete) {
+        const userRef = doc(firestore, "Users", userToDelete.uid);
+        const userDoc = await getDoc(userRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data() as User;
+          const updatedUserTrips = userData.trips?.filter(tripId => tripId !== trip.tripId) || [];
+          const updatedUser = {
+            ...userData,
+            trips: updatedUserTrips,
+          };
+          await setDoc(userRef, updatedUser);
+          alert(`Removed trip from user ${name}'s trips list`);
+        }
+      }
+    }
+  };
+
 
   const [todos, setTodos] = React.useState<string[]>(trip?.todos || []);
 
@@ -164,17 +194,34 @@ const TripOverviewPage = () => {
             <Typography level="h2" fontSize="30px">Members</Typography>
             <Stack direction="row" flexWrap="wrap" gap="24px">
               {tripMembers?.map((member, idx) => (
-                <Avatar
-                  key={idx}
-                  size="lg"
-                  sx={(theme) => ({
-                    boxShadow: theme.shadow.md,
-                    '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-                    '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
-                  })}
-                >
-                  {member?.name?.charAt(0) ?? '?'}
-                </Avatar>
+                <Dropdown key={idx}>
+                  <MenuButton variant="plain" sx={{ p: 0 }}>
+                    <Avatar
+                      size="lg"
+                      sx={(theme) => ({
+                        boxShadow: theme.shadow.md,
+                        '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
+                        '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
+                      })}
+                    >
+                      {member?.name?.charAt(0) ?? '?'}
+                    </Avatar>
+                  </MenuButton>
+                <Menu placement="bottom-end">
+                  {/* Display member's full name without any actions */}
+                  <MenuItem>
+                  <ListItemDecorator>
+                      <Person />
+                    </ListItemDecorator>{member.name}
+                  </MenuItem>
+                  <ListDivider />
+                  <MenuItem variant="soft" color="danger" onClick={() => handleDeleteMember(member.name)}>
+                    <ListItemDecorator>
+                      <DeleteForever />
+                    </ListItemDecorator>{' '}Delete
+                  </MenuItem>
+                </Menu>
+              </Dropdown>
               ))}
               {trip && (
           <AddMemberModal
