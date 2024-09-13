@@ -52,25 +52,6 @@ const TripOverviewPage = () => {
     }
   }, [allUsers, trip?.members]); // updating the icons as we add
 
-  // const handleAddMember = async (user: User) => {
-  //   if (trip) {
-  //     const updatedMembers = [...trip.members, user.name];
-  //     const updatedTrip = { ...trip, members: updatedMembers };
-  //     await setTrip(updatedTrip)
-
-  //     // add this trip to the members
-  //     const [userData, setUser] = useUser(user.uid);
-  //     if (userData) {
-  //       alert(`${userData.uid}`)
-  //       const updatedUser = {
-  //           ...userData,
-  //           trips: [...(user.trips || []), trip.tripId]
-  //       };
-  //       await setUser(updatedUser);
-  //     }
-
-  //   }
-  // };
   const firestore = useFirestore();
   const handleAddMember = async (user: User) => {
     if (trip) {

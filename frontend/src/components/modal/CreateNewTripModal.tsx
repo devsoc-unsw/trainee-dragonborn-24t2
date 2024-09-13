@@ -32,31 +32,30 @@ const [user, setUser] = useUser(authUser);
 
   const handleCreateTrip = async () => {
     // create trip
-    try {
-      const tripId = await createTrip(firestore, authUser, {
-        name: name,
-        destination: location,
-        from: Timestamp.fromDate(new Date(fromDate)),
-        to: Timestamp.fromDate(new Date(toDate)),
-      });
-      setTripId(tripId);
+    if (user) {
+      try {
+        const tripId = await createTrip(firestore, user.name, {
+          name: name,
+          destination: location,
+          from: Timestamp.fromDate(new Date(fromDate)),
+          to: Timestamp.fromDate(new Date(toDate)),
+        });
+        setTripId(tripId);
 
-      // add it to the users array
-      if (user) {
-      const updatedUser = {
-          ...user,
-          trips: [...(user.trips || []), tripId]
-      };
+        // add it to the users array
+        const updatedUser = {
+            ...user,
+            trips: [...(user.trips || []), tripId]
+        };
+        // put into the storefire
+        await setUser(updatedUser);
 
-      // put into the storefire
-      await setUser(updatedUser);
+        // closing modal and redirect to the created page
+        setOpen(false);
+        setLocation(`/tripoverview/${tripId}`);
+      } catch (error) {
+        console.error("Error creating trip: ", error);
       }
-
-      // closing modal and redirect to the created page
-      setOpen(false);
-      setLocation(`/tripoverview/${tripId}`);
-    } catch (error) {
-      console.error("Error creating trip: ", error);
     }
   };
 
