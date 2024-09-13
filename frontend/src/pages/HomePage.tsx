@@ -99,7 +99,7 @@ const HomePage = () => {
                       title={trip.name}
                       destination={trip.destination}
                       imageUrl='https://cdn.naturettl.com/wp-content/uploads/2020/04/25152036/how-to-find-great-locations-for-landscape-photography-11.jpg'
-                      linkTo={`/trip/${trip.tripId}`}
+                      linkTo={`/tripoverview/${trip.tripId}`}
                     />
                   ))
                 ) : (

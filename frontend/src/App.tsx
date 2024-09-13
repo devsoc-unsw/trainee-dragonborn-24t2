@@ -34,7 +34,7 @@ function App() {
           <Route path="/newtrip" component={NewTripPage} />
           <Route path="/tripoverview/:tripId" component={TripOverviewPage} />
           <Route path="/packinglist/:tripId" component={PackingListPage} />
-          <Route path="/itinerary" component={ItineraryPage} />
+          <Route path="/itinerary/:tripid" component={ItineraryPage} />
         </Switch>
       </FirestoreProvider>
     </CssVarsProvider>

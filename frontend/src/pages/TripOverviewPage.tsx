@@ -21,12 +21,11 @@ import {
 // import Info from '@mui/icons-material/Info';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddIcon from '@mui/icons-material/Add';
-import React, { useState } from 'react';
-import { useLocation } from 'wouter';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
+import React, { useState } from 'react';
+import { useLocation, useRoute } from 'wouter';
 import Add from '@mui/icons-material/Add';
-import { useTrip, useUsers } from "../firebase.ts"; 
-import { useRoute } from "wouter";
+import { useTrip, useUsers } from "../firebase.ts";
 
 // SHADOW
 // sx={
@@ -83,6 +82,9 @@ const TripOverviewPage = () => {
 		setLocationPath(`/packinglist/${tripId}`)
 	}
 	
+	const handleItineraryClick = () => {
+		setLocationPath(`/itinerary/${tripId}`);
+	}
 
 	return (
 
@@ -138,7 +140,7 @@ const TripOverviewPage = () => {
           
 				>
 					<ListItem>
-							<ListItemButton component="a" href="/itinerary">
+							<ListItemButton onClick={handleItineraryClick}>
 								<ListItemDecorator>
 									<CalendarTodayIcon sx={{fontSize: '24px', color:'var(--tertiary-color)'}}/>
 								</ListItemDecorator>

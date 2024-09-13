@@ -24,6 +24,7 @@ const NewTripPage = () => {
   const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFromDate(event.target.value)
   }
+
   const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setToDate(event.target.value)
   }
@@ -34,7 +35,8 @@ const NewTripPage = () => {
       name: name,
       destination: location,
       from: Timestamp.fromDate(new Date(fromDate)),
-      to: Timestamp.fromDate(new Date(toDate))
+      to: Timestamp.fromDate(new Date(toDate)),
+      itinerary: []
     })
     setTripId(tripId)
     setLocationPath(`/tripoverview/${tripId}`) // TODO: ???

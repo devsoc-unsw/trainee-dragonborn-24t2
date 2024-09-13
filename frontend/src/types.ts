@@ -16,4 +16,16 @@ export type Trip = {
   to: Timestamp;
   members: string[]; // list of usernames
   todos: string[];
+  itinerary: DaySchedule[]; // for the itinerary page
+}
+
+export type DaySchedule = {
+  date: Timestamp;
+  dayEvents: DayEvent[];
+}
+
+export type DayEvent = {
+  name: String;
+  from: Timestamp;
+  to: Timestamp;
 }
