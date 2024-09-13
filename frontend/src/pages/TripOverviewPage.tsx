@@ -21,8 +21,8 @@ import { useTrip, useAllUsers, useUser } from "../firebase.ts";
 import { useRoute } from "wouter";
 import AddMemberModal from '../components/modal/AddMemberModal';
 import { User } from '../types.ts';
-import { collection, doc, documentId, Firestore, getDoc, query, setDoc, where } from "firebase/firestore";
-import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "reactfire";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useFirestore } from "reactfire";
 
 
 const formatDate = (date: Date) => {
@@ -35,12 +35,10 @@ const formatDate = (date: Date) => {
 };
 
 const TripOverviewPage = () => {
-  const [setToDo] = useState("");
   const [match, params] = useRoute("/tripoverview/:tripId");
   const tripId = params?.tripId;
   const [trip, setTrip] = useTrip(tripId ?? "");
   const [, setLocationPath] = useLocation();
-  const [openAddMemberModal, setOpenAddMemberModal] = useState(false);
 
   const allUsers = useAllUsers();
   const [tripMembers, setTripMembers] = useState<User[]>([]);
@@ -55,19 +53,16 @@ const TripOverviewPage = () => {
   const firestore = useFirestore();
   const handleAddMember = async (user: User) => {
     if (trip) {
-      // Update trip members
       const updatedMembers = [...trip.members, user.name];
       const updatedTrip = { ...trip, members: updatedMembers };
       await setDoc(doc(firestore, "Trips", trip.tripId), updatedTrip);
 
-      // Fetch user data
+      // get added Member data and update
       const userRef = doc(firestore, "Users", user.uid);
       const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
         const userData = userDoc.data() as User;
-
-        // Update user's trips
         const updatedUser = {
           ...userData,
           trips: [...(userData.trips || []), trip.tripId],
@@ -183,7 +178,7 @@ const TripOverviewPage = () => {
               ))}
               {trip && (
           <AddMemberModal
-            handleAddMember={handleAddMember} // Pass the function to handle adding members
+            handleAddMember={handleAddMember} // so handling members is done in overview page
           />
         )}
 

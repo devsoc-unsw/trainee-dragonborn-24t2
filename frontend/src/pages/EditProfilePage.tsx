@@ -29,6 +29,8 @@ const EditProfilePage = () => {
         }
       }
 
+      // TODO: fix to actually update the auth values
+
       // update in datastore
       await setUser({ ...user, name, email});
       setLocation('/profile') // redirect

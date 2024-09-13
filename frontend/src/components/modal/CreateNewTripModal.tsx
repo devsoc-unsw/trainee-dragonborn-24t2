@@ -47,7 +47,7 @@ const [user, setUser] = useUser(authUser);
             ...user,
             trips: [...(user.trips || []), tripId]
         };
-        // put into the storefire
+        // put into the firestore data
         await setUser(updatedUser);
 
         // closing modal and redirect to the created page

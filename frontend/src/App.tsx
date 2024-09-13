@@ -1,5 +1,5 @@
 import './App.css'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Route, Switch, Redirect, useLocation } from 'wouter';
 import { Button, CssBaseline, CssVarsProvider } from '@mui/joy';
 import { getFirestore } from 'firebase/firestore';
