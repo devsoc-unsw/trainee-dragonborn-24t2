@@ -8,28 +8,57 @@ import { useTrip } from "../firebase.ts";
 import { useState } from 'react';
 import { useEffect } from 'react';
 
+interface Item {
+  text: string;
+  checked: boolean;
+}
+
+interface Category {
+  title: string;
+  items: Item[];
+}
+
 const PackingListPage = () => {
   const [match, params] = useRoute("/packinglist/:tripId");
   const tripId = params?.tripId; // Get the tripId from the URL
   const [trip, setTrip] = useTrip(tripId ?? "");
-  const initialCategories = trip?.packing || [{ title: 'Clothes', items: [''] }]
-  const [categories, setCategories] = useState(initialCategories);
+  const initialCategories: Category[] = (trip?.packing || [{ title: 'Clothes', items: [{ text: '', checked: false }] }]).map((category: any) => ({
+    title: category.title,
+    items: Array.isArray(category.items)
+      ? category.items.map((item: any) =>
+          typeof item === 'string' ? { text: item, checked: false } : item
+        )
+      : [],
+  }));
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   
   useEffect(() => {
     if (trip?.packing) {
-      setCategories(trip.packing); // Update categories if trip.packing changes
+      const transformedPacking = trip.packing.map((category: any) => ({
+        title: category.title,
+        items: Array.isArray(category.items)
+          ? category.items.map((item: any) =>
+              typeof item === 'string' ? { text: item, checked: false } : item
+            )
+          : [],
+      }));
+      setCategories(transformedPacking);
     }
   }, [trip]);
 
   const handleAddCategory = () => {
-    const newCategory = { title: '', items: [''] };
+    const newCategory = { title: '', items: [{ text: '', checked: false}] };
     const updatedCategories = [...categories, newCategory];
     setCategories(updatedCategories);
     
     if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked })) 
+      }));
       setTrip({
         ...trip,
-        packing: updatedCategories, 
+        packing: updatedPacking, 
       });
     }
   };
@@ -41,23 +70,31 @@ const PackingListPage = () => {
     setCategories(updatedCategories);
 
     if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked }))
+      }));
       setTrip({
         ...trip,
-        packing: updatedCategories, 
+        packing: updatedPacking, 
       });
     }
   }
 
-  const handleItemsChange = (index: number, newItems: string[]) => {
+  const handleItemsChange = (index: number, newItems: Item[]) => {
     const updatedCategories = categories.map((category, i) => 
       i === index ? { ...category, items: newItems } : category
     );
     setCategories(updatedCategories);
 
     if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked })) 
+      }));
       setTrip({
         ...trip,
-        packing: updatedCategories, 
+        packing: updatedPacking, 
         tripId: tripId
       });
     }
@@ -67,9 +104,13 @@ const PackingListPage = () => {
     const updatedCategories = categories.filter((_, i) => i !== index);
     setCategories(updatedCategories)
     if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked })) 
+      }));
       setTrip({
         ...trip,
-        packing: updatedCategories,
+        packing: updatedPacking,
       });
     }
   }
@@ -167,7 +208,7 @@ const PackingListPage = () => {
             // bgcolor="pink"
             sx={{
               overflowY: "hidden",
-              overflowX: "visible"
+              overflowX: "auto"
             }}
           >
             {categories.map((category, index) => (

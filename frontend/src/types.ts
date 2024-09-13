@@ -18,6 +18,6 @@ export type Trip = {
   todos: string[];
   packing: { 
     title: string;
-    items: string[];
+    items: { text: string; checked: boolean }[];
   }[]
 }

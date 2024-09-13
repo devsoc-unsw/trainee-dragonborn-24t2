@@ -4,15 +4,19 @@ import Clear from '@mui/icons-material/Clear';
 import { Button } from '@mui/joy';
 import { Stack } from '@mui/joy';
 
+interface Item {
+  text: string;
+  checked: boolean
+}
+
 interface ListCardProps {
   initialTitle?: string;
   title: string;
-  items: string[];
+  items: Item[];
   onTitleChange: (newTitle: string) => void;
-  onItemsChange: (newItems: string[]) => void;
+  onItemsChange: (newItems: Item[]) => void;
   onDelete: () => void;
 }
-
 export default function ListCard({ 
   title = '',
   items = [],
@@ -20,15 +24,20 @@ export default function ListCard({
   onItemsChange,
   onDelete,
 }: ListCardProps) {
-  const onChangeTodo = (idx: number, newTodo: string) => {
+  const onChangeTodo = (idx: number, newText: string) => {
     const newTodos = [...items];
-    newTodos[idx] = newTodo;
+    newTodos[idx].text = newText;
     onItemsChange(newTodos); 
   };
-  
+
+  const toggleCheck = (idx: number) => {
+    const newTodos = [...items];
+    newTodos[idx].checked = !newTodos[idx].checked; 
+    onItemsChange(newTodos); 
+  };
 
   const addNewTodo = () => {
-    onItemsChange([...items, ""]);
+    onItemsChange([...items, { text: "", checked: false }]);
   };
 
   return (
@@ -82,8 +91,12 @@ export default function ListCard({
         role="group" 
         aria-labelledby="filter-status" 
         sx={{ 
-            maxHeight: "calc(100vh - 380px)", 
-            overflowY: "auto",
+          maxHeight: "calc(97vh - 380px)", 
+          overflowY: "auto",
+          // overflow: "hidden",
+          // '&:hover': {
+          //   overflowY: "auto"
+          // }
         }}
       >
         <List>
@@ -91,6 +104,8 @@ export default function ListCard({
             <ListItem key={idx} variant="plain">
               <Checkbox 
                 variant="soft"
+                checked={item.checked}
+                onChange={() => toggleCheck(idx)}
                 sx={{
                   '& .MuiCheckbox-checkbox': {
                     borderRadius: '50%', 
@@ -108,7 +123,7 @@ export default function ListCard({
               <Input
                 variant="plain"
                 placeholder="New item"
-                value={item}
+                value={item.text}
                 onChange={(event) => onChangeTodo(idx, event.target.value)}
                 sx={{ 
                   color: "black", 
@@ -122,10 +137,11 @@ export default function ListCard({
             onClick={addNewTodo} 
             sx={{ 
               marginBottom: "-10px",
+              // padding: "20px 20px",
               color: "black", 
               justifyContent: 'center',
               '&:hover': {
-                  backgroundColor: '#f5f5f7',
+                  backgroundColor: 'transparent',
                 }
             }}
           >
