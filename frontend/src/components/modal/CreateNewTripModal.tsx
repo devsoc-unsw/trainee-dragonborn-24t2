@@ -4,6 +4,8 @@ import { useUser, createTrip } from '../../firebase';
 import { useFirestore } from 'reactfire';
 import { Timestamp } from 'firebase/firestore';
 import { useLocalStorage } from 'usehooks-ts';
+import ItineraryPage from '../../pages/Itinerarypage';
+import { DaySchedule } from '../../types';
 
 export default function CreateNewTripModal() {
 const [authUser] = useLocalStorage("auth-user", "");
@@ -33,12 +35,20 @@ const [user, setUser] = useUser(authUser);
   const handleClick = async () => {
     // create trip
     try {
+      // initialise the itinerary to be empty 
+      let itinerary: DaySchedule[] = [];
+      for (let day = (new Date(fromDate)); day <= (new Date(toDate)); day.setDate(day.getDate() + 1)) {
+        itinerary.push({date: Timestamp.fromDate(day), dayEvents: []});
+      }
       const tripId = await createTrip(firestore, authUser, {
         name: name,
         destination: location,
         from: Timestamp.fromDate(new Date(fromDate)),
         to: Timestamp.fromDate(new Date(toDate)),
+        itinerary: itinerary
       });
+
+
       setTripId(tripId);
 
       // add it to the users array

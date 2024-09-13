@@ -47,24 +47,38 @@ const ItineraryPage = () => {
 	const handleBackClick = () => {
 		setLocationPath(`/tripoverview/${tripId}`)
 	}
-	
+	const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = { 
+        day: 'numeric', 
+        month: 'short', 
+        year: '2-digit' 
+    };
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
+};
+  
+  // trip.itinerary 
+    // dayevents
+
     return (
       <Stack justifyContent='center' alignItems='center' width='100%' height='100%' bgcolor='var(--background-color)'>
         <Button sx={{position:'absolute', top:'70px', left:'60px'}} onClick={handleBackClick}> back </Button>
+
+        
         <Stack  width='80%' height='70%' flexDirection='row' gap='20px' sx={{border:'solid', borderColor:'grey'}}>
           <Stack flexDirection='column'>times</Stack>
-          { days.map((day) => 
+
+          {/* meant to display each day as a block */}
+          { trip?.itinerary.map((day) => 
             <Stack height='100%' width='20%' bgcolor='white' sx={{border:'solid', borderColor:'grey', borderRadius:'10px'}} flexDirection={"column"} p="20px" gap="10px">
               
               {/* day date and icon */}
               <Stack flexDirection='row' justifyContent='space-between' alignItems='center' pt="24px">
                 <Stack flexDirection='column'>
-                  <Typography level="h3">{day}</Typography>
-                  <Typography level="title-sm">{date}</Typography>
+                  <Typography level="h3">`monday`</Typography>
+                  <Typography level="title-sm">`22/04/2024`</Typography> {/* ${formatDate(day.date.toDate())} display date*/}
                 </Stack>
                 <WbSunnyIcon sx={{fontSize:'44px', color:'var(--tertiary-color)'}} />
               </Stack>  
-              {/* navigation arrows */}
 
               {/* one day schedule */}
               <Stack bgcolor='var(--background-color)' height="80%"  sx={
