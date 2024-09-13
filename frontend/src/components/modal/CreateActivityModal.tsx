@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Input, Stack, Typography, Modal, ModalClose, Sheet } from '@mui/joy';
-import { useUser, createActivity } from '../../firebase';
+import { useUser, createActivity, useActivity, useTrip } from '../../firebase';
 import { useFirestore } from 'reactfire';
 import { Timestamp } from 'firebase/firestore';
 import { useLocalStorage } from 'usehooks-ts';
+import { Trip } from '../../types';
 
-export default function CreateActivityModal({ tripId }: { tripId: string }) { // prop shorthand
+export default function CreateActivityModal({ trip}: { trip: Trip }) { // prop shorthand
   const [authUser] = useLocalStorage("auth-user", "");
   const [user,] = useUser(authUser);
   const [name, setName] = useState("");
@@ -14,6 +15,7 @@ export default function CreateActivityModal({ tripId }: { tripId: string }) { //
   const [toTime, setToTime] = useState("");
   const [open, setOpen] = useState(false);
   const firestore = useFirestore();
+  const [tripData, updateTrip] = useTrip(trip.tripId);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -31,18 +33,24 @@ export default function CreateActivityModal({ tripId }: { tripId: string }) { //
     setToTime(event.target.value);
   };
 
-  const handleCreateActivity = async (tripId: string) => {
+  const handleCreateActivity = async (trip: Trip) => {
     if (user) {
       const fromDateTime = new Date(`${date}T${fromTime}`);
       const toDateTime = new Date(`${date}T${toTime}`);
-      await createActivity(firestore, tripId, {
+      const activityId = await createActivity(firestore, trip.tripId, {
         name,
         date: Timestamp.fromDate(new Date(date)),
         starttime: Timestamp.fromDate(fromDateTime),
         endtime: Timestamp.fromDate(toDateTime),
       });
-      setOpen(false);
+
+      // add to trips activities
+      if (tripData) {
+        const updatedActivities = [...(trip.activities || []), activityId];
+        await updateTrip({...tripData, activities: updatedActivities});
+      }
     }
+    setOpen(false);
   };
 
   return (
@@ -169,7 +177,7 @@ export default function CreateActivityModal({ tripId }: { tripId: string }) { //
               </Stack>
             </Stack>
             <Button
-              onClick={() => handleCreateActivity(tripId)}
+              onClick={() => handleCreateActivity(trip)}
               sx={{
                 width: "50%",
                 backgroundColor: 'var(--primary-color)',
