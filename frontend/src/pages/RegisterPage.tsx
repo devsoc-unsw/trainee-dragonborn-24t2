@@ -43,6 +43,7 @@ const RegisterPage = () => {
         uid: user.uid,
         email: user.email,
         name,
+        profileimg: ""
       }, user.uid);
       setLocation("/home");
     }

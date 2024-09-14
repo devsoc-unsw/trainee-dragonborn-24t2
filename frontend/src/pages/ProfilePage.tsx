@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import "../styles.css";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupIcon from "@mui/icons-material/Group";
@@ -5,13 +6,16 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { Avatar, Button, Card, Stack, Typography } from "@mui/joy";
 import { getAuth, signOut } from "firebase/auth";
 import { Link, useLocation } from "wouter";
-import AddFriendModal from "../components/modal/AddFriendModal.tsx";
+import AddFriendModal from "../components/modal/AddFriendModal";
+import EditProfileImageModal from "../components/modal/EditProfileImageModal";
 import { useAuthUser } from "../firebase";
 
 const ProfilePage = () => {
   const [user] = useAuthUser();
   const [, setLocation] = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
+  const profileImg = user?.profileimg;
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -19,6 +23,9 @@ const ProfilePage = () => {
     localStorage.removeItem("auth-user");
     setLocation("/login");
   };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <Stack
@@ -32,107 +39,120 @@ const ProfilePage = () => {
         justifyContent="center"
         alignItems="center"
         width="80%"
-        gap={5}
       >
-        {/* left */}
-        <Stack width="30%" direction="column" justifyContent="center">
+        {/* leftyu */}
+        <Stack
+          width="50%"
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
           <Card
             sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              p: 3,
+              p: 10,
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
             }}
           >
-            <Avatar sx={{ "--Avatar-size": "100px" }}>{userInitial}</Avatar>
+            <Avatar
+              src={profileImg || undefined}
+              sx={{ "--Avatar-size": "150px" }}
+            >
+              {!profileImg && userInitial}
+            </Avatar>
             <Typography level="h3">{user?.name}</Typography>
             <Typography>{user?.email}</Typography>
+            <Button
+              variant="soft"
+              onClick={openModal}
+              sx={{
+                bgcolor: "var(--primary-colour)",
+                mt: 2,
+              }}
+            >
+              Edit Profile Picture
+            </Button>
+            {user && (
+              <EditProfileImageModal
+                user={user}
+                open={isModalOpen}
+                onClose={closeModal}
+              />
+            )}
+          </Card>
+        </Stack>
 
-            {/* buttons */}
-            <Stack sx={{ m: 2 }} spacing={2}>
-              <Link to="/viewfriends">
+        {/* righty */}
+        <Stack
+          width="40%"
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Card
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              p: 4,
+              width: "100%",
+              textAlign: "center",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
+            }}
+          >
+            {/* profiel actions */}
+            <Stack sx={{ m: 2 }} spacing={2} width="100%" alignItems="center">
+              <Link to="/viewfriends" style={{ width: "100%" }}>
                 <Button
                   variant="plain"
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-start",
+                    justifyContent: "center",
                     width: "100%",
-                    color: "black"
+                    color: "black",
                   }}
-                  startDecorator={<GroupIcon sx={{ fontSize: 20 }}/>}
+                  startDecorator={<GroupIcon sx={{ fontSize: 20 }} />}
                 >
                   View Friends
                 </Button>
               </Link>
-              <Link to="/editprofile">
+              <Link to="/editprofile" style={{ width: "100%" }}>
                 <Button
                   variant="plain"
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-start",
+                    justifyContent: "center",
                     width: "100%",
-                    color: "black"
+                    color: "black",
                   }}
-                  startDecorator={<EditIcon sx={{ fontSize: 20 }}/>}
+                  startDecorator={<EditIcon sx={{ fontSize: 20 }} />}
                 >
                   Edit Profile
                 </Button>
               </Link>
-              <Link to="/login">
-                <Button
-                  variant="plain"
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    width: "100%",
-                    color: "black"
-                  }}
-                  startDecorator={<LogoutIcon sx={{ fontSize: 20 }}/>}
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
-              </Link>
+              <Button
+                variant="plain"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                  color: "black",
+                }}
+                startDecorator={<LogoutIcon sx={{ fontSize: 20 }} />}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
             </Stack>
-            <AddFriendModal/>
-          </Card>
-        </Stack>
-
-        {/* right */}
-        <Stack width="60%" direction="column" justifyContent="center">
-          <Card
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              p: 3,
-              gap: 4,
-            }}
-          >
-            {/* freidsn*/}
-            <Stack
-              direction="column"
-              alignItems="center"
-              width="100%"
-            >
-              <Typography level="h4">Friends</Typography>
-              <Typography>No friends yet.</Typography>
-            </Stack>
-
-            {/* requests */}
-            <Stack
-              direction="column"
-              alignItems="center"
-              width="100%"
-            >
-              <Typography level="h4">Friend Requests</Typography>
-              <Typography>No friend requests.</Typography>
-            </Stack>
+            {/*modal */}
+            <AddFriendModal />
           </Card>
         </Stack>
       </Stack>

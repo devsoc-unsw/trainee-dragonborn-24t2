@@ -6,6 +6,7 @@ export type User = {
   name: string;
   // password: string;
   trips: string[]; // list of trip ids
+  profileimg: string;
 }
 
 export type Trip = {
@@ -21,7 +22,7 @@ export type Trip = {
     title: string;
     items: { text: string; checked: boolean }[];
   }[]
-  image?: string;
+  image: string;
   itinerary: DaySchedule[]; // for the itinerary page
 }
 

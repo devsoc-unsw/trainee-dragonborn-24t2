@@ -11,7 +11,6 @@ export default function CreateNewTripModal() {
   const [name, setName] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
   const [imgDataUrl, setImgDataUrl] = useState("");
   const placeholderImg = "https://i.pinimg.com/originals/77/0c/c8/770cc8f5767e1d407c2fb723318345e5.jpg"
@@ -59,7 +58,7 @@ export default function CreateNewTripModal() {
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         itinerary.push({
           date: Timestamp.fromDate(new Date(d)),
-          dayEvents: [] 
+          dayEvents: []
         });
       }
 
@@ -71,25 +70,6 @@ export default function CreateNewTripModal() {
         image: imgDataUrl || placeholderImg,
         itinerary: itinerary
       });
-
-      // add the image to storage and link to trip
-      // let imgUrl = "";
-      // if (selectedFile) {
-      //   const storageRef = ref(storage, `trips/${tripId}/${selectedFile.name}`);
-
-      //   console.log("Starting image upload...");
-      //   await uploadBytes(storageRef, selectedFile);
-      //   console.log("Image uploaded successfully!");
-
-      //   imgUrl = await getDownloadURL(storageRef);
-      //   console.log("Image URL:", imgUrl);
-      // } else {
-      //   imgUrl = "path/to/default/image.jpg"; // TODO: DEFAULT
-      // }
-
-      // updated created trip (trip id for imgurl)
-      // const tripRef = doc(firestore, "Trips", tripId);
-      // await setDoc(tripRef, { imgUrl: imgUrl }, { merge: true });
 
       // add it to the users array
       const updatedUser = {
