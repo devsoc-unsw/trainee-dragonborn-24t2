@@ -222,7 +222,7 @@ const TripOverviewPage = () => {
               "--joy-shadowRing": "inset 0 -3px 0 rgba(0 0 0 / 0.24)",
               width: "100%", borderRadius: "lg",
             })}
-          >	
+          >
 		  	<img src={trip.image} alt="trip image" />
           </AspectRatio>
           <List sx={{ maxWidth: 320, paddingTop: "20px" }}>
@@ -249,9 +249,20 @@ const TripOverviewPage = () => {
           <Stack>
             <Typography level="h2" fontSize="30px">Members</Typography>
             <Stack direction="row" flexWrap="wrap" gap="24px">
-              {tripMembers?.map((member, idx) => (
-                <Dropdown key={idx}>
-                  <MenuButton variant="plain" sx={{ p: 0 }}>
+            {tripMembers?.map((member, idx) => (
+              <Dropdown key={idx}>
+                <MenuButton variant="plain" sx={{ p: 0 }}>
+                  {member.profileimg ? (
+                    <Avatar
+                      size="lg"
+                      src={member.profileimg}
+                      sx={(theme) => ({
+                        boxShadow: theme.shadow.md,
+                        "--joy-shadowChannel": theme.vars.palette.primary.mainChannel,
+                        "--joy-shadowRing": "inset 0 -3px 0 rgba(0 0 0 / 0.24)",
+                      })}
+                    />
+                  ) : ( // else avatar
                     <Avatar
                       size="lg"
                       sx={(theme) => ({
@@ -262,24 +273,24 @@ const TripOverviewPage = () => {
                     >
                       {member?.name?.charAt(0) ?? "?"}
                     </Avatar>
-                  </MenuButton>
-                  <Menu placement="bottom-end">
-                    {/* display name */}
-                    <MenuItem>
-                      <ListItemDecorator>
-                        <Person/>
-                      </ListItemDecorator>{member.name}
-                    </MenuItem>
-                    <ListDivider/>
-                    {/* delete action */}
-                    <MenuItem variant="soft" color="danger" onClick={() => handleDeleteMember(member.uid)}>
-                      <ListItemDecorator>
-                        <DeleteForever/>
-                      </ListItemDecorator>{" "}Delete
-                    </MenuItem>
-                  </Menu>
-                </Dropdown>
-              ))}
+                  )}
+                </MenuButton>
+                <Menu placement="bottom-end">
+                  <MenuItem>
+                    <ListItemDecorator>
+                      <Person/>
+                    </ListItemDecorator>{member.name}
+                  </MenuItem>
+                  <ListDivider/>
+                  {/* delete action */}
+                  <MenuItem variant="soft" color="danger" onClick={() => handleDeleteMember(member.uid)}>
+                    <ListItemDecorator>
+                      <DeleteForever/>
+                    </ListItemDecorator>{" "}Delete
+                  </MenuItem>
+                </Menu>
+              </Dropdown>
+            ))}
               {trip && (
                 <AddMemberModal
                   handleAddMember={handleAddMember} // so handling members is done in overview page
