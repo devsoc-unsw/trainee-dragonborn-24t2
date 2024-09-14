@@ -21,6 +21,7 @@ export type Trip = {
     title: string;
     items: { text: string; checked: boolean }[];
   }[]
+  image?: string;
 }
 
 export type Activity = {

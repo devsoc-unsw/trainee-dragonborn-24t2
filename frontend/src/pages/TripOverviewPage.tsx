@@ -200,7 +200,11 @@ const TripOverviewPage = () => {
               width: "100%", borderRadius: "lg",
             })}
           >
-            <img src="/japan.jpg" alt="Trip Destination" />
+            {trip?.image ? (
+				<img src={trip.image} alt="trip image" />
+			) : (
+				<img src="../assets/images/tripPlaceholder.jpeg" alt="placeholder" />
+			)}
           </AspectRatio>
           <List sx={{ maxWidth: 320, paddingTop: '20px' }}>
             <ListItem>
