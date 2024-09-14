@@ -2,7 +2,7 @@ import '../styles.css';
 import { Button, Input, Stack, Typography } from "@mui/joy";
 import photo from "../assets/images/login.png";
 import { Link, useLocation } from "wouter";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useLocalStorage } from 'usehooks-ts';
 import LoginPasswordInput from '../components/LoginPasswordInput';
@@ -12,6 +12,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
   const [, setLocation] = useLocation();
+  const auth = getAuth();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value)
@@ -22,7 +23,6 @@ const LoginPage = () => {
   }
 
   const handleLogin = async () => {
-    const auth = getAuth();
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -31,6 +31,12 @@ const LoginPage = () => {
       setLocation('/home');
     }
   };
+
+  useEffect(() => {
+    if (authUser) {
+      setLocation('/home');
+    }
+  }, [authUser, setLocation]);
 
   return (
     <Stack

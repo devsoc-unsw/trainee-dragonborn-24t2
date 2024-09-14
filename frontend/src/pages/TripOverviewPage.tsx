@@ -11,8 +11,8 @@ import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTrip, useAllUsers, useUser } from "../firebase.ts";
 import { useRoute } from "wouter";
 import AddMemberModal from '../components/modal/AddMemberModal';
-import { User } from '../types.ts';
-import { deleteDoc, doc, getDoc, query, setDoc } from "firebase/firestore";
+import { Trip, User } from '../types.ts';
+import { deleteDoc, doc, getDoc, query, setDoc, updateDoc } from "firebase/firestore";
 import { useFirestore } from "reactfire";
 import { DeleteForever, Person } from '@mui/icons-material';
 import CreateActivityModal from '../components/modal/CreateActivityModal.tsx';
@@ -32,22 +32,29 @@ const formatDate = (date: Date) => {
 const TripOverviewPage = () => {
   const [, params] = useRoute("/tripoverview/:tripId");
   const tripId = params?.tripId;
+
   const [trip, setTrip] = useTrip(tripId ?? "");
-  const [, setLocationPath] = useLocation();
+  const [loading, setLoading] = useState(true);
+  const [, setLocation] = useLocation();
 
   const allUsers = useAllUsers();
   const [tripMembers, setTripMembers] = useState<User[]>([]);
 
-  if (!trip) {
-    return <div>Loading...</div>;
-  }
-
   useEffect(() => {
+    if (tripId) {
+      setLoading(false);
+    }
+
+    // loading the data once we get trip
     if (allUsers && trip?.members) {
       const filteredMembers = allUsers.filter(user => trip.members.includes(user.uid));
       setTripMembers(filteredMembers);
     }
-  }, [allUsers, trip?.members]); // updating the icons as we add
+  }, [tripId, allUsers, trip?.members]);
+
+  if (!trip) {
+    return <div>Loading...</div>;
+  }
 
   const firestore = useFirestore();
   const handleAddMember = async (user: User) => {
@@ -98,20 +105,25 @@ const TripOverviewPage = () => {
     }
   };
 
-  const handleDeleteTrip = async () => {
+  const handleDeleteTrip = async (trip: Trip) => {
+    alert(`${trip.tripId}`)
     if (trip) {
       // delete from all the members trips[]
       const members = trip.members;
-      for (const memberId of members) {
-        const [userData, updateUser] = useUser(memberId);
-        if (userData) {
-          const updatedTrips = userData.trips?.filter(tripId => tripId !== trip.tripId) || [];
-          await updateUser({ ...userData, trips: updatedTrips });
-        }
+    for (const memberId of members) {
+      const userRef = doc(firestore, "Users", memberId);
+      const userData = await getDoc(userRef);
+      if (userData.exists()) {
+        const data = userData.data() as User;
+        const updatedTrips = data.trips?.filter(tripId => tripId !== trip.tripId) || [];
+        await updateDoc(userRef, { trips: updatedTrips });
       }
+    }
 
       // delete all the activities
-
+      for (const activityId of trip.activities || []) {
+        await deleteDoc(doc(firestore, "Activities", activityId));
+      }
 
       // delete the actial trip
       try {
@@ -122,12 +134,8 @@ const TripOverviewPage = () => {
         alert("Error deleting trip. Please try again.");
       }
     }
-
-    setLocationPath("/home");
-
+    setLocation('/home');
   };
-
-
 
   const [todos, setTodos] = React.useState<string[]>(trip?.todos || []);
 
@@ -153,7 +161,7 @@ const TripOverviewPage = () => {
   };
 
   const handlePackingClick = () => {
-    setLocationPath(`/packinglist/${tripId}`);
+    setLocation(`/packinglist/${tripId}`);
   };
 
   return (
@@ -173,7 +181,7 @@ const TripOverviewPage = () => {
         justifyContent="space-around"
         py="100px"
       >
-        <TripMenu style={{ position: 'absolute', top: 140, right: 200 }} handleDeleteTrip={handleDeleteTrip} />
+        <TripMenu style={{ position: 'absolute', top: 140, right: 150 }} handleDeleteTrip={() => handleDeleteTrip(trip)} />
         <Stack width="60%" direction="column">
           <Stack direction="row" justifyContent="space-between" alignItems="flex-end" pb="10px">
             <Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{ color: 'var(--tertiary-color)' }}>

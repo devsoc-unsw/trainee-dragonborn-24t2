@@ -32,7 +32,7 @@ const [user, setUser] = useUser(authUser);
   const handleCreateTrip = async () => {
     // create trip
     if (user) {
-      const tripId = await createTrip(firestore, user.name, {
+        const tripId = await createTrip(firestore, user.uid, {
         name: name,
         destination: location,
         from: Timestamp.fromDate(new Date(fromDate)),

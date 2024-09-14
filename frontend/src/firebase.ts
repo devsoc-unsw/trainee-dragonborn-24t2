@@ -62,16 +62,18 @@ export const useUsers = (usernames: string[]): User[] | undefined => {
 // Create a trip and return its ID
 export const createTrip = async (
   firestore: Firestore,
-  creatorUsername: string,
-  trip: Omit<Trip, "tripId" | "members" | "todos">
+  creatorId: string,
+  trip: Omit<Trip, "tripId" | "members" | "todos" | "activities" | "packing">
 ): Promise<string> => {
   const tripId = crypto.randomUUID();
 
   const tripRef = doc(firestore, "Trips", tripId);
   await setDoc(tripRef, {
     ...trip,
-    members: [creatorUsername],
+    members: [creatorId],
     todos: [],
+    activities: [],
+    packing: []
   });
   return tripId;
 };
@@ -109,7 +111,7 @@ export const useTrips = (tripIds: string[]): Trip[] | undefined => {
 export const createActivity = async (
   firestore: Firestore,
   tripId: string,
-  activity: Omit<Activity, "activityId" | "tripId">
+  activity: Omit<Activity, "activityId" | "tripId" >
 ): Promise<string> => {
   // Generate a new activity ID
   const activityId = crypto.randomUUID();
@@ -121,7 +123,7 @@ export const createActivity = async (
   await setDoc(activityRef, {
     tripId,
     activityId,
-    ...activity
+    ...activity,
   });
 
   return activityId;

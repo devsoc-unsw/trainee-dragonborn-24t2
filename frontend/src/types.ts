@@ -17,6 +17,10 @@ export type Trip = {
   members: string[]; // list of usernames
   todos: string[];
   activities: string[]
+  packing: {
+    title: string;
+    items: { text: string; checked: boolean }[];
+  }[]
 }
 
 export type Activity = {
