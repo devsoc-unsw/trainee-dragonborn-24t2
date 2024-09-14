@@ -1,32 +1,43 @@
-import '../styles.css';
+import "../styles.css";
+import { DeleteForever, Person } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import LuggageRoundedIcon from "@mui/icons-material/LuggageRounded";
 import {
-  Avatar, List, ListItem, ListItemButton, ListItemDecorator,
-  AspectRatio, Stack, Typography, Input, Checkbox, Dropdown,
-  MenuButton, Menu, MenuItem, ListDivider } from '@mui/joy';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AddIcon from '@mui/icons-material/Add';
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
-import { useTrip, useAllUsers, useUser } from "../firebase.ts";
-import { useRoute } from "wouter";
-import AddMemberModal from '../components/modal/AddMemberModal';
-import { Trip, User } from '../types.ts';
-import { deleteDoc, doc, getDoc, query, setDoc, updateDoc } from "firebase/firestore";
+  AspectRatio,
+  Avatar,
+  Checkbox,
+  Dropdown,
+  Input,
+  List,
+  ListDivider,
+  ListItem,
+  ListItemButton,
+  ListItemDecorator,
+  Menu,
+  MenuButton,
+  MenuItem,
+  Stack,
+  Typography
+} from "@mui/joy";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { useFirestore } from "reactfire";
-import { DeleteForever, Person } from '@mui/icons-material';
-import CreateActivityModal from '../components/modal/CreateActivityModal.tsx';
-import TripMenu from '../components/modal/TripMenu';
-
+import { useLocation, useRoute } from "wouter";
+import AddMemberModal from "../components/modal/AddMemberModal";
+import CreateActivityModal from "../components/modal/CreateActivityModal.tsx";
+import TripMenu from "../components/modal/TripMenu";
+import { useAllUsers, useTrip } from "../firebase.ts";
+import { Trip, User } from "../types.ts";
 
 
 const formatDate = (date: Date) => {
   const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short',
-    year: '2-digit'
+    day: "numeric",
+    month: "short",
+    year: "2-digit"
   };
-  return new Intl.DateTimeFormat('en-GB', options).format(date);
+  return new Intl.DateTimeFormat("en-GB", options).format(date);
 };
 
 const TripOverviewPage = () => {
@@ -34,11 +45,13 @@ const TripOverviewPage = () => {
   const tripId = params?.tripId;
 
   const [trip, setTrip] = useTrip(tripId ?? "");
-  const [loading, setLoading] = useState(true);
+  const [todos, setTodos] = React.useState<string[]>(trip?.todos || []);
+  const [, setLoading] = useState(true);
   const [, setLocation] = useLocation();
 
   const allUsers = useAllUsers();
   const [tripMembers, setTripMembers] = useState<User[]>([]);
+  const firestore = useFirestore();
 
   useEffect(() => {
     if (tripId) {
@@ -56,7 +69,6 @@ const TripOverviewPage = () => {
     return <div>Loading...</div>;
   }
 
-  const firestore = useFirestore();
   const handleAddMember = async (user: User) => {
     if (trip) {
       const updatedMembers = [...trip.members, user.uid];
@@ -80,7 +92,7 @@ const TripOverviewPage = () => {
 
   const handleDeleteMember = async (uid: string) => {
     if (trip) {
-      alert(`${uid}`)
+      alert(`${uid}`);
       const updatedMembers = trip.members.filter(memberId => memberId !== uid);
       const updatedTrip = { ...trip, members: updatedMembers };
       await setDoc(doc(firestore, "Trips", trip.tripId), updatedTrip);
@@ -106,19 +118,19 @@ const TripOverviewPage = () => {
   };
 
   const handleDeleteTrip = async (trip: Trip) => {
-    alert(`${trip.tripId}`)
+    alert(`${trip.tripId}`);
     if (trip) {
       // delete from all the members trips[]
       const members = trip.members;
-    for (const memberId of members) {
-      const userRef = doc(firestore, "Users", memberId);
-      const userData = await getDoc(userRef);
-      if (userData.exists()) {
-        const data = userData.data() as User;
-        const updatedTrips = data.trips?.filter(tripId => tripId !== trip.tripId) || [];
-        await updateDoc(userRef, { trips: updatedTrips });
+      for (const memberId of members) {
+        const userRef = doc(firestore, "Users", memberId);
+        const userData = await getDoc(userRef);
+        if (userData.exists()) {
+          const data = userData.data() as User;
+          const updatedTrips = data.trips?.filter(tripId => tripId !== trip.tripId) || [];
+          await updateDoc(userRef, { trips: updatedTrips });
+        }
       }
-    }
 
       // delete all the activities
       for (const activityId of trip.activities || []) {
@@ -134,10 +146,9 @@ const TripOverviewPage = () => {
         alert("Error deleting trip. Please try again.");
       }
     }
-    setLocation('/home');
+    setLocation("/home");
   };
 
-  const [todos, setTodos] = React.useState<string[]>(trip?.todos || []);
 
   const onChangeTodo = async (idx: number, newTodo: string) => {
     const newTodos = [...todos];
@@ -169,9 +180,9 @@ const TripOverviewPage = () => {
       direction="column"
       alignItems={"center"}
       height="100%"
-      bgcolor={'var(--background-color)'}
-      fontFamily={'var(--font-primary)'}
-      color={'var(--tertiary-color)'}
+      bgcolor={"var(--background-color)"}
+      fontFamily={"var(--font-primary)"}
+      color={"var(--tertiary-color)"}
     >
       <Stack
         width="80%"
@@ -181,36 +192,41 @@ const TripOverviewPage = () => {
         justifyContent="space-around"
         py="100px"
       >
-        <TripMenu style={{ position: 'absolute', top: 140, right: 150 }} handleDeleteTrip={() => handleDeleteTrip(trip)} />
+        <TripMenu
+          style={{ position: "absolute", top: 140, right: 150 }}
+          handleDeleteTrip={() => handleDeleteTrip(trip)}
+        />
         <Stack width="60%" direction="column">
           <Stack direction="row" justifyContent="space-between" alignItems="flex-end" pb="10px">
-            <Typography fontFamily={'var(--font-primary)'} level="h1" fontSize="53px" pl="20px" sx={{ color: 'var(--tertiary-color)' }}>
+            <Typography
+              fontFamily={"var(--font-primary)"}
+              level="h1"
+              fontSize="53px"
+              pl="20px"
+              sx={{ color: "var(--tertiary-color)" }}
+            >
               {trip?.destination}
             </Typography>
             <Typography level="body-lg" fontSize="24px" fontWeight="bold">
-              {trip?.from && trip?.to ? `${formatDate(trip.from.toDate())} - ${formatDate(trip.to.toDate())}` : ''}
+              {trip?.from && trip?.to ? `${formatDate(trip.from.toDate())} - ${formatDate(trip.to.toDate())}` : ""}
             </Typography>
           </Stack>
           <AspectRatio
             ratio="16/9"
             sx={(theme) => ({
               boxShadow: theme.shadow.md,
-              '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-              '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
+              "--joy-shadowChannel": theme.vars.palette.primary.mainChannel,
+              "--joy-shadowRing": "inset 0 -3px 0 rgba(0 0 0 / 0.24)",
               width: "100%", borderRadius: "lg",
             })}
           >
-            {trip?.image ? (
-				<img src={trip.image} alt="trip image" />
-			) : (
-				<img src="../assets/images/tripPlaceholder.jpeg" alt="placeholder" />
-			)}
+            <img src="/japan.jpg" alt="Trip Destination"/>
           </AspectRatio>
-          <List sx={{ maxWidth: 320, paddingTop: '20px' }}>
+          <List sx={{ maxWidth: 320, paddingTop: "20px" }}>
             <ListItem>
               <ListItemButton component="a" href="/itinerary">
                 <ListItemDecorator>
-                  <CalendarTodayIcon sx={{ fontSize: '24px', color: 'var(--tertiary-color)' }} />
+                  <CalendarTodayIcon sx={{ fontSize: "24px", color: "var(--tertiary-color)" }}/>
                 </ListItemDecorator>
                 <Typography level="body-lg" fontSize="24px" fontWeight="bold">View Itinerary</Typography>
               </ListItemButton>
@@ -218,7 +234,7 @@ const TripOverviewPage = () => {
             <ListItem>
               <ListItemButton onClick={handlePackingClick}>
                 <ListItemDecorator>
-                  <LuggageRoundedIcon sx={{ fontSize: '28px', color: 'var(--tertiary-color)' }} />
+                  <LuggageRoundedIcon sx={{ fontSize: "28px", color: "var(--tertiary-color)" }}/>
                 </ListItemDecorator>
                 <Typography level="body-lg" fontSize="24px" fontWeight="bold">View Packing List</Typography>
               </ListItemButton>
@@ -226,7 +242,7 @@ const TripOverviewPage = () => {
           </List>
         </Stack>
 
-        <Stack width='30%' gap="40px" paddingTop={'32px'}>
+        <Stack width="30%" gap="40px" paddingTop={"32px"}>
           <Stack>
             <Typography level="h2" fontSize="30px">Members</Typography>
             <Stack direction="row" flexWrap="wrap" gap="24px">
@@ -237,35 +253,35 @@ const TripOverviewPage = () => {
                       size="lg"
                       sx={(theme) => ({
                         boxShadow: theme.shadow.md,
-                        '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-                        '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
+                        "--joy-shadowChannel": theme.vars.palette.primary.mainChannel,
+                        "--joy-shadowRing": "inset 0 -3px 0 rgba(0 0 0 / 0.24)",
                       })}
                     >
-                      {member?.name?.charAt(0) ?? '?'}
+                      {member?.name?.charAt(0) ?? "?"}
                     </Avatar>
                   </MenuButton>
-                <Menu placement="bottom-end">
-                  {/* display name */}
-                  <MenuItem>
-                  <ListItemDecorator>
-                      <Person />
-                    </ListItemDecorator>{member.name}
-                  </MenuItem>
-                  <ListDivider />
-                  {/* delete action */}
-                  <MenuItem variant="soft" color="danger" onClick={() => handleDeleteMember(member.uid)}>
-                    <ListItemDecorator>
-                      <DeleteForever />
-                    </ListItemDecorator>{' '}Delete
-                  </MenuItem>
-                </Menu>
-              </Dropdown>
+                  <Menu placement="bottom-end">
+                    {/* display name */}
+                    <MenuItem>
+                      <ListItemDecorator>
+                        <Person/>
+                      </ListItemDecorator>{member.name}
+                    </MenuItem>
+                    <ListDivider/>
+                    {/* delete action */}
+                    <MenuItem variant="soft" color="danger" onClick={() => handleDeleteMember(member.uid)}>
+                      <ListItemDecorator>
+                        <DeleteForever/>
+                      </ListItemDecorator>{" "}Delete
+                    </MenuItem>
+                  </Menu>
+                </Dropdown>
               ))}
               {trip && (
-          <AddMemberModal
-            handleAddMember={handleAddMember} // so handling members is done in overview page
-          />
-        )}
+                <AddMemberModal
+                  handleAddMember={handleAddMember} // so handling members is done in overview page
+                />
+              )}
 
             </Stack>
           </Stack>
@@ -275,24 +291,24 @@ const TripOverviewPage = () => {
             <List
               sx={(theme) => ({
                 boxShadow: theme.shadow.md,
-                '--joy-shadowChannel': theme.vars.palette.primary.mainChannel,
-                '--joy-shadowRing': 'inset 0 -3px 0 rgba(0 0 0 / 0.24)',
-                borderRadius: "lg", bgcolor: 'white'
+                "--joy-shadowChannel": theme.vars.palette.primary.mainChannel,
+                "--joy-shadowRing": "inset 0 -3px 0 rgba(0 0 0 / 0.24)",
+                borderRadius: "lg", bgcolor: "white"
               })}
             >
               {todos.map((todo, idx) => (
                 <ListItem key={idx}>
-                  <Checkbox />
+                  <Checkbox/>
                   <Input
-                    variant='plain'
-                    placeholder='Type here'
+                    variant="plain"
+                    placeholder="Type here"
                     onChange={(e) => onChangeTodo(idx, e.target.value)}
                     value={todo}
                   />
                 </ListItem>
               ))}
-              <ListItemButton onClick={addNewTodo} sx={{ justifyContent: 'center' }}>
-                <AddIcon /> Add new to do
+              <ListItemButton onClick={addNewTodo} sx={{ justifyContent: "center" }}>
+                <AddIcon/> Add new to do
               </ListItemButton>
             </List>
           </Stack>

@@ -1,17 +1,15 @@
-import { useState } from 'react';
-import { Redirect, useLocation } from 'wouter';
-import { Stack, Typography, Card, Avatar, Button, Input } from '@mui/joy';
-import { useUser } from '../firebase';
-import { useLocalStorage } from 'usehooks-ts';
-import { getAuth, updateEmail, updatePassword } from 'firebase/auth';
+import { Avatar, Button, Card, Input, Stack, Typography } from "@mui/joy";
+import { getAuth, updateEmail, updatePassword } from "firebase/auth";
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { useAuthUser } from "../firebase";
 
 
 const EditProfilePage = () => {
-  const [authUser] = useLocalStorage("auth-user", "");
-  const [user, setUser] = useUser(authUser);
-  const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [newPassword, setNewPassword] = useState('');
+  const [user, setUser] = useAuthUser();
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [newPassword, setNewPassword] = useState("");
   const [, setLocation] = useLocation();
 
   const auth = getAuth();
@@ -32,8 +30,8 @@ const EditProfilePage = () => {
       // TODO: fix to actually update the auth values
 
       // update in datastore
-      await setUser({ ...user, name, email});
-      setLocation('/profile') // redirect
+      await setUser({ ...user, name, email });
+      setLocation("/profile"); // redirect
     }
   };
 
@@ -42,7 +40,7 @@ const EditProfilePage = () => {
       direction="column"
       alignItems="center"
       justifyContent="center"
-      sx={{ pt: '60px', minHeight: '100vh' }}
+      sx={{ pt: "60px", minHeight: "100vh" }}
     >
       <Stack
         direction="row"
@@ -51,22 +49,22 @@ const EditProfilePage = () => {
         width="80%"
         gap={5}
       >
-        <Stack width='70%' direction="column" justifyContent="center">
+        <Stack width="70%" direction="column" justifyContent="center">
           <Card
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
               p: 5,
-              width: '100%'
+              width: "100%"
             }}
           >
             <Avatar sx={{ "--Avatar-size": "100px" }}>{user?.name?.charAt(0).toUpperCase()}</Avatar>
             <Typography level="h3">Edit Profile</Typography>
 
             {/* datat fiedls */}
-            <Stack spacing={2} sx={{ width: '100%', mb: 2 }}>
+            <Stack spacing={2} sx={{ width: "100%", mb: 2 }}>
               <Typography>Username</Typography>
               <Input
                 value={name}
@@ -76,7 +74,7 @@ const EditProfilePage = () => {
               />
             </Stack>
 
-            <Stack spacing={2} sx={{ width: '100%', mb: 2 }}>
+            <Stack spacing={2} sx={{ width: "100%", mb: 2 }}>
               <Typography>Email</Typography>
               <Input
                 value={email}
@@ -86,7 +84,7 @@ const EditProfilePage = () => {
               />
             </Stack>
 
-            <Stack spacing={2} sx={{ width: '100%', mb: 2 }}>
+            <Stack spacing={2} sx={{ width: "100%", mb: 2 }}>
               <Typography>New Password</Typography>
               <Input
                 type="password"
@@ -101,10 +99,10 @@ const EditProfilePage = () => {
               onClick={handleSave}
               sx={{
                 mt: 2,
-                bgcolor: 'var(--primary-color)',
-                '&:hover': {
-                  bgcolor: 'var(--tertiary-color)',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                bgcolor: "var(--primary-color)",
+                "&:hover": {
+                  bgcolor: "var(--tertiary-color)",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
                 },
               }}
             >

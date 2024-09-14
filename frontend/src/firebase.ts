@@ -1,5 +1,5 @@
 import { collection, doc, documentId, Firestore, query, setDoc, where } from "firebase/firestore";
-import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from "reactfire";
+import { useFirestore, useFirestoreCollectionData, useFirestoreDocData, useUser as _useAuthUser } from "reactfire";
 import { Activity, Trip, User } from "./types.ts";
 
 /**
@@ -111,7 +111,7 @@ export const useTrips = (tripIds: string[]): Trip[] | undefined => {
 export const createActivity = async (
   firestore: Firestore,
   tripId: string,
-  activity: Omit<Activity, "activityId" | "tripId" >
+  activity: Omit<Activity, "activityId" | "tripId">
 ): Promise<string> => {
   // Generate a new activity ID
   const activityId = crypto.randomUUID();
@@ -132,7 +132,7 @@ export const createActivity = async (
 
 // get and activiyt, and edit it
 export const useActivity = (activityId: string): [
-  Activity | undefined,
+    Activity | undefined,
   (updated: Omit<Activity, "activityId">) => Promise<void>
 ] => {
   const firestore = useFirestore();
@@ -151,3 +151,8 @@ export const useActivity = (activityId: string): [
 
   return [status === "success" ? data as Activity : undefined, updateActivity];
 };
+
+export const useAuthUser = () => {
+  const { data } = _useAuthUser();
+  return useUser(data!.uid);
+}

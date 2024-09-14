@@ -1,41 +1,41 @@
-import { Stack, Typography, Input, Button } from '@mui/joy';
-import '../styles.css';
-import { Link, useLocation } from 'wouter';
-import React, { useState } from 'react';
+import { Button, Input, Stack, Typography } from "@mui/joy";
+import "../styles.css";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { useAuth, useFirestore } from "reactfire";
+import { Link, useLocation } from "wouter";
 import photo from "../assets/images/login.png";
-import { createUser } from '../firebase';
-import { useFirestore } from 'reactfire';
-import { useLocalStorage } from 'usehooks-ts';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import RegisterPasswordInput from '../components/RegisterPasswordInput';
-
+import RegisterPasswordInput from "../components/RegisterPasswordInput";
+import { createUser } from "../firebase";
 
 
 const RegisterPage = () => {
-  const [name, setName] = useState("")
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
   const [, setLocation] = useLocation();
+  const [loading, setLoading] = useState(false);
+  const auth = useAuth();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value)
-  }
+    setEmail(event.target.value);
+  };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value)
-  }
+    setPassword(event.target.value);
+  };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
+    setName(event.target.value);
+  };
 
   const firestore = useFirestore();
-  const auth = getAuth();
   const handleRegister = async () => {
     // create firebase auth
+    setLoading(true);
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    setLoading(false);
 
     // create User docu
     if (user.email && user.uid) { // ensures actual created
@@ -44,10 +44,9 @@ const RegisterPage = () => {
         email: user.email,
         name,
       }, user.uid);
+      setLocation("/home");
     }
-    setAuthUser(user.uid);
-    setLocation('/home');
-  }
+  };
 
   return (
     <Stack
@@ -109,18 +108,17 @@ const RegisterPage = () => {
           </Stack>
 
           <Stack width="70%" gap={1}>
-            <Link href="/home">
-              <Button
-                sx={{
-                  width: "100%",
-                  backgroundColor: "var(--primary-color)",
-                  ":hover": { backgroundColor: "#f5623d" },
-                }}
-                onClick={handleRegister}
-              >
-                Sign up
-              </Button>
-            </Link>
+            <Button
+              sx={{
+                width: "100%",
+                backgroundColor: "var(--primary-color)",
+                ":hover": { backgroundColor: "#f5623d" },
+              }}
+              loading={loading}
+              onClick={handleRegister}
+            >
+              Sign up
+            </Button>
 
             <Stack alignItems="flex-end">
               <Stack direction="row" gap={0.5}>
@@ -144,10 +142,10 @@ const RegisterPage = () => {
             </Stack>
           </Stack>
         </Stack>
-        <img src={photo} alt="Login logo" height="55%" />
+        <img src={photo} alt="Login logo" height="55%"/>
       </Stack>
     </Stack>
   );
-}
+};
 
 export default RegisterPage;

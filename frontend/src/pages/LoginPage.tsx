@@ -1,42 +1,41 @@
-import '../styles.css';
+import "../styles.css";
 import { Button, Input, Stack, Typography } from "@mui/joy";
-import photo from "../assets/images/login.png";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { useAuth } from "reactfire";
 import { Link, useLocation } from "wouter";
-import React, { useEffect, useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useLocalStorage } from 'usehooks-ts';
-import LoginPasswordInput from '../components/LoginPasswordInput';
+import photo from "../assets/images/login.png";
+import LoginPasswordInput from "../components/LoginPasswordInput";
 
 const LoginPage = () => {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
   const [, setLocation] = useLocation();
-  const auth = getAuth();
+  const auth = useAuth();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value)
-  }
+    setEmail(event.target.value);
+  };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value)
-  }
+    setPassword(event.target.value);
+  };
 
   const handleLogin = async () => {
+    setLoading(true);
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    setLoading(false);
 
+    const user = userCredential.user;
     if (user.uid) {
-      setAuthUser(user.uid);
-      setLocation('/home');
+      setLocation("/home");
     }
   };
 
-  useEffect(() => {
-    if (authUser) {
-      setLocation('/home');
-    }
-  }, [authUser, setLocation]);
+  if (auth.currentUser) {
+    setLocation("/home");
+  }
 
   return (
     <Stack
@@ -89,19 +88,17 @@ const LoginPage = () => {
           </Stack>
 
           <Stack width="70%" gap={1}>
-            <Link href="/home">
-              <Button
-                sx={{
-                  width: "100%",
-                  backgroundColor: "var(--primary-color)",
-                  ":hover": { backgroundColor: "#f5623d" },
-                }}
-                onClick={handleLogin}
-              >
-                Login
-              </Button>
-            </Link>
-
+            <Button
+              sx={{
+                width: "100%",
+                backgroundColor: "var(--primary-color)",
+                ":hover": { backgroundColor: "#f5623d" },
+              }}
+              loading={loading}
+              onClick={handleLogin}
+            >
+              Login
+            </Button>
             <Stack alignItems="flex-end">
               <Stack direction="row" gap={0.5}>
                 <Typography sx={{ color: "black" }} level="body-xs">
@@ -124,7 +121,7 @@ const LoginPage = () => {
             </Stack>
           </Stack>
         </Stack>
-        <img src={photo} alt="Login logo" height="55%" />
+        <img src={photo} alt="Login logo" height="55%"/>
       </Stack>
     </Stack>
   );
