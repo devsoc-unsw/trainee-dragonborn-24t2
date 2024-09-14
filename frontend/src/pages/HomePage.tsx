@@ -48,7 +48,7 @@ const HomePage = () => {
               Where to next?
             </Typography>
           </Stack>
-          <TripCountdown/>
+          <TripCountdown user={user}/>
         </Stack>
 
         {/* righty */}
