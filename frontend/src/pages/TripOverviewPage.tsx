@@ -203,7 +203,7 @@ const TripOverviewPage = () => {
               level="h1"
               fontSize="53px"
               pl="20px"
-              sx={{ color: "var(--tertiary-color)" }}
+              sx={{ color: "var(--tertiary-color)", marginLeft: "-20px", marginBottom: "-9px"}}
             >
               {trip?.destination}
             </Typography>
@@ -219,8 +219,8 @@ const TripOverviewPage = () => {
               "--joy-shadowRing": "inset 0 -3px 0 rgba(0 0 0 / 0.24)",
               width: "100%", borderRadius: "lg",
             })}
-          >
-            <img src="/japan.jpg" alt="Trip Destination"/>
+          >	
+		  	<img src={trip.image} alt="trip image" />
           </AspectRatio>
           <List sx={{ maxWidth: 320, paddingTop: "20px" }}>
             <ListItem>

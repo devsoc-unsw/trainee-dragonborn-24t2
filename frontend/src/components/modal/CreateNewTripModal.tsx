@@ -11,6 +11,8 @@ export default function CreateNewTripModal() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [open, setOpen] = useState(false);
+  const [imgDataUrl, setImgDataUrl] = useState("");
+  const placeholderImg = "https://i.pinimg.com/originals/77/0c/c8/770cc8f5767e1d407c2fb723318345e5.jpg"
   const firestore = useFirestore();
 
   // real time updating hte bvalues
@@ -27,6 +29,24 @@ export default function CreateNewTripModal() {
     setToDate(event.target.value);
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 1 * 1024 * 1024) {
+        alert("Image too large. Please upload an image smaller than 1MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgDataUrl(reader.result as string)
+      }
+      reader.onerror = () => {
+        alert("Failed to upload image. Please try another one.");
+      };
+      reader.readAsDataURL(file)
+    }
+  }
+
   const handleCreateTrip = async () => {
     // create trip
     if (user) {
@@ -35,6 +55,7 @@ export default function CreateNewTripModal() {
         destination: location,
         from: Timestamp.fromDate(new Date(fromDate)),
         to: Timestamp.fromDate(new Date(toDate)),
+        image: imgDataUrl || placeholderImg
       });
 
       // add it to the users array
@@ -178,7 +199,7 @@ export default function CreateNewTripModal() {
                 <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">
                   Picture
                 </Typography>
-                <Input type="file" sx={{ width: "100%", color: "#b9a49a" }}/>
+                <Input type="file" sx={{ width: "100%", color: "#b9a49a" }} onChange={handleImageChange}/>
               </Stack>
             </Stack>
             <Button
