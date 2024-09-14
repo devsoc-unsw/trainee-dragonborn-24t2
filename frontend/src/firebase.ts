@@ -1,6 +1,7 @@
 import { collection, doc, documentId, Firestore, query, setDoc, where } from "firebase/firestore";
-import { useFirestore, useFirestoreCollectionData, useFirestoreDocData, useUser as _useAuthUser } from "reactfire";
+import { useFirestore, useFirestoreCollectionData, useFirestoreDocData, useUser as _useAuthUser, useStorage } from "reactfire";
 import { Activity, Trip, User } from "./types.ts";
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 /**
  * User helper functions
@@ -113,13 +114,10 @@ export const createActivity = async (
   tripId: string,
   activity: Omit<Activity, "activityId" | "tripId">
 ): Promise<string> => {
-  // Generate a new activity ID
   const activityId = crypto.randomUUID();
 
-  // Create a reference to the activity document
   const activityRef = doc(firestore, "Activities", activityId);
 
-  // Set the activity data in Firestore
   await setDoc(activityRef, {
     tripId,
     activityId,
@@ -137,14 +135,11 @@ export const useActivity = (activityId: string): [
 ] => {
   const firestore = useFirestore();
   const activityRef = doc(firestore, "Activities", activityId);
-
-  // Fetch activity data
   const { status, data } = useFirestoreDocData(activityRef);
 
-  // Function to update activity
   const updateActivity = async (updated: Omit<Activity, "activityId">) => {
     await setDoc(activityRef, {
-      activityId,  // Ensure activityId is included in the update
+      activityId,
       ...updated
     });
   };
@@ -156,3 +151,11 @@ export const useAuthUser = () => {
   const { data } = _useAuthUser();
   return useUser(data!.uid);
 }
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const storage = useStorage();
+  const storageRef = ref(storage, `trip_images/${file.name}`);
+  await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(storageRef);
+  return downloadURL;
+};

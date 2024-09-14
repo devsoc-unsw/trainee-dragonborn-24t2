@@ -1,8 +1,9 @@
 import { Button, Input, Modal, ModalClose, Sheet, Stack, Typography } from "@mui/joy";
-import { Timestamp } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { useFirestore } from "reactfire";
 import { createTrip, useAuthUser } from "../../firebase";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function CreateNewTripModal() {
   const [user, setUser] = useAuthUser();
@@ -10,8 +11,10 @@ export default function CreateNewTripModal() {
   const [name, setName] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [open, setOpen] = useState(false);
   const firestore = useFirestore();
+  const storage = getStorage();
 
   // real time updating hte bvalues
   const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +30,12 @@ export default function CreateNewTripModal() {
     setToDate(event.target.value);
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
+
   const handleCreateTrip = async () => {
     // create trip
     if (user) {
@@ -35,7 +44,27 @@ export default function CreateNewTripModal() {
         destination: location,
         from: Timestamp.fromDate(new Date(fromDate)),
         to: Timestamp.fromDate(new Date(toDate)),
+        imgUrl: ""
       });
+
+      // add the image to storage and link to trip
+      let imgUrl = "";
+      if (selectedFile) {
+        const storageRef = ref(storage, `trips/${tripId}/${selectedFile.name}`);
+
+        console.log("Starting image upload...");
+        await uploadBytes(storageRef, selectedFile);
+        console.log("Image uploaded successfully!");
+
+        imgUrl = await getDownloadURL(storageRef);
+        console.log("Image URL:", imgUrl);
+      } else {
+        imgUrl = "path/to/default/image.jpg"; // TODO: DEFAULT
+      }
+
+      // updated created trip (trip id for imgurl)
+      const tripRef = doc(firestore, "Trips", tripId);
+      await setDoc(tripRef, { imgUrl: imgUrl }, { merge: true });
 
       // add it to the users array
       const updatedUser = {
@@ -178,7 +207,7 @@ export default function CreateNewTripModal() {
                 <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">
                   Picture
                 </Typography>
-                <Input type="file" sx={{ width: "100%", color: "#b9a49a" }}/>
+                <Input onChange={handleFileChange} type="file" sx={{ width: "100%", color: "#b9a49a" }}/>
               </Stack>
             </Stack>
             <Button
