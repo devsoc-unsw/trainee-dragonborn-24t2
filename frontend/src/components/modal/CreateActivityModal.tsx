@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { Button, Input, Stack, Typography, Modal, ModalClose, Sheet } from '@mui/joy';
-import { useUser, createActivity, useActivity, useTrip } from '../../firebase';
+import { createActivity, useTrip, useAuthUser } from "../../firebase";
 import { useFirestore } from 'reactfire';
 import { Timestamp } from 'firebase/firestore';
-import { useLocalStorage } from 'usehooks-ts';
 import { Trip } from '../../types';
 
 export default function CreateActivityModal({ trip}: { trip: Trip }) { // prop shorthand
-  const [authUser] = useLocalStorage("auth-user", "");
-  const [user,] = useUser(authUser);
+  const [user] = useAuthUser()
   const [name, setName] = useState("");
   const [date, setDate] = useState("");
   const [fromTime, setFromTime] = useState("");

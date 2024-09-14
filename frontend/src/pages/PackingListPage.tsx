@@ -19,7 +19,7 @@ interface Category {
 }
 
 const PackingListPage = () => {
-  const [match, params] = useRoute("/packinglist/:tripId");
+  const [, params] = useRoute("/packinglist/:tripId");
   const tripId = params?.tripId; // Get the tripId from the URL
   const [trip, setTrip] = useTrip(tripId ?? "");
   const initialCategories: Category[] = (trip?.packing || [{ title: 'Clothes', items: [{ text: '', checked: false }] }]).map((category: any) => ({
@@ -46,7 +46,7 @@ const PackingListPage = () => {
     }
   }, [trip]);
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     const newCategory = { title: '', items: [{ text: '', checked: false}] };
     const updatedCategories = [...categories, newCategory];
     setCategories(updatedCategories);
@@ -56,7 +56,7 @@ const PackingListPage = () => {
         title: category.title,
         items: category.items.map(item => ({ text: item.text, checked: item.checked }))
       }));
-      setTrip({
+      await setTrip({
         ...trip,
         packing: updatedPacking,
       });

@@ -1,66 +1,63 @@
-import { Link, Redirect, useLocation } from 'wouter';
-import Menu from '@mui/joy/Menu';
-import MenuItem from '@mui/joy/MenuItem';
-import MenuButton from '@mui/joy/MenuButton';
-import IconButton from '@mui/joy/IconButton';
-import Dropdown from '@mui/joy/Dropdown';
-import Notifications from '@mui/icons-material/Notifications';
-import Home from '@mui/icons-material/Home';
-import CalendarMonth from '@mui/icons-material/CalendarMonth';
-import Avatar from '@mui/joy/Avatar';
-import Stack from '@mui/joy/Stack';
-import Card from '@mui/joy/Card';
-import Typography from '@mui/joy/Typography';
-import { useUser } from '../firebase';
-import { useLocalStorage } from 'usehooks-ts';
-import firebase from 'firebase/compat/app';
-import { getAuth, signOut } from 'firebase/auth';
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
+import Home from "@mui/icons-material/Home";
+import Notifications from "@mui/icons-material/Notifications";
+import Avatar from "@mui/joy/Avatar";
+import Card from "@mui/joy/Card";
+import Dropdown from "@mui/joy/Dropdown";
+import IconButton from "@mui/joy/IconButton";
+import Menu from "@mui/joy/Menu";
+import MenuButton from "@mui/joy/MenuButton";
+import MenuItem from "@mui/joy/MenuItem";
+import Stack from "@mui/joy/Stack";
+import Typography from "@mui/joy/Typography";
+import { getAuth, signOut } from "firebase/auth";
+import { Link, useLocation } from "wouter";
+import { useAuthUser } from "../firebase.ts";
 
 const Navbar = () => {
-  const [authUser, setAuthUser] = useLocalStorage("auth-user", "");
-  const [user] = useUser(authUser);
   const [, setLocation] = useLocation();
-  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : '?';
+  const [user] = useAuthUser();
+  const userInitial = user?.name?.charAt(0)?.toUpperCase() ?? "?";
 
   const handleLogout = async () => {
     const auth = getAuth();
     await signOut(auth);
     localStorage.removeItem("auth-user");
-    setLocation('/login');
+    setLocation("/login");
   };
 
   return (
     <Card
       sx={{
-        backgroundColor: '#F98568',
-        padding: '10px 20px',
-        color: 'white',
-        position: 'fixed',
-        width: '100%',
-        height: '60px',
+        backgroundColor: "#F98568",
+        padding: "10px 20px",
+        color: "white",
+        position: "fixed",
+        width: "100%",
+        height: "60px",
         zIndex: 1000,
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Link href="/" style={{ textDecoration: 'none' }}>
+        <Link to="/" style={{ textDecoration: "none" }}>
           <Typography level="body-lg">(insert logo :P)</Typography>
         </Link>
 
         <Stack direction="row" spacing={2} alignItems="center">
-          <Link href="/home">
+          <Link to="/home">
             <IconButton>
-              <Home style={{ color: 'var(--tertiary-color)' }} />
+              <Home style={{ color: "var(--tertiary-color)" }}/>
             </IconButton>
           </Link>
 
           <IconButton>
-            <CalendarMonth style={{ color: 'var(--tertiary-color)' }} />
+            <CalendarMonth style={{ color: "var(--tertiary-color)" }}/>
           </IconButton>
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
               <IconButton>
-                <Notifications style={{ color: 'var(--tertiary-color)' }} />
+                <Notifications style={{ color: "var(--tertiary-color)" }}/>
               </IconButton>
             </MenuButton>
             <Menu>
@@ -70,10 +67,10 @@ const Navbar = () => {
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
-              <Avatar sx={{ color: 'var(--tertiary-color)' }}>{userInitial}</Avatar>
+              <Avatar sx={{ color: "var(--tertiary-color)" }}>{userInitial}</Avatar>
             </MenuButton>
             <Menu>
-              <Link href="/profile" style={{ textDecoration: 'none' }}>
+              <Link to="/profile" style={{ textDecoration: "none" }}>
                 <MenuItem>View Profile</MenuItem>
               </Link>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>

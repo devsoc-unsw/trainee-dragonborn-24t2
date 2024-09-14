@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { Button, Input, Stack, Typography, Modal, ModalClose, Sheet } from '@mui/joy';
-import { useUser, createTrip } from '../../firebase';
-import { useFirestore } from 'reactfire';
-import { Timestamp } from 'firebase/firestore';
-import { useLocalStorage } from 'usehooks-ts';
+import { Button, Input, Modal, ModalClose, Sheet, Stack, Typography } from "@mui/joy";
+import { Timestamp } from "firebase/firestore";
+import React, { useState } from "react";
+import { useFirestore } from "reactfire";
+import { createTrip, useAuthUser } from "../../firebase";
 
 export default function CreateNewTripModal() {
-const [authUser] = useLocalStorage("auth-user", "");
-const [user, setUser] = useUser(authUser);
+  const [user, setUser] = useAuthUser();
   const [location, setLocation] = useState("");
   const [name, setName] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -32,7 +30,7 @@ const [user, setUser] = useUser(authUser);
   const handleCreateTrip = async () => {
     // create trip
     if (user) {
-        const tripId = await createTrip(firestore, user.uid, {
+      const tripId = await createTrip(firestore, user.uid, {
         name: name,
         destination: location,
         from: Timestamp.fromDate(new Date(fromDate)),
@@ -41,8 +39,8 @@ const [user, setUser] = useUser(authUser);
 
       // add it to the users array
       const updatedUser = {
-          ...user,
-          trips: [...(user.trips || []), tripId]
+        ...user,
+        trips: [...(user.trips || []), tripId]
       };
       // put into the firestore data
       await setUser(updatedUser);
@@ -59,13 +57,14 @@ const [user, setUser] = useUser(authUser);
       <Button
         onClick={() => setOpen(true)}
         sx={{
-            width: '120px',
-            bgcolor: 'var(--primary-color)',
-            '&:hover': {
-              bgcolor: 'var(--tertiary-color)',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-            },
-          }}>
+          width: "120px",
+          bgcolor: "var(--primary-color)",
+          "&:hover": {
+            bgcolor: "var(--tertiary-color)",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+          },
+        }}
+      >
         + Trip
       </Button>
 
@@ -74,11 +73,11 @@ const [user, setUser] = useUser(authUser);
         aria-labelledby="close-modal-title"
         open={open}
         onClose={(_event: React.MouseEvent<HTMLButtonElement>, reason: string) => {
-          if (reason === 'closeClick') { // only for 'x' click
+          if (reason === "closeClick") { // only for 'x' click
             setOpen(false);
           }
         }}
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       >
         <Sheet
           variant="outlined"
@@ -89,16 +88,16 @@ const [user, setUser] = useUser(authUser);
             border: "solid 5px var(--tertiary-color)",
             borderRadius: 15,
             p: 4,
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
           }}
         >
           {/* 'x' button */}
           <ModalClose
             variant="plain"
-            sx={{ position: 'absolute', top: 10, right: 10 }}
+            sx={{ position: "absolute", top: 10, right: 10 }}
             onClick={() => setOpen(false)}
           />
 
@@ -106,9 +105,9 @@ const [user, setUser] = useUser(authUser);
           <Stack
             spacing={3}
             sx={{
-              width: '60%',
+              width: "60%",
               maxWidth: 600,
-              alignItems: 'center'
+              alignItems: "center"
             }}
           >
             <Typography
@@ -116,7 +115,7 @@ const [user, setUser] = useUser(authUser);
               id="close-modal-title"
               level="h1"
               textColor="var(--tertiary-color)"
-              sx={{ fontWeight: 'bold', textAlign: 'center' }}
+              sx={{ fontWeight: "bold", textAlign: "center" }}
             >
               Create New Trip
             </Typography>
@@ -179,17 +178,17 @@ const [user, setUser] = useUser(authUser);
                 <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">
                   Picture
                 </Typography>
-                <Input type="file" sx={{ width: "100%", color: "#b9a49a" }} />
+                <Input type="file" sx={{ width: "100%", color: "#b9a49a" }}/>
               </Stack>
             </Stack>
             <Button
               onClick={handleCreateTrip}
               sx={{
                 width: "50%",
-                backgroundColor: 'var(--primary-color)',
-                '&:hover': {
-                  bgcolor: 'var(--tertiary-color)',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                backgroundColor: "var(--primary-color)",
+                "&:hover": {
+                  bgcolor: "var(--tertiary-color)",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)"
                 },
                 mt: 2
               }}
@@ -203,4 +202,4 @@ const [user, setUser] = useUser(authUser);
       </Modal>
     </div>
   );
-};
+}
