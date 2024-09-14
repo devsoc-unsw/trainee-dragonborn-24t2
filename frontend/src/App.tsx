@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import TripOverviewPage from "./pages/TripOverviewPage";
 import { getStorage } from "firebase/storage";
+import ItineraryPage from "./pages/Itinerarypage.tsx";
 
 function App() {
   const firestoreInstance = getFirestore(useFirebaseApp());
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/newtrip" component={NewTripPage}/>
                 <Route path="/tripoverview/:tripId" component={TripOverviewPage}/>
                 <Route path="/packinglist/:tripId" component={PackingListPage}/>
+                <Route path="/itinerary/:tripId" component={ItineraryPage}/>
               </ProtectRoute>
             </Switch>
           </StorageProvider>

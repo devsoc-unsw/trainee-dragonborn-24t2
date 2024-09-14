@@ -25,7 +25,6 @@ import React, { useEffect, useState } from "react";
 import { useFirestore } from "reactfire";
 import { useLocation, useRoute } from "wouter";
 import AddMemberModal from "../components/modal/AddMemberModal";
-import CreateActivityModal from "../components/modal/CreateActivityModal.tsx";
 import TripMenu from "../components/modal/TripMenu";
 import { useAllUsers, useTrip } from "../firebase.ts";
 import { Trip, User } from "../types.ts";
@@ -175,6 +174,10 @@ const TripOverviewPage = () => {
     setLocation(`/packinglist/${tripId}`);
   };
 
+  const handleItineraryClick = () => {
+    setLocation(`/itinerary/${tripId}`);
+  }
+
   return (
     <Stack
       direction="column"
@@ -224,7 +227,7 @@ const TripOverviewPage = () => {
           </AspectRatio>
           <List sx={{ maxWidth: 320, paddingTop: "20px" }}>
             <ListItem>
-              <ListItemButton component="a" href="/itinerary">
+              <ListItemButton onClick={handleItineraryClick}>
                 <ListItemDecorator>
                   <CalendarTodayIcon sx={{ fontSize: "24px", color: "var(--tertiary-color)" }}/>
                 </ListItemDecorator>
@@ -312,7 +315,6 @@ const TripOverviewPage = () => {
               </ListItemButton>
             </List>
           </Stack>
-          <CreateActivityModal trip={trip}/>
         </Stack>
       </Stack>
     </Stack>

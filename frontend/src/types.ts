@@ -22,6 +22,7 @@ export type Trip = {
     items: { text: string; checked: boolean }[];
   }[]
   image?: string;
+  itinerary: DaySchedule[]; // for the itinerary page
 }
 
 export type Activity = {
@@ -32,3 +33,14 @@ export type Activity = {
   starttime: Timestamp;
   endtime: Timestamp;
 };
+
+export type DaySchedule = {
+  date: Timestamp;
+  dayEvents: Activity[];
+}
+
+// export type DayEvent = {
+//   name: String;
+//   from: Timestamp;
+//   to: Timestamp;
+// }

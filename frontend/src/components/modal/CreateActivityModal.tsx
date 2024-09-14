@@ -42,10 +42,35 @@ export default function CreateActivityModal({ trip}: { trip: Trip }) { // prop s
         endtime: Timestamp.fromDate(toDateTime),
       });
 
+      const newActivity = {
+        tripId: trip.tripId,
+        activityId,
+        name,
+        date: Timestamp.fromDate(new Date(date)),
+        starttime: Timestamp.fromDate(fromDateTime),
+        endtime: Timestamp.fromDate(toDateTime),
+      }
+
+      let updatedItinerary = tripData?.itinerary || [];
+
+      // Find the itinerary day for the activity date
+      const existingDayIndex = updatedItinerary.findIndex((day) =>
+        day.date.toDate().toDateString() === new Date(date).toDateString()
+      );
+
+      if (existingDayIndex >= 0) {
+        // Day exists, add activity to its dayEvents
+        updatedItinerary[existingDayIndex].dayEvents.push(newActivity);
+      } else {
+        // Day doesn't exist in trip schedule
+        alert("Date not in trip schedule");
+        return;
+      }
+
       // add to trips activities
       if (tripData) {
         const updatedActivities = [...(trip.activities || []), activityId];
-        await updateTrip({...tripData, activities: updatedActivities});
+        await updateTrip({...tripData, activities: updatedActivities, itinerary: updatedItinerary});
       }
     }
     setOpen(false);

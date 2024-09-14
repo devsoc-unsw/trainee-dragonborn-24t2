@@ -1,136 +1,242 @@
-import { Button, Input, Stack, Typography } from "@mui/joy";
-import { Timestamp } from "firebase/firestore";
-import React, { useState } from "react";
-import { useFirestore } from "reactfire";
-import { Link, useLocation } from "wouter";
-import { createTrip, useAuthUser } from "../firebase";
+import { Stack, Typography, Button } from '@mui/joy';
+import '../styles.css';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
+import { Link } from 'wouter';  
+import ListCard from '../components/List';
+import { useRoute } from "wouter";
+import { useTrip } from "../firebase.ts"; 
+import { useState } from 'react';
+import { useEffect } from 'react';
 
-const NewTripPage = () => {
-  const [location, setLocation] = useState("");
-  const [name, setName] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [user] = useAuthUser();
-  const [, setLocationPath] = useLocation();
-  const [imgDataUrl, setImgDataUrl] = useState<string | null>(null);
+interface Item {
+  text: string;
+  checked: boolean;
+}
 
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
-  };
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-  const handleFromDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFromDate(event.target.value);
-  };
-  const handleToDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setToDate(event.target.value);
+interface Category {
+  title: string;
+  items: Item[];
+}
+
+const PackingListPage = () => {
+  const [match, params] = useRoute("/packinglist/:tripId");
+  const tripId = params?.tripId; // Get the tripId from the URL
+  const [trip, setTrip] = useTrip(tripId ?? "");
+  const initialCategories: Category[] = trip?.packing?.length
+  ? trip.packing.map((category: any) => ({
+      title: category.title,
+      items: Array.isArray(category.items)
+        ? category.items.map((item: any) =>
+            typeof item === 'string' ? { text: item, checked: false } : item
+          )
+        : [],
+    }))
+  : [{ title: 'Clothes', items: [{ text: '', checked: false }] }];
+
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
+
+  useEffect(() => {
+    if (trip?.packing?.length) {
+      const transformedPacking = trip.packing.map((category: any) => ({
+        title: category.title,
+        items: Array.isArray(category.items)
+          ? category.items.map((item: any) =>
+              typeof item === 'string' ? { text: item, checked: false } : item
+            )
+          : [],
+      }));
+      setCategories(transformedPacking);
+    } else {
+      // Ensure there's always at least one category (Clothes)
+      setCategories([{ title: 'Clothes', items: [{ text: '', checked: false }] }]);
+    }
+  }, [trip]);
+  
+
+  const handleAddCategory = () => {
+    const newCategory = { title: '', items: [{ text: '', checked: false}] };
+    const updatedCategories = [...categories, newCategory];
+    setCategories(updatedCategories);
+    
+    if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked })) 
+      }));
+      setTrip({
+        ...trip,
+        packing: updatedPacking, 
+      });
+    }
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImgDataUrl(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+  const handleTitleChange = (index: number, newTitle: string) => {
+    const updatedCategories = categories.map((category, i) => 
+      i === index ? { ...category, title: newTitle } : category
+    );
+    setCategories(updatedCategories);
+
+    if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked }))
+      }));
+      setTrip({
+        ...trip,
+        packing: updatedPacking, 
+      });
     }
   }
 
-  const firestore = useFirestore();
-  const handleClick = async () => {
-    console.log("before creating trip")
-    const tripId = await createTrip(firestore, user!.uid, {
-      name: name,
-      destination: location,
-      from: Timestamp.fromDate(new Date(fromDate)),
-      to: Timestamp.fromDate(new Date(toDate)),
-      image: imgDataUrl || "../assets/images/tripPlaceholder.jpg",
-    });
-    console.log(`this is the dataurl ${imgDataUrl}`)
-    setLocationPath(`/tripoverview/${tripId}`);
+  const handleItemsChange = (index: number, newItems: Item[]) => {
+    const updatedCategories = categories.map((category, i) => 
+      i === index ? { ...category, items: newItems } : category
+    );
+    setCategories(updatedCategories);
+
+    if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked })) 
+      }));
+      setTrip({
+        ...trip,
+        packing: updatedPacking, 
+        tripId: tripId
+      });
+    }
   };
+  
+  const handleOnDelete = (index: number) => {
+    const updatedCategories = categories.filter((_, i) => i !== index);
+    setCategories(updatedCategories)
+    if (tripId && trip) {
+      const updatedPacking = updatedCategories.map(category => ({
+        title: category.title,
+        items: category.items.map(item => ({ text: item.text, checked: item.checked })) 
+      }));
+      setTrip({
+        ...trip,
+        packing: updatedPacking,
+      });
+    }
+  }
 
   return (
-    <Stack height="100%" justifyContent="center" alignItems="center" bgcolor="var(--background-color)" gap={1}>
-      <Stack width={800} alignItems="flex-start">
-        <Typography level="h1" sx={{ color: "var(--tertiary-color)" }}>New Trip</Typography>
-      </Stack>
+    <Stack 
+      height="100%" 
+      width="100%"
+      justifyContent="flex-start" 
+      alignItems="center" 
+      bgcolor="var(--background-color)"
+      padding="2rem"
+    >
       <Stack
-        bgcolor="#f9e1d6"
-        width={800}
-        height={500}
-        justifyContent="center"
-        alignItems="center"
-        gap={4}
-        border="solid 3px var(--primary-color)"
-        borderRadius={15}
+        height="100%" 
+        width="100%"
+        justifyContent="flex-start" 
+        alignItems="center" 
+        padding="2rem"
       >
-        <Stack direction="row" gap={2} alignItems="center" width="50%">
-          <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">Location</Typography>
-          <Input
-            sx={{
-              width: "100%",
-              color: "#B9A49A"
-            }}
-            placeholder="add location"
-            variant="outlined"
-            onChange={handleLocationChange}
-          />
-        </Stack>
-        <Stack direction="row" gap={2} alignItems="center" width="50%">
-          <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">Name</Typography>
-          <Input
-            sx={{
-              width: "100%",
-              color: "#B9A49A"
-            }}
-            placeholder="add trip name"
-            variant="outlined"
-            onChange={handleNameChange}
-          />
-        </Stack>
-        <Stack direction="row" justifyContent="space-between" width="50%">
-          <Stack gap={1}>
-            <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">From</Typography>
-            <Input type="date" sx={{ color: "#B9A49A" }} onChange={handleFromDateChange}/>
-          </Stack>
-          <Stack gap={1}>
-            <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">To</Typography>
-            <Input type="date" sx={{ color: "#B9A49A" }} onChange={handleToDateChange}/>
-          </Stack>
-        </Stack>
-        <Stack direction="row" gap={2} alignItems="center" width="50%">
-          <Typography fontFamily="var(--font-primary)" level="h3" fontWeight="bold">Picture</Typography>
-          <Input
-            type="file"
-            sx={{ width: "100%", alignItems: "center", color: "#B9A49A" }}
-            onChange={handleImageChange}
-          />
+        <Stack
+          width="100%"
+          height={30}
+          justifyContent="center"
+        >
+          <Link href={`/tripoverview/${tripId}`}>
+            <Button
+              variant='plain'
+              sx={{
+                marginLeft: "-50px",
+                '&:hover': {
+                  backgroundColor: 'transparent'
+                }
+              }}
+            >
+              <ArrowLeftIcon sx={{ fontSize: "2rem", color: "black", transform: 'translateY(1px)' }} />
+              <Typography sx={{ marginLeft: "-6px", color: "black" }}>
+                {trip?.destination}
+              </Typography>
+            </Button>
+          </Link>
         </Stack>
 
-        <Button
+        <Stack
+          width="95%"
+          height={60}
+          justifyContent="space-between" 
+          alignItems="center"
+          marginBottom="1rem"
+          direction="row"
+        >
+          <Typography level="h2" fontWeight="bold">
+            Packing List
+          </Typography>
+
+          <Button
+            size='lg'
+            sx={{
+              height: '20%',
+              width: '10%',
+              border: '2px solid var(--tertiary-color)',
+              borderRadius: '15px',
+              backgroundColor: 'transparent',
+              color: 'var(--tertiary-color)',
+              fontSize: '25px',
+              justifyContent: 'center',
+              ":hover": { backgroundColor: "var(--secondary-color)" },
+              boxShadow: 'md'
+            }}
+            onClick={handleAddCategory}
+          >
+            +
+          </Button>
+        </Stack>
+
+        <Stack
+          height="100%"
+          width="95%"
+          bgcolor="white"
+          borderRadius={15}
+          alignItems="flex-start"
+          maxHeight="90%"
+          padding="2rem"
           sx={{
-            width: "25%",
-            backgroundColor: "var(--primary-color)",
-            "&:hover": {
-              bgcolor: "var(--tertiary-color)",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)"
-            },
-            marginTop: "20px"
+            overflow: 'hidden', 
           }}
-          variant="solid"
-          size="lg"
-          onClick={handleClick}
-        >PLAN TRIP!
-        </Button>
+          >
+          <Stack
+            height="100%"
+            // width="100%"
+            maxWidth="100%"
+            direction="column"
+            flexWrap="wrap"
+            gap={3}
+            // bgcolor="pink"
+            sx={{
+              overflowY: "hidden",
+              overflowX: "auto"
+            }}
+          >
+            {categories.map((category, index) => (
+              <Stack 
+                key={index} 
+              >
+                <ListCard 
+                  initialTitle={index === 0 ? "Clothes" : ""}
+                  title={category.title}
+                  items={category.items}
+                  onTitleChange={(newTitle) => handleTitleChange(index, newTitle)}
+                  onItemsChange={(newItems) => handleItemsChange(index, newItems)}
+                  onDelete={() => handleOnDelete(index)}
+                />
+              </Stack>
+            ))}
+          </Stack>
+        </Stack>
       </Stack>
-      <Link href="/home">
-        <Button variant="plain" sx={{ fontSize: "7px", color: "var(--tertiary-color)" }}>I wanna go back pls</Button>
-      </Link>
     </Stack>
   );
 };
 
-export default NewTripPage;
+export default PackingListPage;

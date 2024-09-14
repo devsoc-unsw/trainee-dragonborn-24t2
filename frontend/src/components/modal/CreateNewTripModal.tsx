@@ -53,32 +53,43 @@ export default function CreateNewTripModal() {
   const handleCreateTrip = async () => {
     // create trip
     if (user) {
+      const start = new Date(fromDate)
+      const end = new Date(toDate)
+      const itinerary = [];
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        itinerary.push({
+          date: Timestamp.fromDate(new Date(d)),
+          dayEvents: [] 
+        });
+      }
+
       const tripId = await createTrip(firestore, user.uid, {
         name: name,
         destination: location,
         from: Timestamp.fromDate(new Date(fromDate)),
         to: Timestamp.fromDate(new Date(toDate)),
-        image: imgDataUrl || placeholderImg
+        image: imgDataUrl || placeholderImg,
+        itinerary: itinerary
       });
 
       // add the image to storage and link to trip
-      let imgUrl = "";
-      if (selectedFile) {
-        const storageRef = ref(storage, `trips/${tripId}/${selectedFile.name}`);
+      // let imgUrl = "";
+      // if (selectedFile) {
+      //   const storageRef = ref(storage, `trips/${tripId}/${selectedFile.name}`);
 
-        console.log("Starting image upload...");
-        await uploadBytes(storageRef, selectedFile);
-        console.log("Image uploaded successfully!");
+      //   console.log("Starting image upload...");
+      //   await uploadBytes(storageRef, selectedFile);
+      //   console.log("Image uploaded successfully!");
 
-        imgUrl = await getDownloadURL(storageRef);
-        console.log("Image URL:", imgUrl);
-      } else {
-        imgUrl = "path/to/default/image.jpg"; // TODO: DEFAULT
-      }
+      //   imgUrl = await getDownloadURL(storageRef);
+      //   console.log("Image URL:", imgUrl);
+      // } else {
+      //   imgUrl = "path/to/default/image.jpg"; // TODO: DEFAULT
+      // }
 
       // updated created trip (trip id for imgurl)
-      const tripRef = doc(firestore, "Trips", tripId);
-      await setDoc(tripRef, { imgUrl: imgUrl }, { merge: true });
+      // const tripRef = doc(firestore, "Trips", tripId);
+      // await setDoc(tripRef, { imgUrl: imgUrl }, { merge: true });
 
       // add it to the users array
       const updatedUser = {
