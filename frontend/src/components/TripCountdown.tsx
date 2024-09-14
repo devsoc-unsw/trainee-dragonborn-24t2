@@ -1,11 +1,11 @@
 import '../styles.css';
 import { Typography, Stack } from '@mui/joy';
-import { useTrips } from "../firebase.ts"; // Import the necessary hooks
+import { useTrips } from "../firebase.ts";
 import { useEffect, useState } from 'react';
 import { Trip, User } from '../types.ts';
 
 interface TripCountdownProps {
-  user?: User; // Define the type of the prop
+  user?: User;
 }
 
 const TripCountdown = ({ user }: TripCountdownProps) => {
