@@ -22,8 +22,7 @@ import {
 } from "@mui/joy";
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useFirestore } from "reactfire";
-import { useLocation, useRoute } from "wouter";
+cimport { useLocation, useRoute } from "wouter";
 import AddMemberModal from "../components/modal/AddMemberModal";
 import TripMenu from "../components/modal/TripMenu";
 import { useAllUsers, useTrip } from "../firebase.ts";

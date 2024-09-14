@@ -18,6 +18,7 @@ const Navbar = () => {
   const [, setLocation] = useLocation();
   const [user] = useAuthUser();
   const userInitial = user?.name?.charAt(0)?.toUpperCase() ?? "?";
+  const profileImg = user?.profileimg;
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -46,18 +47,18 @@ const Navbar = () => {
         <Stack direction="row" spacing={2} alignItems="center">
           <Link to="/home">
             <IconButton>
-              <Home style={{ color: "var(--tertiary-color)" }}/>
+              <Home style={{ color: "var(--tertiary-color)" }} />
             </IconButton>
           </Link>
 
           <IconButton>
-            <CalendarMonth style={{ color: "var(--tertiary-color)" }}/>
+            <CalendarMonth style={{ color: "var(--tertiary-color)" }} />
           </IconButton>
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
               <IconButton>
-                <Notifications style={{ color: "var(--tertiary-color)" }}/>
+                <Notifications style={{ color: "var(--tertiary-color)" }} />
               </IconButton>
             </MenuButton>
             <Menu>
@@ -67,7 +68,12 @@ const Navbar = () => {
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
-              <Avatar sx={{ color: "var(--tertiary-color)" }}>{userInitial}</Avatar>
+              <Avatar
+                src={profileImg || undefined}
+                sx={{ color: "var(--tertiary-color)" }}
+              >
+                {!profileImg && userInitial}
+              </Avatar>
             </MenuButton>
             <Menu>
               <Link to="/profile" style={{ textDecoration: "none" }}>

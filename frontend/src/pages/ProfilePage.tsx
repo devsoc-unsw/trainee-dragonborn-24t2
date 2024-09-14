@@ -3,12 +3,17 @@ import "../styles.css";
 import EditIcon from "@mui/icons-material/Edit";
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { Avatar, Button, Card, Stack, Typography } from "@mui/joy";
-import { getAuth, signOut } from "firebase/auth";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { getAuth, deleteUser as deleteAuthUser, signOut } from 'firebase/auth';
 import { Link, useLocation } from "wouter";
 import AddFriendModal from "../components/modal/AddFriendModal";
 import EditProfileImageModal from "../components/modal/EditProfileImageModal";
+import DeleteAccountModal from "../components/modal/DeleteAccountModal";
 import { useAuthUser } from "../firebase";
+import { Trip, User } from "../types";
+import { useFirestore } from "reactfire";
 
 const ProfilePage = () => {
   const [user] = useAuthUser();
@@ -16,6 +21,7 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "?";
   const profileImg = user?.profileimg;
+  const firestore = useFirestore();
 
   const handleLogout = async () => {
     const auth = getAuth();
@@ -24,8 +30,39 @@ const ProfilePage = () => {
     setLocation("/login");
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const handleDeleteAccount = async () => {
+    const auth = getAuth();
+    const authUser = auth.currentUser;
+
+    if (authUser) {
+      // Fetch the user's data from Firestore to get the trips
+      const userRef = doc(firestore, "Users", authUser.uid);
+      const userData = await getDoc(userRef);
+      if (userData.exists()) {
+        const deleteUser = userData.data() as User;
+
+        // delete from trips
+        for (const tripId of deleteUser.trips || []) {
+          const tripRef = doc(firestore, "Trips", tripId);
+          const tripData = await getDoc(tripRef);
+
+          if (tripData.exists()) {
+            const trip = tripData.data() as Trip;
+            const updatedMembers = trip.members?.filter(memberId => memberId !== authUser.uid) || [];
+            await updateDoc(tripRef, { members: updatedMembers });
+          }
+        }
+
+        // dekete docu and auth detailss
+        await deleteDoc(userRef);
+        await deleteAuthUser(authUser);
+
+        // clear local storage and redirect
+        localStorage.removeItem("auth-user");
+        setLocation("/login");
+      }
+    }
+  };
 
   return (
     <Stack
@@ -67,7 +104,7 @@ const ProfilePage = () => {
             <Typography>{user?.email}</Typography>
             <Button
               variant="soft"
-              onClick={openModal}
+              onClick={() => setIsModalOpen(true)}
               sx={{
                 bgcolor: "var(--primary-colour)",
                 mt: 2,
@@ -79,7 +116,7 @@ const ProfilePage = () => {
               <EditProfileImageModal
                 user={user}
                 open={isModalOpen}
-                onClose={closeModal}
+                onClose={() => setIsModalOpen(false)}
               />
             )}
           </Card>
@@ -150,6 +187,7 @@ const ProfilePage = () => {
               >
                 Logout
               </Button>
+              <DeleteAccountModal handleDeleteAccount={handleDeleteAccount} />
             </Stack>
             {/*modal */}
             <AddFriendModal />
