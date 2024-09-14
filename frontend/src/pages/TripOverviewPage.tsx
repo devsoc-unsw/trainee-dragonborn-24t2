@@ -22,11 +22,12 @@ import {
 } from "@mui/joy";
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-cimport { useLocation, useRoute } from "wouter";
+import { useLocation, useRoute } from "wouter";
 import AddMemberModal from "../components/modal/AddMemberModal";
 import TripMenu from "../components/modal/TripMenu";
 import { useAllUsers, useTrip } from "../firebase.ts";
 import { Trip, User } from "../types.ts";
+import { useFirestore } from "reactfire";
 
 
 const formatDate = (date: Date) => {

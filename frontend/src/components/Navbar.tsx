@@ -13,6 +13,7 @@ import Typography from "@mui/joy/Typography";
 import { getAuth, signOut } from "firebase/auth";
 import { Link, useLocation } from "wouter";
 import { useAuthUser } from "../firebase.ts";
+import logo from "../assets/images/logo (2).png";
 
 const Navbar = () => {
   const [, setLocation] = useLocation();
@@ -40,8 +41,9 @@ const Navbar = () => {
       }}
     >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <Typography level="body-lg">(insert logo :P)</Typography>
+        <Link to="/" style={{ textDecoration: "none",display: "flex", alignItems: "center", gap: "9px"}}>
+          <img src={logo} alt="logo" height="45px" />
+          <Typography level="body-md" sx={{fontFamily: "var(--font-primary)", fontWeight: 600, color: "black"}}>TripTrekker</Typography>
         </Link>
 
         <Stack direction="row" spacing={2} alignItems="center">
