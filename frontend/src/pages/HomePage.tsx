@@ -97,7 +97,7 @@ const HomePage = () => {
                       key={trip.tripId}
                       title={trip.name}
                       destination={trip.destination}
-                      imageUrl={trip.image}
+                      imageUrl={trip?.image}
                       linkTo={`/tripoverview/${trip.tripId}`}
                     />
                   ))
