@@ -12,6 +12,7 @@ const NewTripPage = () => {
   const [toDate, setToDate] = useState("");
   const [user] = useAuthUser();
   const [, setLocationPath] = useLocation();
+  const [imgDataUrl, setImgDataUrl] = useState<string | null>(null);
 
   const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLocation(event.target.value);
@@ -26,14 +27,28 @@ const NewTripPage = () => {
     setToDate(event.target.value);
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgDataUrl(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   const firestore = useFirestore();
   const handleClick = async () => {
+    console.log("before creating trip")
     const tripId = await createTrip(firestore, user!.uid, {
       name: name,
       destination: location,
       from: Timestamp.fromDate(new Date(fromDate)),
-      to: Timestamp.fromDate(new Date(toDate))
+      to: Timestamp.fromDate(new Date(toDate)),
+      image: imgDataUrl || "../assets/images/tripPlaceholder.jpg",
     });
+    console.log(`this is the dataurl ${imgDataUrl}`)
     setLocationPath(`/tripoverview/${tripId}`);
   };
 
@@ -91,6 +106,7 @@ const NewTripPage = () => {
           <Input
             type="file"
             sx={{ width: "100%", alignItems: "center", color: "#B9A49A" }}
+            onChange={handleImageChange}
           />
         </Stack>
 
