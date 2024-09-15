@@ -14,17 +14,31 @@ import { getAuth, signOut } from "firebase/auth";
 import { Link, useLocation } from "wouter";
 import { useAuthUser } from "../firebase.ts";
 import logo from "../assets/images/logo.png";
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
+import { useState } from "react";
+import dayjs from "dayjs";
 
 const Navbar = () => {
   const [, setLocation] = useLocation();
   const [user] = useAuthUser();
   const userInitial = user?.name?.charAt(0)?.toUpperCase() ?? "?";
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(dayjs().toDate()); // Current date
 
   const handleLogout = async () => {
     const auth = getAuth();
     await signOut(auth);
     localStorage.removeItem("auth-user");
     setLocation("/login");
+  };
+
+  const handleCalendarOpen = () => {
+    setCalendarOpen(!calendarOpen);
+  };
+
+  const tileClassName = ({ date }: { date: Date }) => {
+    return dayjs(date).isSame(dayjs(), 'day') ? 'highlighted-today' : null;
   };
 
   return (
@@ -52,9 +66,30 @@ const Navbar = () => {
             </IconButton>
           </Link>
 
-          <IconButton>
+          {/* <IconButton>
             <CalendarMonth style={{ color: "var(--tertiary-color)" }}/>
-          </IconButton>
+          </IconButton> */}
+          <Dropdown>
+            <MenuButton variant="plain" sx={{ p: 0 }} onClick={handleCalendarOpen}>
+              <IconButton>
+                <CalendarMonth style={{ color: "var(--tertiary-color)" }} />
+              </IconButton>
+            </MenuButton>
+            {calendarOpen && (
+              <Menu
+                open={calendarOpen}
+                onClose={() => setCalendarOpen(false)}
+                sx={{ p: 2, minWidth: '300px', width: '300px', marginRight: '-20px', padding: "0", border: "1px solid black", 
+                  borderRadius: "3%", position: "absolute", left: "-200px"}}
+              >
+                <Calendar
+                  tileClassName={tileClassName}
+                  value={selectedDate}
+                  onChange={setSelectedDate}
+                />
+              </Menu>
+            )}
+          </Dropdown>
 
           <Dropdown>
             <MenuButton variant="plain" sx={{ p: 0 }}>
@@ -80,6 +115,25 @@ const Navbar = () => {
           </Dropdown>
         </Stack>
       </Stack>
+      <style>
+        {`
+          .highlighted-today {
+            background-color: var(--primary-color) !important;
+            color: white !important;
+            border-radius: 15%;
+          }
+            .react-calendar__tile:hover {
+            background-color: var(--secondary-color) !important;
+            color: black !important;
+            border-radius: 15%;
+          }
+          .react-calendar__tile--active {
+            background-color: var(--secondary-color) !important;
+            color: black !important;
+            border-radius: 15%;
+          }
+        `}
+      </style>
     </Card>
   );
 };

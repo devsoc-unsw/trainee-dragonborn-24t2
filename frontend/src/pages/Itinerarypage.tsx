@@ -154,8 +154,8 @@ const ItineraryPage = () => {
               }}
               onClick={handleBackClick}
             >
-              <ArrowLeftIcon sx={{ fontSize: "2rem", color: "black" }} />
-              <Typography sx={{ color: "black", ml: 1 }}>
+              <ArrowLeftIcon sx={{ fontSize: "2rem", color: "black", transform: 'translateY(2px)' }} />
+              <Typography sx={{ color: "black", ml: 0 }}>
                 {trip?.destination}
               </Typography>
             </Button>

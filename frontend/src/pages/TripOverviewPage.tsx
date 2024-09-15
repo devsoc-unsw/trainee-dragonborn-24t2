@@ -237,7 +237,7 @@ const TripOverviewPage = () => {
             <ListItem>
               <ListItemButton onClick={handlePackingClick}>
                 <ListItemDecorator>
-                  <LuggageRoundedIcon sx={{ fontSize: "28px", color: "var(--tertiary-color)" }}/>
+                  <LuggageRoundedIcon sx={{ fontSize: "28px", color: "var(--tertiary-color)", marginLeft: "-3px"}}/>
                 </ListItemDecorator>
                 <Typography level="body-lg" fontSize="24px" fontWeight="bold">View Packing List</Typography>
               </ListItemButton>
