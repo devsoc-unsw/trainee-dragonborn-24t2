@@ -91,7 +91,6 @@ const TripOverviewPage = () => {
 
   const handleDeleteMember = async (uid: string) => {
     if (trip) {
-      alert(`${uid}`);
       const updatedMembers = trip.members.filter(memberId => memberId !== uid);
       const updatedTrip = { ...trip, members: updatedMembers };
       await setDoc(doc(firestore, "Trips", trip.tripId), updatedTrip);
@@ -117,7 +116,6 @@ const TripOverviewPage = () => {
   };
 
   const handleDeleteTrip = async (trip: Trip) => {
-    alert(`${trip.tripId}`);
     if (trip) {
       // delete from all the members trips[]
       const members = trip.members;
@@ -137,13 +135,8 @@ const TripOverviewPage = () => {
       }
 
       // delete the actial trip
-      try {
-        await deleteDoc(doc(firestore, "Trips", trip.tripId));
-        alert(`Trip ${trip.destination} deleted successfully`);
-      } catch (error) {
-        console.error("Error deleting trip:", error);
-        alert("Error deleting trip. Please try again.");
-      }
+      await deleteDoc(doc(firestore, "Trips", trip.tripId));
+      alert(`Trip ${trip.destination} deleted successfully`);
     }
     setLocation("/home");
   };
