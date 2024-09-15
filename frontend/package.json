@@ -14,9 +14,11 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.6",
     "@mui/joy": "^5.0.0-beta.48",
+    "dayjs": "^1.11.13",
     "firebase": "^9.23.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-calander": "^5.0.0",
     "reactfire": "^4.2.3",
     "wouter": "^3.3.1"
   },

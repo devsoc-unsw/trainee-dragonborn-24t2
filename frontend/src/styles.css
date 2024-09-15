@@ -8,3 +8,8 @@
   --font-primary: 'Montserrat', sans-serif;
   --font-secondary: 'Arial', sans-serif;
 }
+
+html, body {
+  height: 100%;
+  background-color: #f7f8f3;
+}
