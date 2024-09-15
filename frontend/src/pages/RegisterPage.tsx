@@ -1,17 +1,20 @@
-import "../styles.css";
 import { Button, Input, Stack, Typography } from "@mui/joy";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import "../styles.css";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
-import { useAuth } from "reactfire";
+import { useAuth, useFirestore } from "reactfire";
 import { Link, useLocation } from "wouter";
 import photo from "../assets/images/login.png";
-import LoginPasswordInput from "../components/LoginPasswordInput";
+import RegisterPasswordInput from "../components/RegisterPasswordInput";
+import { createUser } from "../firebase";
 
-const LoginPage = () => {
-  const [loading, setLoading] = useState(false);
+
+const RegisterPage = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [, setLocation] = useLocation();
+  const [loading, setLoading] = useState(false);
   const auth = useAuth();
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,20 +25,29 @@ const LoginPage = () => {
     setPassword(event.target.value);
   };
 
-  const handleLogin = async () => {
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
+
+  const firestore = useFirestore();
+  const handleRegister = async () => {
+    // create firebase auth
     setLoading(true);
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
     setLoading(false);
 
-    const user = userCredential.user;
-    if (user.uid) {
+    // create User docu
+    if (user.email && user.uid) { // ensures actual created
+      await createUser(firestore, {
+        uid: user.uid,
+        email: user.email,
+        name,
+        profileimg: ""
+      }, user.uid);
       setLocation("/home");
     }
   };
-
-  if (auth.currentUser) {
-    setLocation("/home");
-  }
 
   return (
     <Stack
@@ -66,8 +78,17 @@ const LoginPage = () => {
               fontWeight="bold"
               sx={{ color: "var(--tertiary-color)" }}
             >
-              Login
+              Sign Up
             </Typography>
+          </Stack>
+
+          <Stack width="70%">
+            <Input
+              sx={{ backgroundColor: "white", color: "#737373" }}
+              placeholder="Name"
+              variant="soft"
+              onChange={handleNameChange}
+            />
           </Stack>
 
           <Stack width="70%">
@@ -80,7 +101,7 @@ const LoginPage = () => {
           </Stack>
 
           <Stack width="70%">
-            <LoginPasswordInput
+            <RegisterPasswordInput
               placeholder="Password"
               value={password}
               onChange={handlePasswordChange}
@@ -95,18 +116,19 @@ const LoginPage = () => {
                 ":hover": { backgroundColor: "#f5623d" },
               }}
               loading={loading}
-              onClick={handleLogin}
+              onClick={handleRegister}
             >
-              Login
+              Sign up
             </Button>
+
             <Stack alignItems="flex-end">
               <Stack direction="row" gap={0.5}>
                 <Typography sx={{ color: "black" }} level="body-xs">
-                  Noob?
+                  Already have an account?
                 </Typography>
                 <Typography
                   component={Link}
-                  href="/register"
+                  href="/login"
                   sx={{
                     color: "var(--primary-color)",
                     textDecoration: "none",
@@ -115,7 +137,7 @@ const LoginPage = () => {
                   level="body-xs"
                   fontWeight="bold"
                 >
-                  Register here
+                  Login here
                 </Typography>
               </Stack>
             </Stack>
@@ -127,4 +149,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

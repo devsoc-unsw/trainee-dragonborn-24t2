@@ -1,58 +1,53 @@
-import viteLogo from "/vite.svg";
-import "./App.css";
-import { Button, CssBaseline, CssVarsProvider } from "@mui/joy";
+import { CssBaseline, CssVarsProvider } from "@mui/joy";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { useState } from "react";
-import { FirestoreProvider, useFirebaseApp, } from "reactfire";
-import { Route, Switch } from "wouter";
-import reactLogo from "./assets/react.svg";
-import HomePage from "./pages/HomePage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
+import { AuthProvider, FirestoreProvider, StorageProvider, useFirebaseApp } from "reactfire";
+import { Redirect, Route, Switch } from "wouter";
+import ProtectRoute from "./components/ProtectRoute.tsx";
+import EditProfilePage from "./pages/EditProfilePage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import NewTripPage from "./pages/NewTripPage";
+import PackingListPage from "./pages/PackingListPage";
+import ProfilePage from "./pages/ProfilePage";
+import RegisterPage from "./pages/RegisterPage";
+import TripOverviewPage from "./pages/TripOverviewPage";
+import { getStorage } from "firebase/storage";
+import ItineraryPage from "./pages/Itinerarypage.tsx";
 
 function App() {
   const firestoreInstance = getFirestore(useFirebaseApp());
+  const storageInstance = getStorage(useFirebaseApp());
+  const app = useFirebaseApp();
+  const auth = getAuth(app);
+
   return (
     <CssVarsProvider>
       <CssBaseline/>
-      <FirestoreProvider sdk={firestoreInstance}>
-        <Switch>
-          <Route path="/" component={LandingPage}/>
-          <Route path="/login" component={LoginPage}/>
-          <Route path="/home" component={HomePage}/>
-        </Switch>
-      </FirestoreProvider>
+      <AuthProvider sdk={auth}>
+        <FirestoreProvider sdk={firestoreInstance}>
+          <StorageProvider sdk={storageInstance}>
+            <Switch>
+              <Route path="/">
+                <Redirect to="/login"/>
+              </Route>
+              <Route path="/login" component={LoginPage}/>
+              <Route path="/register" component={RegisterPage}/>
+              <ProtectRoute>
+                <Route path="/home" component={HomePage}/>
+                <Route path="/profile" component={ProfilePage}/>
+                <Route path="/editprofile" component={EditProfilePage}/>
+                <Route path="/newtrip" component={NewTripPage}/>
+                <Route path="/tripoverview/:tripId" component={TripOverviewPage}/>
+                <Route path="/packinglist/:tripId" component={PackingListPage}/>
+                <Route path="/itinerary/:tripId" component={ItineraryPage}/>
+              </ProtectRoute>
+            </Switch>
+          </StorageProvider>
+        </FirestoreProvider>
+      </AuthProvider>
     </CssVarsProvider>
   );
 }
-
-const LandingPage = () => {
-  const [count, setCount] = useState(0);
-
-  return (
-    <>
-      <Button variant="solid">Hello world</Button>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo"/>
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo"/>
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
-};
 
 export default App;
